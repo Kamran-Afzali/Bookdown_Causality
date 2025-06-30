@@ -31,7 +31,7 @@
   
   
 
-<link rel="next" href="the-pool-of-tears.html"/>
+<link rel="next" href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -54,6 +54,70 @@
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
 
 <style type="text/css">
   
@@ -76,9 +140,44 @@
 <li><a href="./">Causality analysis in R</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Down the rabbit-hole</a></li>
-<li class="chapter" data-level="2" data-path="the-pool-of-tears.html"><a href="the-pool-of-tears.html"><i class="fa fa-check"></i><b>2</b> The pool of tears</a></li>
-<li class="chapter" data-level="3" data-path="a-caucus-race-and-a-long-tale.html"><a href="a-caucus-race-and-a-long-tale.html"><i class="fa fa-check"></i><b>3</b> A caucus-race and a long tale</a></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Foundations of Causal Statistical Analysis</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#summary-table-techniques-for-causal-statistical-analysis"><i class="fa fa-check"></i><b>1.2</b> Summary Table: Techniques for Causal Statistical Analysis</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#methodological-deep-dive-with-practical-guidance"><i class="fa fa-check"></i><b>1.3</b> Methodological Deep Dive with Practical Guidance</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#discussion"><i class="fa fa-check"></i><b>1.4</b> Discussion</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><i class="fa fa-check"></i><b>2</b> Causal Inference in Practice I: Randomized Controlled Trials and Regression Adjustment</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#randomized-controlled-trials-design-and-analysis"><i class="fa fa-check"></i><b>2.2</b> 1. Randomized Controlled Trials: Design and Analysis</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#theoretical-foundations"><i class="fa fa-check"></i><b>2.2.1</b> Theoretical Foundations</a></li>
+<li class="chapter" data-level="2.2.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation"><i class="fa fa-check"></i><b>2.2.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.2.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#model-based-inference"><i class="fa fa-check"></i><b>2.2.3</b> Model-Based Inference</a></li>
+<li class="chapter" data-level="2.2.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#diagnostics-and-integrity"><i class="fa fa-check"></i><b>2.2.4</b> Diagnostics and Integrity</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#regression-adjustment-a-model-based-approach-to-causal-inference"><i class="fa fa-check"></i><b>2.3</b> 2. Regression Adjustment: A Model-Based Approach to Causal Inference</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conceptual-overview"><i class="fa fa-check"></i><b>2.3.1</b> Conceptual Overview</a></li>
+<li class="chapter" data-level="2.3.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation-1"><i class="fa fa-check"></i><b>2.3.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.3.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#limitations-and-diagnostics"><i class="fa fa-check"></i><b>2.3.3</b> Limitations and Diagnostics</a></li>
+<li class="chapter" data-level="2.3.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#causal-interpretation"><i class="fa fa-check"></i><b>2.3.4</b> Causal Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#toward-integrated-reasoning"><i class="fa fa-check"></i><b>2.4</b> Toward Integrated Reasoning</a></li>
+<li class="chapter" data-level="2.5" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conclusion"><i class="fa fa-check"></i><b>2.5</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><i class="fa fa-check"></i><b>3</b> Causal Inference in Practice II: Propensity Scores, Doubly Robust Estimators, and Inverse Probability Weighting</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#propensity-score-methods"><i class="fa fa-check"></i><b>3.1</b> Propensity Score Methods</a></li>
+<li class="chapter" data-level="3.2" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#inverse-probability-weighting-ipw"><i class="fa fa-check"></i><b>3.2</b> Inverse Probability Weighting (IPW)</a></li>
+<li class="chapter" data-level="3.3" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#doubly-robust-estimators"><i class="fa fa-check"></i><b>3.3</b> Doubly Robust Estimators</a></li>
+<li class="chapter" data-level="3.4" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#integrative-interpretation"><i class="fa fa-check"></i><b>3.4</b> Integrative Interpretation</a></li>
+<li class="chapter" data-level="3.5" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#summary-table"><i class="fa fa-check"></i><b>3.5</b> Summary Table</a></li>
+<li class="chapter" data-level="3.6" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#conclusion-1"><i class="fa fa-check"></i><b>3.6</b> Conclusion</a></li>
+<li class="chapter" data-level="3.7" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#references-1"><i class="fa fa-check"></i><b>3.7</b> References</a></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 </ul>
@@ -103,9 +202,206 @@
 <p class="author"><em>Kamran Afzali</em></p>
 <p class="date"><em>2025-06-30</em></p>
 </div>
-<div id="down-the-rabbit-hole" class="section level1 hasAnchor" number="1">
-<h1><span class="header-section-number">Chapter 1</span> Down the rabbit-hole<a href="index.html#down-the-rabbit-hole" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="foundations-of-causal-statistical-analysis" class="section level1 hasAnchor" number="1">
+<h1><span class="header-section-number">Chapter 1</span> Foundations of Causal Statistical Analysis<a href="index.html#foundations-of-causal-statistical-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction" class="section level2 hasAnchor" number="1.1">
+<h2><span class="header-section-number">1.1</span> Introduction<a href="index.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Understanding causality is one of the most enduring and fundamental challenges in science. Across disciplines—from public health and economics to education, neuroscience, and artificial intelligence—researchers are increasingly tasked not only with identifying patterns in data but with uncovering the mechanisms that generate them. While traditional statistical analysis excels at quantifying associations, scientific inquiry often aims at a deeper ambition: to infer <strong>causal relationships</strong>—to determine what would happen under specific interventions, policies, or changes to a system. The distinction between correlation and causation is more than a methodological nuance; it defines the boundary between description and explanation, and between prediction and control.</p>
+<p>This essay serves as the first in a multi-part series on the foundations of causal statistical analysis. It provides a panoramic overview of the most widely used techniques for estimating causal effects, each grounded in distinct theoretical frameworks and operational assumptions. These methods span randomized controlled trials (RCTs), which serve as the epistemic gold standard, to a wide range of quasi-experimental and model-based approaches developed to address the limitations of real-world data. In practice, researchers must often navigate data landscapes in which randomization is infeasible, treatment selection is endogenous, and temporal or structural confounding is ubiquitous. This is where modern causal inference techniques offer essential tools—not only for estimating effects, but for interrogating the validity of those estimates.</p>
+<p>At the heart of this endeavor lies a tension between <strong>identifiability</strong> and <strong>assumptions</strong>. Every causal method rests on a set of assumptions—about how the data were generated, how variables relate, and what sources of bias are controlled or ignored. While some methods emphasize robustness through design (e.g., difference-in-differences, regression discontinuity, or instrumental variables), others attempt to model the data-generating process explicitly, drawing from structural modeling, counterfactual reasoning, or machine learning. Each method is powerful under the right conditions and misleading when applied uncritically. This underscores a central theme of the series: <strong>there is no universally “best” method for causal inference</strong>. Rather, the suitability of each technique depends on the scientific question, data structure, and the plausibility of underlying assumptions.</p>
+<p>To guide practitioners in this complex terrain, we begin with a comparative summary table outlining the assumptions, strengths, limitations, and implementation tools for each technique. This table is not merely a catalog—it is a scaffold for deeper engagement. Subsequent posts in the series will explore each method in detail, presenting both theoretical foundations and practical workflows using open-source statistical packages in R and Python. These installments will include visualizations, diagnostics, sensitivity analyses, and real-world case studies drawn from public health, education, and policy evaluation.</p>
+<p>Causal analysis is both an art and a science: it demands careful reasoning, domain knowledge, and transparent methodology. As the demand for evidence-based decision-making grows—particularly in the age of big data and algorithmic governance—causal inference provides a principled framework for moving from data to action. This series is designed to empower readers to approach causal questions rigorously, critically, and creatively.</p>
+</div>
+<div id="summary-table-techniques-for-causal-statistical-analysis" class="section level2 hasAnchor" number="1.2">
+<h2><span class="header-section-number">1.2</span> Summary Table: Techniques for Causal Statistical Analysis<a href="index.html#summary-table-techniques-for-causal-statistical-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<table style="width:100%;">
+<colgroup>
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+<col width="16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Technique</th>
+<th>Key Assumptions</th>
+<th>Use Cases</th>
+<th>Strengths</th>
+<th>Limitations</th>
+<th>Tools/Packages</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Randomized Controlled Trials (RCTs)</td>
+<td>Random assignment ensures exchangeability</td>
+<td>Clinical trials, A/B testing</td>
+<td>Eliminates confounding</td>
+<td>Often infeasible or unethical</td>
+<td><code>randomizr</code> (R), <code>DoWhy</code> (Py)</td>
+</tr>
+<tr class="even">
+<td>Regression Adjustment</td>
+<td>No unmeasured confounders, correct model</td>
+<td>Policy, health outcomes</td>
+<td>Simple, widely used</td>
+<td>Sensitive to omitted variables, model misspecification</td>
+<td><code>lm()</code>, <code>glm()</code> (R), <code>statsmodels</code>, <code>sklearn</code> (Py)</td>
+</tr>
+<tr class="odd">
+<td>Propensity Score Matching (PSM)</td>
+<td>Conditional independence given observed covariates</td>
+<td>Observational studies</td>
+<td>Balances covariates, intuitive</td>
+<td>Sensitive to unmeasured confounding, poor overlap</td>
+<td><code>MatchIt</code>, <code>twang</code> (R), <code>DoWhy</code>, <code>causalml</code> (Py)</td>
+</tr>
+<tr class="even">
+<td>Inverse Probability Weighting (IPW)</td>
+<td>Correct treatment model, positivity</td>
+<td>Longitudinal data</td>
+<td>Handles time-varying confounding</td>
+<td>Can produce unstable weights</td>
+<td><code>ipw</code>, <code>survey</code> (R), <code>zEpid</code> (Py)</td>
+</tr>
+<tr class="odd">
+<td>Difference-in-Differences (DiD)</td>
+<td>Parallel trends</td>
+<td>Policy reforms, natural experiments</td>
+<td>Controls for unobserved time-invariant confounders</td>
+<td>Vulnerable if trends diverge</td>
+<td><code>fixest</code>, <code>did</code> (R), <code>linearmodels</code> (Py)</td>
+</tr>
+<tr class="even">
+<td>Instrumental Variables (IV)</td>
+<td>Relevance, exclusion restriction</td>
+<td>Endogeneity correction</td>
+<td>Addresses unmeasured confounding</td>
+<td>Finding valid instruments is hard</td>
+<td><code>ivreg</code>, <code>AER</code> (R), <code>linearmodels.iv</code> (Py)</td>
+</tr>
+<tr class="odd">
+<td>Regression Discontinuity (RDD)</td>
+<td>Sharp cutoff, local randomization</td>
+<td>Education, policy thresholds</td>
+<td>Transparent identification</td>
+<td>Limited to local effect near cutoff</td>
+<td><code>rdrobust</code>, <code>rddtools</code> (R), <code>rdd</code>, <code>statsmodels</code> (Py)</td>
+</tr>
+<tr class="even">
+<td>Causal Forests</td>
+<td>Unconfoundedness, heterogeneity</td>
+<td>Precision medicine, targeting</td>
+<td>Captures treatment heterogeneity</td>
+<td>Requires large data, unmeasured confounding risk</td>
+<td><code>grf</code>, <code>causalTree</code> (R), <code>econml</code>, <code>causalml</code> (Py)</td>
+</tr>
+<tr class="odd">
+<td>Bayesian Structural Time Series (BSTS)</td>
+<td>No unmeasured confounders post-intervention</td>
+<td>Time series interventions</td>
+<td>Handles complex time trends</td>
+<td>Sensitive to model/priors</td>
+<td><code>CausalImpact</code>, <code>bsts</code> (R), <code>tfcausalimpact</code> (Py)</td>
+</tr>
+<tr class="even">
+<td>Targeted Maximum Likelihood Estimation (TMLE)</td>
+<td>Double robustness</td>
+<td>Epidemiology, observational data</td>
+<td>Robust, ML integration</td>
+<td>Computationally intensive</td>
+<td><code>tmle</code>, <code>ltmle</code> (R), <code>zepid</code> (Py)</td>
+</tr>
+<tr class="odd">
+<td>G-Computation</td>
+<td>No unmeasured confounding, correct model</td>
+<td>Mediation, marginal effects</td>
+<td>Flexible, counterfactuals</td>
+<td>Model dependence</td>
+<td><code>gfoRmula</code>, <code>ltmle</code> (R), <code>zepid</code> (Py)</td>
+</tr>
+<tr class="even">
+<td>Structural Equation Modeling (SEM)</td>
+<td>Correct structure, no unmeasured confounding</td>
+<td>Latent variables, mediation</td>
+<td>Models complex relationships</td>
+<td>Requires strong assumptions</td>
+<td><code>lava RESOLVED: lavaan</code> (R), <code>semopy</code>, <code>pysem</code> (Py)</td>
+</tr>
+<tr class="odd">
+<td>Directed Acyclic Graphs (DAGs)</td>
+<td>Causal sufficiency, accurate knowledge</td>
+<td>Study design, confounder control</td>
+<td>Clarifies assumptions</td>
+<td>Not an estimation method</td>
+<td><code>dagitty</code>, <code>ggdag</code> (R), <code>causalgraphicalmodels</code> (Py)</td>
+</tr>
+<tr class="even">
+<td>Double Machine Learning (DML) Frameworks</td>
+<td>Conditional ignorability, consistent nuisance estimation</td>
+<td>High-dimensional observational studies</td>
+<td>Robust to model misspecification, handles high-dimensional confounders</td>
+<td>Requires large data, assumes no unmeasured confounding</td>
+<td><code>DoubleML</code> (R), <code>econml</code>, <code>causalml</code> (Py)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="methodological-deep-dive-with-practical-guidance" class="section level2 hasAnchor" number="1.3">
+<h2><span class="header-section-number">1.3</span> Methodological Deep Dive with Practical Guidance<a href="index.html#methodological-deep-dive-with-practical-guidance" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li><p><strong>Randomized Controlled Trials (RCTs)</strong>
+RCTs are the gold standard for causal inference. Random assignment neutralizes confounding, ensuring internal validity. However, practical, ethical, or financial constraints often limit their feasibility. When viable, they deliver the most credible causal estimates.</p></li>
+<li><p><strong>Regression Adjustment</strong>
+This method models the outcome as a function of treatment and covariates. While easy to implement, it assumes no unmeasured confounding and correct model specification. It’s essential to examine covariate balance and conduct robustness checks.</p></li>
+<li><p><strong>Propensity Score Matching (PSM)</strong>
+PSM aims to mimic randomization by matching units with similar probabilities of treatment. It balances covariates well but fails under unmeasured confounding. Diagnostic tools like balance plots are crucial.</p></li>
+<li><p><strong>Inverse Probability Weighting (IPW)</strong>
+IPW reweights samples to simulate random assignment. It handles time-varying confounding but can produce unstable weights, requiring trimming or stabilization. It’s powerful for longitudinal and panel data.</p></li>
+<li><p><strong>Difference-in-Differences (DiD)</strong>
+DiD compares treated and control units over time, assuming parallel trends. It is popular for evaluating policy interventions but sensitive to trend violations. Visualizing pre-treatment trends and using placebo tests enhance credibility.</p></li>
+<li><p><strong>Instrumental Variables (IV)</strong>
+IV methods handle endogeneity by using external variables that affect treatment but not the outcome directly. The approach hinges on the strength and validity of instruments—criteria that are difficult to verify.</p></li>
+<li><p><strong>Regression Discontinuity Design (RDD)</strong>
+RDD exploits sharp cutoffs for treatment assignment. It provides quasi-experimental validity but estimates only local effects near the threshold. Validity depends on smoothness and non-manipulation at the cutoff.</p></li>
+<li><p><strong>Causal Forests</strong>
+Causal forests extend random forests to estimate heterogeneous treatment effects. They are ideal for personalized interventions but require large datasets and are vulnerable to omitted confounding.</p></li>
+<li><p><strong>Bayesian Structural Time Series (BSTS)</strong>
+BSTS combines state-space models with Bayesian inference to estimate intervention effects in time series. It accommodates trend and seasonality but is sensitive to model misspecification and prior choices.</p></li>
+<li><p><strong>Targeted Maximum Likelihood Estimation (TMLE)</strong>
+TMLE integrates machine learning into causal effect estimation. It provides double robustness and efficient inference under complex data settings but can be computationally demanding.</p></li>
+<li><p><strong>G-Computation</strong>
+G-computation models potential outcomes under each treatment. It is flexible and counterfactual-based but requires accurate modeling and complete covariate adjustment.</p></li>
+<li><p><strong>Structural Equation Modeling (SEM)</strong>
+SEM enables the modeling of complex causal structures, including latent constructs and mediation. Its interpretability is appealing but hinges on correct model specification and the absence of unmeasured confounding.</p></li>
+<li><p><strong>Directed Acyclic Graphs (DAGs)</strong>
+DAGs are essential for clarifying causal assumptions. While not an estimation method, they guide design and analysis by identifying confounders, mediators, and colliders.</p></li>
+</ul>
+</div>
+<div id="discussion" class="section level2 hasAnchor" number="1.4">
+<h2><span class="header-section-number">1.4</span> Discussion<a href="index.html#discussion" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The comparative framework presented in this foundational overview highlights both the diversity and the interdependence of causal inference techniques. A central takeaway is that <strong>no single method guarantees valid causal inference in all contexts</strong>. Rather, the validity of any technique depends critically on whether its assumptions align with the structure of the data and the theoretical understanding of the system under study. This observation has two key implications for applied researchers.</p>
+<p>First, <strong>triangulation</strong>—the use of multiple methods to approach the same causal question—is not only desirable but often necessary. For instance, one might use propensity score matching to achieve covariate balance, regression adjustment to model outcome differences, and then compare results with those from a targeted maximum likelihood estimation (TMLE) approach. If conclusions converge, confidence in causal interpretation increases. If not, divergences can reveal sensitivity to assumptions such as model specification or unmeasured confounding. Thus, causal inference is inherently <strong>iterative</strong>, requiring both methodological flexibility and diagnostic rigor.</p>
+<p>Second, <strong>methodological literacy is not enough</strong>; researchers must also cultivate <strong>causal reasoning</strong>. Directed Acyclic Graphs (DAGs), while not themselves estimators, play a vital role in clarifying which variables to control for and which paths to block or preserve. DAG-based thinking helps researchers navigate common pitfalls such as controlling for colliders or mediators, both of which can induce bias. The thoughtful use of DAGs, therefore, bridges qualitative theoretical insight with quantitative estimation.</p>
+<p>Another tension arises between <strong>interpretability and complexity</strong>. Classical techniques like regression or instrumental variables are often preferred for their clarity and theoretical grounding, while modern approaches such as causal forests and TMLE offer increased flexibility and robustness in high-dimensional or non-linear settings. However, these gains often come at the cost of interpretability, especially for stakeholders or policy-makers who require transparent causal narratives. This raises an important trade-off: when should we prioritize explainability over precision, and how do we communicate these decisions to interdisciplinary audiences?</p>
+<p>In addition, the growing use of <strong>machine learning in causal inference</strong>—exemplified by methods like causal forests and TMLE—requires new standards for validation and transparency. Unlike predictive modeling, causal questions are inherently counterfactual and cannot be validated through conventional cross-validation. Techniques such as falsification tests, placebo analyses, and sensitivity analyses become indispensable, particularly when machine learning models are involved.</p>
+<p>Finally, <strong>equity and ethics</strong> must be central to causal analysis, especially in domains like public health, criminal justice, and education. Methods that adjust for observed variables can inadvertently perpetuate structural inequalities if those variables are themselves proxies for systemic bias. Researchers must therefore engage critically with both the data and the social contexts from which they arise, treating causal models not just as statistical tools but as ethical instruments.</p>
+<p>The subsequent posts in this series will explore each technique in depth, including code implementation, diagnostic strategies, and real-world case studies. By weaving together statistical rigor, domain expertise, and ethical reflexivity, we aim to equip researchers with a robust and responsible causal toolkit.</p>
+</div>
+<div id="references" class="section level2 hasAnchor" number="1.5">
+<h2><span class="header-section-number">1.5</span> References<a href="index.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ol style="list-style-type: decimal">
+<li>Hernán &amp; Robins (2020). <em>Causal Inference: What If</em>.</li>
+<li>Pearl, Glymour, &amp; Jewell (2016). <em>Causal Inference in Statistics: A Primer</em>.</li>
+<li>VanderWeele (2015). <em>Explanation in Causal Inference</em>.</li>
+<li>Causal AI Blog by Judea Pearl: <a href="https://causality.cs.ucla.edu/blog/">https://causality.cs.ucla.edu/blog/</a></li>
+<li>Netflix Tech Blog on Causal Inference: <a href="https://netflixtechblog.com/computational-causal-inference-at-netflix-293591691c62">https://netflixtechblog.com/computational-causal-inference-at-netflix-293591691c62</a></li>
+<li>Number Analytics Education Series: <a href="https://www.numberanalytics.com/blog/">https://www.numberanalytics.com/blog/</a></li>
+</ol>
 
+</div>
 </div>
             </section>
 
@@ -113,7 +409,7 @@
         </div>
       </div>
 
-<a href="the-pool-of-tears.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -144,7 +440,7 @@ gitbook.start({
     "size": 2
   },
   "edit": {
-    "link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/edit/main/index.Rmd",
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/edit/main/index.Rmd",
     "text": "Edit"
   },
   "history": {
@@ -152,7 +448,7 @@ gitbook.start({
     "text": null
   },
   "view": {
-    "link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/blob/main/index.Rmd",
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/blob/main/index.Rmd",
     "text": null
   },
   "download": null,
@@ -167,6 +463,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

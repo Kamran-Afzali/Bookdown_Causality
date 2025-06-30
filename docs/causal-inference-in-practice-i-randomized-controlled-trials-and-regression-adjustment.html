@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 2 Causal Inference in Practice I: Randomized Controlled Trials and Regression Adjustment | Causal Inference in R</title>
+  <meta name="description" content="Chapter 2 Causal Inference in Practice I: Randomized Controlled Trials and Regression Adjustment | Causal Inference in R" />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 2 Causal Inference in Practice I: Randomized Controlled Trials and Regression Adjustment | Causal Inference in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 2 Causal Inference in Practice I: Randomized Controlled Trials and Regression Adjustment | Causal Inference in R" />
+  
+  
+  
+
+<meta name="author" content="Kamran Afzali" />
+
+
+<meta name="date" content="2025-06-30" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Causality analysis in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Foundations of Causal Statistical Analysis</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#summary-table-techniques-for-causal-statistical-analysis"><i class="fa fa-check"></i><b>1.2</b> Summary Table: Techniques for Causal Statistical Analysis</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#methodological-deep-dive-with-practical-guidance"><i class="fa fa-check"></i><b>1.3</b> Methodological Deep Dive with Practical Guidance</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#discussion"><i class="fa fa-check"></i><b>1.4</b> Discussion</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><i class="fa fa-check"></i><b>2</b> Causal Inference in Practice I: Randomized Controlled Trials and Regression Adjustment</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#randomized-controlled-trials-design-and-analysis"><i class="fa fa-check"></i><b>2.2</b> 1. Randomized Controlled Trials: Design and Analysis</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#theoretical-foundations"><i class="fa fa-check"></i><b>2.2.1</b> Theoretical Foundations</a></li>
+<li class="chapter" data-level="2.2.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation"><i class="fa fa-check"></i><b>2.2.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.2.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#model-based-inference"><i class="fa fa-check"></i><b>2.2.3</b> Model-Based Inference</a></li>
+<li class="chapter" data-level="2.2.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#diagnostics-and-integrity"><i class="fa fa-check"></i><b>2.2.4</b> Diagnostics and Integrity</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#regression-adjustment-a-model-based-approach-to-causal-inference"><i class="fa fa-check"></i><b>2.3</b> 2. Regression Adjustment: A Model-Based Approach to Causal Inference</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conceptual-overview"><i class="fa fa-check"></i><b>2.3.1</b> Conceptual Overview</a></li>
+<li class="chapter" data-level="2.3.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation-1"><i class="fa fa-check"></i><b>2.3.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.3.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#limitations-and-diagnostics"><i class="fa fa-check"></i><b>2.3.3</b> Limitations and Diagnostics</a></li>
+<li class="chapter" data-level="2.3.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#causal-interpretation"><i class="fa fa-check"></i><b>2.3.4</b> Causal Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#toward-integrated-reasoning"><i class="fa fa-check"></i><b>2.4</b> Toward Integrated Reasoning</a></li>
+<li class="chapter" data-level="2.5" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conclusion"><i class="fa fa-check"></i><b>2.5</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><i class="fa fa-check"></i><b>3</b> Causal Inference in Practice II: Propensity Scores, Doubly Robust Estimators, and Inverse Probability Weighting</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#propensity-score-methods"><i class="fa fa-check"></i><b>3.1</b> Propensity Score Methods</a></li>
+<li class="chapter" data-level="3.2" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#inverse-probability-weighting-ipw"><i class="fa fa-check"></i><b>3.2</b> Inverse Probability Weighting (IPW)</a></li>
+<li class="chapter" data-level="3.3" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#doubly-robust-estimators"><i class="fa fa-check"></i><b>3.3</b> Doubly Robust Estimators</a></li>
+<li class="chapter" data-level="3.4" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#integrative-interpretation"><i class="fa fa-check"></i><b>3.4</b> Integrative Interpretation</a></li>
+<li class="chapter" data-level="3.5" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#summary-table"><i class="fa fa-check"></i><b>3.5</b> Summary Table</a></li>
+<li class="chapter" data-level="3.6" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#conclusion-1"><i class="fa fa-check"></i><b>3.6</b> Conclusion</a></li>
+<li class="chapter" data-level="3.7" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#references-1"><i class="fa fa-check"></i><b>3.7</b> References</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Causal Inference in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">Chapter 2</span> Causal Inference in Practice I: Randomized Controlled Trials and Regression Adjustment<a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction-1" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Introduction<a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#introduction-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In the first post of this series, we presented a comprehensive overview of key causal inference methods, highlighting the assumptions, strengths, and limitations that distinguish each technique. In this follow-up post, we delve into the two most foundational approaches: Randomized Controlled Trials (RCTs) and Regression Adjustment. Although these methods differ in their reliance on data-generating processes and assumptions, both provide crucial entry points into the logic of causal reasoning. This essay offers a theoretically grounded and practically oriented treatment of each method, including code implementation in R, diagnostics, and interpretive guidance.</p>
+<p>RCTs represent the epistemic benchmark for causal inference, often described as the “gold standard” due to their unique ability to eliminate confounding through randomization. Regression Adjustment, by contrast, models the outcome conditional on treatment and covariates, requiring more assumptions but offering wide applicability in observational settings. Despite their differences, both approaches are underpinned by counterfactual reasoning—the idea that causal effects reflect the difference between what actually happened and what would have happened under a different treatment assignment.</p>
+<p>Understanding the logic and implementation of these two methods is essential not only for their direct use but also because they serve as the conceptual and statistical scaffolding for more complex techniques such as matching, weighting, and doubly robust estimators.</p>
+</div>
+<div id="randomized-controlled-trials-design-and-analysis" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> 1. Randomized Controlled Trials: Design and Analysis<a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#randomized-controlled-trials-design-and-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="theoretical-foundations" class="section level3 hasAnchor" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> Theoretical Foundations<a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#theoretical-foundations" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In an RCT, participants are randomly assigned to treatment or control groups. This process ensures that, on average, both groups are statistically equivalent on all covariates, observed and unobserved. The core assumption is <strong>exchangeability</strong>—that the potential outcomes are independent of treatment assignment conditional on randomization. This enables simple comparisons of mean outcomes across groups to yield unbiased estimates of causal effects.</p>
+<p>Formally, let <span class="math inline">\(Y(1)\)</span> and <span class="math inline">\(Y(0)\)</span> denote the potential outcomes under treatment and control, respectively. The average treatment effect (ATE) is defined as:</p>
+<p><span class="math display">\[
+\text{ATE} = \mathbb{E}[Y(1) - Y(0)]
+\]</span></p>
+<p>In a perfectly randomized trial, we estimate the ATE by comparing the sample means:</p>
+<p><span class="math display">\[
+\widehat{\text{ATE}} = \bar{Y}_1 - \bar{Y}_0
+\]</span></p>
+<p>This estimator is unbiased and consistent, provided randomization is successfully implemented and compliance is perfect.</p>
+</div>
+<div id="r-implementation" class="section level3 hasAnchor" number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span> R Implementation<a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Let’s simulate a simple RCT to estimate the effect of a binary treatment on an outcome.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb1-1" tabindex="-1"></a><span class="co"># Load necessary libraries</span></span>
+<span id="cb1-2"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb1-2" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb1-4" tabindex="-1"></a><span class="co"># Set seed for reproducibility</span></span>
+<span id="cb1-5"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb1-5" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-6"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb1-7" tabindex="-1"></a><span class="co"># Simulate data</span></span>
+<span id="cb1-8"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb1-8" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb1-9"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb1-9" tabindex="-1"></a>data_rct <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb1-10"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb1-10" tabindex="-1"></a>  <span class="at">treatment =</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>),</span>
+<span id="cb1-11"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb1-11" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="dv">5</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> treatment <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb1-12"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb1-12" tabindex="-1"></a>)</span>
+<span id="cb1-13"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb1-13" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb1-14" tabindex="-1"></a><span class="co"># Estimate ATE using difference in means</span></span>
+<span id="cb1-15"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb1-15" tabindex="-1"></a>ate_estimate <span class="ot">&lt;-</span> data_rct <span class="sc">%&gt;%</span></span>
+<span id="cb1-16"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb1-16" tabindex="-1"></a>  <span class="fu">group_by</span>(treatment) <span class="sc">%&gt;%</span></span>
+<span id="cb1-17"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb1-17" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_outcome =</span> <span class="fu">mean</span>(outcome)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-18"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb1-18" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">ATE =</span> <span class="fu">diff</span>(mean_outcome))</span>
+<span id="cb1-19"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb1-19" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb1-20" tabindex="-1"></a><span class="fu">print</span>(ate_estimate)</span></code></pre></div>
+</div>
+<div id="model-based-inference" class="section level3 hasAnchor" number="2.2.3">
+<h3><span class="header-section-number">2.2.3</span> Model-Based Inference<a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#model-based-inference" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>While RCTs do not require model-based adjustments, regression models are often used to improve precision or adjust for residual imbalances. In the RCT context, such models are descriptive rather than corrective.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb2-1" tabindex="-1"></a><span class="co"># Linear regression with treatment as predictor</span></span>
+<span id="cb2-2"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb2-2" tabindex="-1"></a>lm_rct <span class="ot">&lt;-</span> <span class="fu">lm</span>(outcome <span class="sc">~</span> treatment, <span class="at">data =</span> data_rct)</span>
+<span id="cb2-3"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb2-3" tabindex="-1"></a><span class="fu">summary</span>(lm_rct)</span></code></pre></div>
+<p>The coefficient on the treatment variable in this model provides an estimate of the ATE. Importantly, in randomized designs, the inclusion of additional covariates should not substantially alter the point estimate, though it may reduce variance.</p>
+</div>
+<div id="diagnostics-and-integrity" class="section level3 hasAnchor" number="2.2.4">
+<h3><span class="header-section-number">2.2.4</span> Diagnostics and Integrity<a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#diagnostics-and-integrity" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Although randomization ensures internal validity, its practical implementation must be verified. Balance diagnostics, such as standardized mean differences or visualizations of covariate distributions by treatment group, help ensure that the groups are equivalent at baseline. If substantial imbalances exist, especially in small samples, model-based covariate adjustment can improve efficiency but not eliminate bias due to poor randomization.</p>
+</div>
+</div>
+<div id="regression-adjustment-a-model-based-approach-to-causal-inference" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> 2. Regression Adjustment: A Model-Based Approach to Causal Inference<a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#regression-adjustment-a-model-based-approach-to-causal-inference" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="conceptual-overview" class="section level3 hasAnchor" number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span> Conceptual Overview<a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conceptual-overview" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Regression Adjustment, sometimes called covariate adjustment, is one of the most widely used methods for causal estimation in observational studies. Unlike RCTs, this approach requires the assumption of <strong>no unmeasured confounding</strong>, often called conditional ignorability:</p>
+<p><span class="math display">\[
+Y(1), Y(0) \perp D \mid X
+\]</span></p>
+<p>Here, <span class="math inline">\(D\)</span> is the binary treatment variable and <span class="math inline">\(X\)</span> is a vector of observed covariates. The central idea is to control for confounders <span class="math inline">\(X\)</span> that affect both treatment assignment and potential outcomes.</p>
+<p>The linear model typically takes the form:</p>
+<p><span class="math display">\[
+Y = \beta_0 + \beta_1 D + \beta_2 X + \varepsilon
+\]</span></p>
+<p>The coefficient <span class="math inline">\(\beta_1\)</span> is interpreted as the average treatment effect, assuming the model is correctly specified and all relevant confounders are included.</p>
+</div>
+<div id="r-implementation-1" class="section level3 hasAnchor" number="2.3.2">
+<h3><span class="header-section-number">2.3.2</span> R Implementation<a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We now simulate observational data with a confounder to demonstrate regression adjustment.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb3-1" tabindex="-1"></a><span class="co"># Simulate observational data</span></span>
+<span id="cb3-2"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb3-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb3-3"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb3-3" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb3-4"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb3-4" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb3-5"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb3-5" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fu">plogis</span>(<span class="fl">0.5</span> <span class="sc">*</span> x))</span>
+<span id="cb3-6"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb3-6" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> d <span class="sc">+</span> <span class="fl">1.5</span> <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb3-7"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb3-7" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb3-8" tabindex="-1"></a>data_obs <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb3-9"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb3-9" tabindex="-1"></a>  <span class="at">treatment =</span> d,</span>
+<span id="cb3-10"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb3-10" tabindex="-1"></a>  <span class="at">covariate =</span> x,</span>
+<span id="cb3-11"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb3-11" tabindex="-1"></a>  <span class="at">outcome =</span> y</span>
+<span id="cb3-12"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb3-12" tabindex="-1"></a>)</span>
+<span id="cb3-13"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb3-13" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb3-14" tabindex="-1"></a><span class="co"># Naive model (without adjustment)</span></span>
+<span id="cb3-15"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb3-15" tabindex="-1"></a>lm_naive <span class="ot">&lt;-</span> <span class="fu">lm</span>(outcome <span class="sc">~</span> treatment, <span class="at">data =</span> data_obs)</span>
+<span id="cb3-16"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb3-16" tabindex="-1"></a><span class="fu">summary</span>(lm_naive)</span>
+<span id="cb3-17"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb3-17" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb3-18" tabindex="-1"></a><span class="co"># Adjusted model</span></span>
+<span id="cb3-19"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb3-19" tabindex="-1"></a>lm_adjusted <span class="ot">&lt;-</span> <span class="fu">lm</span>(outcome <span class="sc">~</span> treatment <span class="sc">+</span> covariate, <span class="at">data =</span> data_obs)</span>
+<span id="cb3-20"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb3-20" tabindex="-1"></a><span class="fu">summary</span>(lm_adjusted)</span></code></pre></div>
+<p>The naive model, which omits the confounder, yields a biased estimate of the treatment effect. By contrast, the adjusted model corrects this bias, provided all relevant confounders are included and the functional form is correct.</p>
+</div>
+<div id="limitations-and-diagnostics" class="section level3 hasAnchor" number="2.3.3">
+<h3><span class="header-section-number">2.3.3</span> Limitations and Diagnostics<a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#limitations-and-diagnostics" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Regression Adjustment hinges on correct model specification and the inclusion of all relevant confounders. Omitted variable bias remains a major threat, and multicollinearity or misspecified functional forms can distort estimates. Residual plots, variance inflation factors, and specification tests are essential for model diagnostics.</p>
+<p>Moreover, regression does not address <strong>overlap</strong>—the requirement that all units have a non-zero probability of receiving each treatment conditional on covariates. Violations of this assumption can lead to extrapolation and poor generalizability.</p>
+<p>One strategy to assess covariate overlap is to model the propensity score and visualize its distribution across treatment groups.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb4-1" tabindex="-1"></a><span class="co"># Estimate propensity scores</span></span>
+<span id="cb4-2"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb4-2" tabindex="-1"></a>ps_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(treatment <span class="sc">~</span> covariate, <span class="at">data =</span> data_obs, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb4-3"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb4-3" tabindex="-1"></a>data_obs <span class="ot">&lt;-</span> data_obs <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">pscore =</span> <span class="fu">predict</span>(ps_model, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>))</span>
+<span id="cb4-4"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb4-4" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb4-5" tabindex="-1"></a><span class="co"># Plot propensity scores</span></span>
+<span id="cb4-6"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb4-6" tabindex="-1"></a><span class="fu">ggplot</span>(data_obs, <span class="fu">aes</span>(<span class="at">x =</span> pscore, <span class="at">fill =</span> <span class="fu">factor</span>(treatment))) <span class="sc">+</span></span>
+<span id="cb4-7"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb4-7" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb4-8"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#cb4-8" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">&quot;Treatment Group&quot;</span>, <span class="at">title =</span> <span class="st">&quot;Propensity Score Overlap&quot;</span>)</span></code></pre></div>
+<p>If there is poor overlap between groups, regression adjustment may yield estimates with high variance and questionable validity.</p>
+</div>
+<div id="causal-interpretation" class="section level3 hasAnchor" number="2.3.4">
+<h3><span class="header-section-number">2.3.4</span> Causal Interpretation<a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#causal-interpretation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>While regression models provide estimates of conditional treatment effects, care must be taken in interpreting these coefficients causally. The treatment effect estimated by regression adjustment is unbiased only under strong assumptions: no unmeasured confounding, correct model specification, and sufficient overlap.</p>
+<p>This makes regression adjustment a double-edged sword. Its ease of use and interpretability make it appealing, but its susceptibility to hidden bias requires rigorous scrutiny.</p>
+</div>
+</div>
+<div id="toward-integrated-reasoning" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> Toward Integrated Reasoning<a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#toward-integrated-reasoning" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The juxtaposition of RCTs and regression adjustment highlights the contrast between <strong>design-based</strong> and <strong>model-based</strong> inference. RCTs achieve causal identification through the randomization mechanism itself, rendering statistical adjustment unnecessary (but sometimes helpful for precision). Regression adjustment, on the other hand, relies entirely on the plausibility of its assumptions, making it vulnerable to hidden confounding and specification errors.</p>
+<p>Importantly, these methods should not be viewed in isolation. Hybrid designs and analytic strategies—such as <strong>regression adjustment in RCTs</strong> or <strong>design-based diagnostics in observational studies</strong>—blur the boundaries and point toward more integrated approaches to causal inference.</p>
+<p>Furthermore, emerging methods such as <strong>doubly robust estimation</strong>, <strong>propensity score weighting</strong>, and <strong>machine learning–based causal estimators</strong> build upon the foundations established by these two methods. Understanding the mechanics and logic of RCTs and regression adjustment is thus a prerequisite for mastering more advanced techniques.</p>
+</div>
+<div id="conclusion" class="section level2 hasAnchor" number="2.5">
+<h2><span class="header-section-number">2.5</span> Conclusion<a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conclusion" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In this installment, we explored the theoretical rationale, implementation, and practical considerations of two cornerstone methods in causal inference: Randomized Controlled Trials and Regression Adjustment. RCTs provide unmatched causal credibility when feasible, while regression models offer flexible tools for analyzing observational data under strong assumptions. Their complementary roles in the causal inference toolkit make them indispensable for any applied researcher.</p>
+<p>The next entry in this series will turn to <strong>Propensity Score Methods</strong>, where we will examine how matching and weighting strategies seek to approximate randomized experiments using observational data. As with all causal methods, the key lies not just in computation, but in the clarity of assumptions and the integrity of reasoning.</p>
+<p>By combining design principles, diagnostic rigor, and ethical sensitivity, causal inference offers a powerful framework for navigating the complexity of real-world data.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/edit/main/02-RCT.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/blob/main/02-RCT.Rmd",
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
