@@ -41,3 +41,17 @@ interpretation
 limitations-and-extensions
 conclusion-2
 references-2
+causal-inference-in-practice-iv-instrumental-variables-in-healthcare
+introduction-3
+theoretical-framework
+motivation-and-identification
+estimation
+comparison-with-other-methods
+healthcare-application-hospital-quality-and-recovery-time
+scenario-1
+assumptions
+r-implementation-3
+interpretation-1
+limitations
+conclusion-3
+references-3
