@@ -23,7 +23,7 @@
 <meta name="author" content="Kamran Afzali" />
 
 
-<meta name="date" content="2025-07-22" />
+<meta name="date" content="2025-08-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"/>
-
+<link rel="next" href="causal-inference-in-practice-v-regression-discontinuity-design.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -219,6 +219,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.6" data-path="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html"><a href="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html#conclusion-3"><i class="fa fa-check"></i><b>5.6</b> Conclusion</a></li>
 <li class="chapter" data-level="5.7" data-path="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html"><a href="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html#references-3"><i class="fa fa-check"></i><b>5.7</b> References</a></li>
 </ul></li>
+<li class="chapter" data-level="6" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html"><i class="fa fa-check"></i><b>6</b> Causal Inference in Practice V: Regression Discontinuity Design</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#introduction-4"><i class="fa fa-check"></i><b>6.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#comparison-with-other-methods-1"><i class="fa fa-check"></i><b>6.1.1</b> Comparison with Other Methods</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#healthcare-application-icu-admission-and-mortality"><i class="fa fa-check"></i><b>6.2</b> Healthcare Application: ICU Admission and Mortality</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#scenario-2"><i class="fa fa-check"></i><b>6.2.1</b> Scenario</a></li>
+<li class="chapter" data-level="6.2.2" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#assumptions-and-validity"><i class="fa fa-check"></i><b>6.2.2</b> Assumptions and Validity</a></li>
+<li class="chapter" data-level="6.2.3" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#r-implementation-4"><i class="fa fa-check"></i><b>6.2.3</b> R Implementation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#interpretation-and-diagnostics"><i class="fa fa-check"></i><b>6.3</b> Interpretation and Diagnostics</a></li>
+<li class="chapter" data-level="6.4" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#extensions-and-robustness"><i class="fa fa-check"></i><b>6.4</b> Extensions and Robustness</a></li>
+<li class="chapter" data-level="6.5" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#limitations-and-considerations"><i class="fa fa-check"></i><b>6.5</b> Limitations and Considerations</a></li>
+<li class="chapter" data-level="6.6" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#conclusion-4"><i class="fa fa-check"></i><b>6.6</b> Conclusion</a></li>
+<li class="chapter" data-level="6.7" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#references-4"><i class="fa fa-check"></i><b>6.7</b> References</a></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 </ul>
@@ -400,8 +418,8 @@ Y_i = \alpha_0 + \alpha_1 \hat{D}_i + \alpha_2^\top X_i + \varepsilon_i
           </div>
         </div>
       </div>
-<a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="causal-inference-in-practice-v-regression-discontinuity-design.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

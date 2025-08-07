@@ -55,3 +55,15 @@ interpretation-1
 limitations
 conclusion-3
 references-3
+causal-inference-in-practice-v-regression-discontinuity-design
+introduction-4
+comparison-with-other-methods-1
+healthcare-application-icu-admission-and-mortality
+scenario-2
+assumptions-and-validity
+r-implementation-4
+interpretation-and-diagnostics
+extensions-and-robustness
+limitations-and-considerations
+conclusion-4
+references-4

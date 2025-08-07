@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 6 Causal Inference in Practice V: Regression Discontinuity Design | Causal Inference in R</title>
+  <meta name="description" content="Chapter 6 Causal Inference in Practice V: Regression Discontinuity Design | Causal Inference in R" />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 6 Causal Inference in Practice V: Regression Discontinuity Design | Causal Inference in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 6 Causal Inference in Practice V: Regression Discontinuity Design | Causal Inference in R" />
+  
+  
+  
+
+<meta name="author" content="Kamran Afzali" />
+
+
+<meta name="date" content="2025-08-07" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Causality analysis in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Foundations of Causal Statistical Analysis</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#summary-table-techniques-for-causal-statistical-analysis"><i class="fa fa-check"></i><b>1.2</b> Summary Table: Techniques for Causal Statistical Analysis</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#methodological-deep-dive-with-practical-guidance"><i class="fa fa-check"></i><b>1.3</b> Methodological Deep Dive with Practical Guidance</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#discussion"><i class="fa fa-check"></i><b>1.4</b> Discussion</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><i class="fa fa-check"></i><b>2</b> Causal Inference in Practice I: Randomized Controlled Trials and Regression Adjustment</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#randomized-controlled-trials-design-and-analysis"><i class="fa fa-check"></i><b>2.2</b> 1. Randomized Controlled Trials: Design and Analysis</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#theoretical-foundations"><i class="fa fa-check"></i><b>2.2.1</b> Theoretical Foundations</a></li>
+<li class="chapter" data-level="2.2.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation"><i class="fa fa-check"></i><b>2.2.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.2.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#model-based-inference"><i class="fa fa-check"></i><b>2.2.3</b> Model-Based Inference</a></li>
+<li class="chapter" data-level="2.2.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#diagnostics-and-integrity"><i class="fa fa-check"></i><b>2.2.4</b> Diagnostics and Integrity</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#regression-adjustment-a-model-based-approach-to-causal-inference"><i class="fa fa-check"></i><b>2.3</b> 2. Regression Adjustment: A Model-Based Approach to Causal Inference</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conceptual-overview"><i class="fa fa-check"></i><b>2.3.1</b> Conceptual Overview</a></li>
+<li class="chapter" data-level="2.3.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation-1"><i class="fa fa-check"></i><b>2.3.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.3.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#limitations-and-diagnostics"><i class="fa fa-check"></i><b>2.3.3</b> Limitations and Diagnostics</a></li>
+<li class="chapter" data-level="2.3.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#causal-interpretation"><i class="fa fa-check"></i><b>2.3.4</b> Causal Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#toward-integrated-reasoning"><i class="fa fa-check"></i><b>2.4</b> Toward Integrated Reasoning</a></li>
+<li class="chapter" data-level="2.5" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conclusion"><i class="fa fa-check"></i><b>2.5</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><i class="fa fa-check"></i><b>3</b> Causal Inference in Practice II: Propensity Scores, Doubly Robust Estimators, and Inverse Probability Weighting</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#propensity-score-methods"><i class="fa fa-check"></i><b>3.1</b> Propensity Score Methods</a></li>
+<li class="chapter" data-level="3.2" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#inverse-probability-weighting-ipw"><i class="fa fa-check"></i><b>3.2</b> Inverse Probability Weighting (IPW)</a></li>
+<li class="chapter" data-level="3.3" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#doubly-robust-estimators"><i class="fa fa-check"></i><b>3.3</b> Doubly Robust Estimators</a></li>
+<li class="chapter" data-level="3.4" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#integrative-interpretation"><i class="fa fa-check"></i><b>3.4</b> Integrative Interpretation</a></li>
+<li class="chapter" data-level="3.5" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#summary-table"><i class="fa fa-check"></i><b>3.5</b> Summary Table</a></li>
+<li class="chapter" data-level="3.6" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#conclusion-1"><i class="fa fa-check"></i><b>3.6</b> Conclusion</a></li>
+<li class="chapter" data-level="3.7" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#references-1"><i class="fa fa-check"></i><b>3.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><i class="fa fa-check"></i><b>4</b> Causal Inference in Practice III: Difference-in-Differences with a Healthcare Application</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#introduction-2"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
+<li class="chapter" data-level="4.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#difference-in-differences-theoretical-framework"><i class="fa fa-check"></i><b>4.2</b> Difference-in-Differences: Theoretical Framework</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#core-concept"><i class="fa fa-check"></i><b>4.2.1</b> Core Concept</a></li>
+<li class="chapter" data-level="4.2.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#mathematical-formalism"><i class="fa fa-check"></i><b>4.2.2</b> Mathematical Formalism</a></li>
+<li class="chapter" data-level="4.2.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#key-assumption-parallel-trends"><i class="fa fa-check"></i><b>4.2.3</b> Key Assumption: Parallel Trends</a></li>
+<li class="chapter" data-level="4.2.4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#practical-considerations"><i class="fa fa-check"></i><b>4.2.4</b> Practical Considerations</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#application-evaluating-a-telemedicine-program-in-healthcare"><i class="fa fa-check"></i><b>4.3</b> Application: Evaluating a Telemedicine Program in Healthcare</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#scenario"><i class="fa fa-check"></i><b>4.3.1</b> Scenario</a></li>
+<li class="chapter" data-level="4.3.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#simulated-data"><i class="fa fa-check"></i><b>4.3.2</b> Simulated Data</a></li>
+<li class="chapter" data-level="4.3.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#r-implementation-2"><i class="fa fa-check"></i><b>4.3.3</b> R Implementation</a></li>
+<li class="chapter" data-level="4.3.4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#interpretation"><i class="fa fa-check"></i><b>4.3.4</b> Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#limitations-and-extensions"><i class="fa fa-check"></i><b>4.4</b> Limitations and Extensions</a></li>
+<li class="chapter" data-level="4.5" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#conclusion-2"><i class="fa fa-check"></i><b>4.5</b> Conclusion</a></li>
+<li class="chapter" data-level="4.6" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#references-2"><i class="fa fa-check"></i><b>4.6</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html"><a href="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html"><i class="fa fa-check"></i><b>5</b> Causal Inference in Practice IV: Instrumental Variables in Healthcare</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html"><a href="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html#introduction-3"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html"><a href="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html#theoretical-framework"><i class="fa fa-check"></i><b>5.2</b> Theoretical Framework</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html"><a href="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html#motivation-and-identification"><i class="fa fa-check"></i><b>5.2.1</b> Motivation and Identification</a></li>
+<li class="chapter" data-level="5.2.2" data-path="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html"><a href="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html#estimation"><i class="fa fa-check"></i><b>5.2.2</b> Estimation</a></li>
+<li class="chapter" data-level="5.2.3" data-path="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html"><a href="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html#comparison-with-other-methods"><i class="fa fa-check"></i><b>5.2.3</b> Comparison with Other Methods</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html"><a href="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html#healthcare-application-hospital-quality-and-recovery-time"><i class="fa fa-check"></i><b>5.3</b> Healthcare Application: Hospital Quality and Recovery Time</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html"><a href="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html#scenario-1"><i class="fa fa-check"></i><b>5.3.1</b> Scenario</a></li>
+<li class="chapter" data-level="5.3.2" data-path="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html"><a href="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html#assumptions"><i class="fa fa-check"></i><b>5.3.2</b> Assumptions</a></li>
+<li class="chapter" data-level="5.3.3" data-path="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html"><a href="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html#r-implementation-3"><i class="fa fa-check"></i><b>5.3.3</b> R Implementation</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html"><a href="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html#interpretation-1"><i class="fa fa-check"></i><b>5.4</b> Interpretation</a></li>
+<li class="chapter" data-level="5.5" data-path="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html"><a href="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html#limitations"><i class="fa fa-check"></i><b>5.5</b> Limitations</a></li>
+<li class="chapter" data-level="5.6" data-path="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html"><a href="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html#conclusion-3"><i class="fa fa-check"></i><b>5.6</b> Conclusion</a></li>
+<li class="chapter" data-level="5.7" data-path="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html"><a href="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html#references-3"><i class="fa fa-check"></i><b>5.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html"><i class="fa fa-check"></i><b>6</b> Causal Inference in Practice V: Regression Discontinuity Design</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#introduction-4"><i class="fa fa-check"></i><b>6.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#comparison-with-other-methods-1"><i class="fa fa-check"></i><b>6.1.1</b> Comparison with Other Methods</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#healthcare-application-icu-admission-and-mortality"><i class="fa fa-check"></i><b>6.2</b> Healthcare Application: ICU Admission and Mortality</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#scenario-2"><i class="fa fa-check"></i><b>6.2.1</b> Scenario</a></li>
+<li class="chapter" data-level="6.2.2" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#assumptions-and-validity"><i class="fa fa-check"></i><b>6.2.2</b> Assumptions and Validity</a></li>
+<li class="chapter" data-level="6.2.3" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#r-implementation-4"><i class="fa fa-check"></i><b>6.2.3</b> R Implementation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#interpretation-and-diagnostics"><i class="fa fa-check"></i><b>6.3</b> Interpretation and Diagnostics</a></li>
+<li class="chapter" data-level="6.4" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#extensions-and-robustness"><i class="fa fa-check"></i><b>6.4</b> Extensions and Robustness</a></li>
+<li class="chapter" data-level="6.5" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#limitations-and-considerations"><i class="fa fa-check"></i><b>6.5</b> Limitations and Considerations</a></li>
+<li class="chapter" data-level="6.6" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#conclusion-4"><i class="fa fa-check"></i><b>6.6</b> Conclusion</a></li>
+<li class="chapter" data-level="6.7" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#references-4"><i class="fa fa-check"></i><b>6.7</b> References</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Causal Inference in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="causal-inference-in-practice-v-regression-discontinuity-design" class="section level1 hasAnchor" number="6">
+<h1><span class="header-section-number">Chapter 6</span> Causal Inference in Practice V: Regression Discontinuity Design<a href="causal-inference-in-practice-v-regression-discontinuity-design.html#causal-inference-in-practice-v-regression-discontinuity-design" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction-4" class="section level2 hasAnchor" number="6.1">
+<h2><span class="header-section-number">6.1</span> Introduction<a href="causal-inference-in-practice-v-regression-discontinuity-design.html#introduction-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Regression Discontinuity Design (RDD) exploits arbitrary thresholds in treatment assignment to identify causal effects in observational data. Unlike other causal inference methods that rely on assumptions about unobserved confounders or parallel trends, RDD leverages the fact that treatment assignment changes discontinuously at a known cutoff point while potential outcomes vary smoothly. This creates a quasi-experimental setting where units just above and below the threshold are comparable, except for their treatment status, enabling credible causal inference even when randomized experiments are infeasible.</p>
+<p>The method proves particularly valuable in policy evaluation contexts where treatments are assigned based on arbitrary cutoffs, such as scholarship eligibility based on test scores, medical interventions based on diagnostic thresholds, or regulatory compliance based on firm size. This essay examines RDD’s theoretical foundation, mathematical framework, and practical implementation through a healthcare application estimating the causal effect of intensive care unit admission on patient mortality using simulated data in R. We explore both sharp and fuzzy designs, discuss assumption validation, and compare RDD with alternative causal inference approaches.</p>
+<p>RDD identification relies on the assumption that potential outcomes are continuous functions of a running variable at the treatment cutoff, while treatment assignment exhibits a discontinuity. Consider a running variable X with cutoff c, where treatment D = 1 if X ≥ c and D = 0 if X &lt; c. The key insight is that units with X values arbitrarily close to c are similar in all respects except treatment status, making the cutoff a source of quasi-random variation. RDD applies when treatment assignment follows a deterministic rule based on an observed running variable <span class="math inline">\(X\)</span>:</p>
+<p><span class="math display">\[
+D_i = \begin{cases}
+1 &amp; \text{if } X_i \geq c \\
+0 &amp; \text{if } X_i &lt; c
+\end{cases}
+\]</span></p>
+<p>where <span class="math inline">\(c\)</span> represents the cutoff threshold. This sharp discontinuity contrasts with fuzzy RDD, where the assignment rule creates jumps in treatment probability rather than certainty. The key insight: individuals near the cutoff are exchangeable.</p>
+<p>The RDD estimand targets the treatment effect at the cutoff:</p>
+<p><span class="math display">\[
+\tau_{RDD} = \mathbb{E}[Y_i(1) - Y_i(0) | X_i = c]
+\]</span></p>
+<p>Since we observe only one potential outcome for each unit, identification requires continuity of the conditional expectation function at the cutoff. Formally:</p>
+<p><span class="math display">\[
+\mathbb{E}[Y_i(0) | X_i = x] \text{ and } \mathbb{E}[Y_i(1) | X_i = x] \text{ are continuous at } x = c
+\]</span></p>
+<p>When this holds, the treatment effect equals the discontinuous jump in the observed outcome:</p>
+<p><span class="math display">\[
+\tau_{RDD} = \lim_{x \to c^+} \mathbb{E}[Y_i | X_i = x] - \lim_{x \to c^-} \mathbb{E}[Y_i | X_i = x]
+\]</span></p>
+<p>The identifying assumption is continuity of potential outcomes at the cutoff. Formally, for potential outcomes Y(0) and Y(1) under control and treatment, the expected values of both potential outcomes must be continuous at the cutoff point. Under this assumption, the treatment effect at the cutoff is identified by the discontinuity in the observed outcome. This local average treatment effect (LATE) applies specifically to units at the cutoff, representing the causal effect for individuals with running variable values equal to the threshold.</p>
+<p>Sharp RDD occurs when treatment assignment is a deterministic function of the running variable, with probability of treatment jumping from 0 to 1 at the cutoff. The treatment effect is estimated directly from the outcome discontinuity. Fuzzy RDD arises when treatment probability changes discontinuously but not deterministically at the cutoff, creating a first-stage relationship between the running variable and treatment assignment. Fuzzy designs require two-stage estimation similar to instrumental variables, where the cutoff serves as an instrument for treatment receipt. For fuzzy designs, the treatment effect is calculated as the ratio of the outcome discontinuity to the treatment probability discontinuity, analogous to the Wald estimator in instrumental variables estimation.</p>
+<p>RDD estimation typically employs local polynomial regression focusing on observations near the cutoff. The parametric approach fits separate polynomials on each side of the threshold, where the treatment effect is captured by the coefficient on the treatment indicator. The nonparametric approach uses local linear regression with kernel weights, estimating separate regressions on each side of the cutoff using observations within a bandwidth h of the threshold.</p>
+<p>Bandwidth selection involves a bias-variance tradeoff. Smaller bandwidths reduce bias by focusing on units most similar to those at the cutoff but increase variance due to smaller sample sizes. Optimal bandwidth selection procedures balance these considerations using cross-validation or mean squared error criteria.</p>
+<div id="comparison-with-other-methods-1" class="section level3 hasAnchor" number="6.1.1">
+<h3><span class="header-section-number">6.1.1</span> Comparison with Other Methods<a href="causal-inference-in-practice-v-regression-discontinuity-design.html#comparison-with-other-methods-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>RDD differs fundamentally from other causal inference approaches in its identification strategy and assumptions. Unlike instrumental variables, which require exogenous instruments affecting treatment but not outcomes directly, RDD uses the cutoff itself as a source of variation, requiring only continuity of potential outcomes. Compared to difference-in-differences, which relies on parallel trends assumptions and requires panel data, RDD can be applied to cross-sectional data and identifies effects through spatial rather than temporal variation.</p>
+<p>The method’s strength lies in its credibility when assignment rules are truly arbitrary and discontinuous. However, RDD provides only local identification at the cutoff, limiting external validity compared to methods estimating population-wide effects. The approach also requires sufficient observations near the threshold for precise estimation and may be sensitive to functional form misspecification in parametric implementations.</p>
+</div>
+</div>
+<div id="healthcare-application-icu-admission-and-mortality" class="section level2 hasAnchor" number="6.2">
+<h2><span class="header-section-number">6.2</span> Healthcare Application: ICU Admission and Mortality<a href="causal-inference-in-practice-v-regression-discontinuity-design.html#healthcare-application-icu-admission-and-mortality" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="scenario-2" class="section level3 hasAnchor" number="6.2.1">
+<h3><span class="header-section-number">6.2.1</span> Scenario<a href="causal-inference-in-practice-v-regression-discontinuity-design.html#scenario-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We examine the causal effect of intensive care unit admission on 30-day mortality risk for emergency department patients. Many hospitals use severity scores with specific cutoffs to guide ICU admission decisions. Patients with scores above the threshold receive intensive monitoring and treatment, while those below receive standard ward care. This creates a sharp discontinuity in treatment assignment that enables causal inference about ICU effectiveness.</p>
+<p>The running variable is the Acute Physiology and Chronic Health Evaluation (APACHE) score, with ICU admission mandated for scores of 15 or higher. The outcome is 30-day mortality, coded as 1 for death within 30 days and 0 for survival. The key assumption is that patient mortality risk varies smoothly with APACHE scores, while ICU admission probability jumps discontinuously at the cutoff.</p>
+</div>
+<div id="assumptions-and-validity" class="section level3 hasAnchor" number="6.2.2">
+<h3><span class="header-section-number">6.2.2</span> Assumptions and Validity<a href="causal-inference-in-practice-v-regression-discontinuity-design.html#assumptions-and-validity" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The primary identifying assumption requires potential outcomes to be continuous at the cutoff. This seems plausible since APACHE scores reflect underlying health status, which should vary smoothly rather than discontinuously. However, gaming or manipulation around the cutoff could violate this assumption if physicians systematically adjust scores to influence admission decisions.</p>
+<p>Several empirical tests can assess assumption validity. Density tests examine whether the running variable distribution exhibits suspicious clustering around the cutoff. Continuity tests check whether predetermined covariates show discontinuities at the threshold. Placebo tests estimate effects at false cutoffs where no treatment discontinuity exists. These diagnostics help build confidence in the design’s credibility.</p>
+</div>
+<div id="r-implementation-4" class="section level3 hasAnchor" number="6.2.3">
+<h3><span class="header-section-number">6.2.3</span> R Implementation<a href="causal-inference-in-practice-v-regression-discontinuity-design.html#r-implementation-4" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We simulate data for 2000 emergency department patients with APACHE scores ranging from 10 to 20. The true treatment effect is a 15 percentage point reduction in mortality risk for ICU patients at the cutoff. Our implementation includes both parametric and nonparametric estimation approaches.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-1" tabindex="-1"></a><span class="co"># Load required libraries</span></span>
+<span id="cb11-2"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-2" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;rdrobust&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;rdrobust&quot;</span>)</span>
+<span id="cb11-3"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-3" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;ggplot2&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;ggplot2&quot;</span>)</span>
+<span id="cb11-4"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-4" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;dplyr&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;dplyr&quot;</span>)</span>
+<span id="cb11-5"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-5" tabindex="-1"></a><span class="fu">library</span>(rdrobust)</span>
+<span id="cb11-6"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-6" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb11-7"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-7" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb11-8"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-8" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-9" tabindex="-1"></a><span class="co"># Set seed for reproducibility</span></span>
+<span id="cb11-10"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-10" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">456</span>)</span>
+<span id="cb11-11"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-11" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-12" tabindex="-1"></a><span class="co"># Simulate data</span></span>
+<span id="cb11-13"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-13" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
+<span id="cb11-14"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-14" tabindex="-1"></a>cutoff <span class="ot">&lt;-</span> <span class="dv">15</span></span>
+<span id="cb11-15"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-15" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-16" tabindex="-1"></a><span class="co"># Running variable: APACHE score (10-20)</span></span>
+<span id="cb11-17"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-17" tabindex="-1"></a>apache_score <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="dv">10</span>, <span class="dv">20</span>)</span>
+<span id="cb11-18"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-18" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-19" tabindex="-1"></a><span class="co"># Treatment: ICU admission (sharp design)</span></span>
+<span id="cb11-20"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-20" tabindex="-1"></a>icu_admission <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(apache_score <span class="sc">&gt;=</span> cutoff)</span>
+<span id="cb11-21"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-21" tabindex="-1"></a></span>
+<span id="cb11-22"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-22" tabindex="-1"></a><span class="co"># Baseline mortality risk (smooth function of APACHE score)</span></span>
+<span id="cb11-23"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-23" tabindex="-1"></a>baseline_risk <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="sc">+</span> <span class="fl">0.03</span> <span class="sc">*</span> (apache_score <span class="sc">-</span> <span class="dv">15</span>) <span class="sc">+</span> <span class="fl">0.001</span> <span class="sc">*</span> (apache_score <span class="sc">-</span> <span class="dv">15</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb11-24"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-24" tabindex="-1"></a></span>
+<span id="cb11-25"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-25" tabindex="-1"></a><span class="co"># True treatment effect: -0.15 (15 percentage point reduction)</span></span>
+<span id="cb11-26"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-26" tabindex="-1"></a>true_effect <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.15</span></span>
+<span id="cb11-27"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-27" tabindex="-1"></a>mortality_prob <span class="ot">&lt;-</span> baseline_risk <span class="sc">+</span> true_effect <span class="sc">*</span> icu_admission</span>
+<span id="cb11-28"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-28" tabindex="-1"></a></span>
+<span id="cb11-29"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-29" tabindex="-1"></a><span class="co"># Add random noise and generate binary outcome</span></span>
+<span id="cb11-30"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-30" tabindex="-1"></a>mortality_prob <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">0</span>, <span class="fu">pmin</span>(<span class="dv">1</span>, mortality_prob <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">0.05</span>)))</span>
+<span id="cb11-31"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-31" tabindex="-1"></a>mortality <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, mortality_prob)</span>
+<span id="cb11-32"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-32" tabindex="-1"></a></span>
+<span id="cb11-33"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-33" tabindex="-1"></a><span class="co"># Create dataset</span></span>
+<span id="cb11-34"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-34" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb11-35"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-35" tabindex="-1"></a>  <span class="at">apache_score =</span> apache_score,</span>
+<span id="cb11-36"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-36" tabindex="-1"></a>  <span class="at">icu_admission =</span> icu_admission,</span>
+<span id="cb11-37"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-37" tabindex="-1"></a>  <span class="at">mortality =</span> mortality,</span>
+<span id="cb11-38"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-38" tabindex="-1"></a>  <span class="at">centered_score =</span> apache_score <span class="sc">-</span> cutoff</span>
+<span id="cb11-39"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-39" tabindex="-1"></a>)</span>
+<span id="cb11-40"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-40" tabindex="-1"></a></span>
+<span id="cb11-41"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-41" tabindex="-1"></a><span class="co"># Parametric estimation with local linear regression</span></span>
+<span id="cb11-42"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-42" tabindex="-1"></a>param_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(mortality <span class="sc">~</span> icu_admission <span class="sc">+</span> centered_score <span class="sc">+</span> </span>
+<span id="cb11-43"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-43" tabindex="-1"></a>                 <span class="fu">I</span>(centered_score <span class="sc">*</span> icu_admission), <span class="at">data =</span> data)</span>
+<span id="cb11-44"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-44" tabindex="-1"></a>param_effect <span class="ot">&lt;-</span> <span class="fu">coef</span>(param_model)[<span class="st">&quot;icu_admission&quot;</span>]</span>
+<span id="cb11-45"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-45" tabindex="-1"></a>param_se <span class="ot">&lt;-</span> <span class="fu">summary</span>(param_model)<span class="sc">$</span>coefficients[<span class="st">&quot;icu_admission&quot;</span>, <span class="st">&quot;Std. Error&quot;</span>]</span>
+<span id="cb11-46"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-46" tabindex="-1"></a></span>
+<span id="cb11-47"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-47" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Parametric RDD estimate:&quot;</span>, <span class="fu">round</span>(param_effect, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb11-48"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb11-48" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Standard error:&quot;</span>, <span class="fu">round</span>(param_se, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb12-1" tabindex="-1"></a><span class="co"># Nonparametric estimation using rdrobust</span></span>
+<span id="cb12-2"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb12-2" tabindex="-1"></a>rd_result <span class="ot">&lt;-</span> <span class="fu">rdrobust</span>(<span class="at">y =</span> data<span class="sc">$</span>mortality, <span class="at">x =</span> data<span class="sc">$</span>apache_score, <span class="at">c =</span> cutoff)</span>
+<span id="cb12-3"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb12-3" tabindex="-1"></a>nonparam_effect <span class="ot">&lt;-</span> rd_result<span class="sc">$</span>coef[<span class="st">&quot;Robust&quot;</span>, ]</span>
+<span id="cb12-4"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb12-4" tabindex="-1"></a>nonparam_se <span class="ot">&lt;-</span> rd_result<span class="sc">$</span>se[<span class="st">&quot;Robust&quot;</span>, ]</span>
+<span id="cb12-5"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb12-5" tabindex="-1"></a>optimal_bandwidth <span class="ot">&lt;-</span> rd_result<span class="sc">$</span>bws[<span class="st">&quot;h&quot;</span>, <span class="st">&quot;left&quot;</span>]</span>
+<span id="cb12-6"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb12-6" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb12-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Nonparametric RDD estimate:&quot;</span>, <span class="fu">round</span>(nonparam_effect, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb12-8"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb12-8" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Robust standard error:&quot;</span>, <span class="fu">round</span>(nonparam_se, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb12-9"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb12-9" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Optimal bandwidth:&quot;</span>, <span class="fu">round</span>(optimal_bandwidth, <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb13-1" tabindex="-1"></a></span>
+<span id="cb13-2"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb13-2" tabindex="-1"></a><span class="co"># Placebo test at false cutoff</span></span>
+<span id="cb13-3"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb13-3" tabindex="-1"></a>false_cutoff <span class="ot">&lt;-</span> <span class="dv">13</span></span>
+<span id="cb13-4"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb13-4" tabindex="-1"></a>placebo_result <span class="ot">&lt;-</span> <span class="fu">rdrobust</span>(<span class="at">y =</span> data<span class="sc">$</span>mortality, <span class="at">x =</span> data<span class="sc">$</span>apache_score, <span class="at">c =</span> false_cutoff)</span>
+<span id="cb13-5"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb13-5" tabindex="-1"></a>placebo_effect <span class="ot">&lt;-</span> placebo_result<span class="sc">$</span>coef[<span class="st">&quot;Robust&quot;</span>, ]</span>
+<span id="cb13-6"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb13-6" tabindex="-1"></a>placebo_se <span class="ot">&lt;-</span> placebo_result<span class="sc">$</span>se[<span class="st">&quot;Robust&quot;</span>, ]</span>
+<span id="cb13-7"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb13-7" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb13-8" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Placebo test estimate:&quot;</span>, <span class="fu">round</span>(placebo_effect, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb13-9"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb13-9" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Placebo test p-value:&quot;</span>, <span class="fu">round</span>(<span class="dv">2</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(placebo_effect <span class="sc">/</span> placebo_se))), <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code># Visualization
+# Create prediction data for smooth curves
+pred_data &lt;- data.frame(apache_score = seq(10, 20, 0.1))
+pred_data$centered_score &lt;- pred_data$apache_score - cutoff
+pred_data$icu_admission &lt;- as.numeric(pred_data$apache_score &gt;= cutoff)
+
+# Separate models for each side
+left_model &lt;- lm(mortality ~ centered_score, data = data[data$apache_score &lt; cutoff, ])
+right_model &lt;- lm(mortality ~ centered_score, data = data[data$apache_score &gt;= cutoff, ])
+
+pred_left &lt;- predict(left_model, 
+                    newdata = pred_data[pred_data$apache_score &lt; cutoff, ],
+                    se.fit = TRUE)
+pred_right &lt;- predict(right_model, 
+                     newdata = pred_data[pred_data$apache_score &gt;= cutoff, ],
+                     se.fit = TRUE)
+
+# Combine predictions
+plot_data &lt;- data.frame(
+  apache_score = c(pred_data$apache_score[pred_data$apache_score &lt; cutoff],
+                   pred_data$apache_score[pred_data$apache_score &gt;= cutoff]),
+  predicted = c(pred_left$fit, pred_right$fit),
+  se = c(pred_left$se.fit, pred_right$se.fit),
+  side = c(rep(&quot;Control&quot;, sum(pred_data$apache_score &lt; cutoff)),
+           rep(&quot;Treatment&quot;, sum(pred_data$apache_score &gt;= cutoff)))
+)
+
+plot_data$lower &lt;- plot_data$predicted - 1.96 * plot_data$se
+plot_data$upper &lt;- plot_data$predicted + 1.96 * plot_data$se
+
+# Create binned scatter plot
+bin_data &lt;- data %&gt;%
+  mutate(bin = round(apache_score * 2) / 2) %&gt;%
+  group_by(bin) %&gt;%
+  summarise(mean_mortality = mean(mortality),
+            se_mortality = sd(mortality) / sqrt(n()),
+            .groups = &#39;drop&#39;) %&gt;%
+  filter(bin &gt;= 12 &amp; bin &lt;= 18)
+
+# Main plot
+p1 &lt;- ggplot() +
+  geom_point(data = bin_data, aes(x = bin, y = mean_mortality), 
+             alpha = 0.7, size = 2) +
+  geom_errorbar(data = bin_data, 
+                aes(x = bin, ymin = mean_mortality - 1.96 * se_mortality,
+                    ymax = mean_mortality + 1.96 * se_mortality),
+                width = 0.1, alpha = 0.7) +
+  geom_line(data = plot_data, aes(x = apache_score, y = predicted, color = side), 
+            size = 1.2) +
+  geom_ribbon(data = plot_data, 
+              aes(x = apache_score, ymin = lower, ymax = upper, fill = side),
+              alpha = 0.2) +
+  geom_vline(xintercept = cutoff, linetype = &quot;dashed&quot;, color = &quot;red&quot;, size = 1) +
+  scale_color_manual(values = c(&quot;Control&quot; = &quot;#1f77b4&quot;, &quot;Treatment&quot; = &quot;#ff7f0e&quot;)) +
+  scale_fill_manual(values = c(&quot;Control&quot; = &quot;#1f77b4&quot;, &quot;Treatment&quot; = &quot;#ff7f0e&quot;)) +
+  labs(title = &quot;RDD: Effect of ICU Admission on 30-Day Mortality&quot;,
+       x = &quot;APACHE Score&quot;, 
+       y = &quot;30-Day Mortality Rate&quot;,
+       color = &quot;Treatment Status&quot;,
+       fill = &quot;Treatment Status&quot;) +
+  theme_minimal() +
+  theme(legend.position = &quot;bottom&quot;) +
+  annotate(&quot;text&quot;, x = cutoff + 0.5, y = 0.25, 
+           label = paste(&quot;ICU Cutoff\n(Score ≥&quot;, cutoff, &quot;)&quot;), 
+           color = &quot;red&quot;, size = 3)
+
+print(p1)
+
+# Results summary
+results &lt;- data.frame(
+  Method = c(&quot;Parametric&quot;, &quot;Nonparametric&quot;, &quot;Placebo Test&quot;),
+  Estimate = c(param_effect, nonparam_effect, placebo_effect),
+  SE = c(param_se, nonparam_se, placebo_se),
+  Lower_CI = c(param_effect - 1.96 * param_se,
+               nonparam_effect - 1.96 * nonparam_se,
+               placebo_effect - 1.96 * placebo_se),
+  Upper_CI = c(param_effect + 1.96 * param_se,
+               nonparam_effect + 1.96 * nonparam_se,
+               placebo_effect + 1.96 * placebo_se)
+)
+
+print(results)
+
+# Effect size interpretation
+cat(&quot;\nInterpretation:\n&quot;)
+cat(&quot;True effect:&quot;, true_effect, &quot;(15 percentage point reduction)\n&quot;)
+cat(&quot;Parametric estimate suggests&quot;, round(abs(param_effect) * 100, 1), 
+    &quot;percentage point reduction in mortality\n&quot;)
+cat(&quot;Nonparametric estimate suggests&quot;, round(abs(nonparam_effect) * 100, 1), 
+    &quot;percentage point reduction in mortality\n&quot;)</code></pre>
+</div>
+</div>
+<div id="interpretation-and-diagnostics" class="section level2 hasAnchor" number="6.3">
+<h2><span class="header-section-number">6.3</span> Interpretation and Diagnostics<a href="causal-inference-in-practice-v-regression-discontinuity-design.html#interpretation-and-diagnostics" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The parametric and nonparametric estimates should approximate the true treatment effect of -0.15 if the design assumptions hold. The optimal bandwidth determined by the rdrobust package balances bias and variance considerations, typically including observations within 1-3 units of the cutoff. Confidence intervals reflect estimation uncertainty, with nonparametric approaches often producing wider intervals due to their flexibility. The density test examines whether the running variable distribution shows evidence of manipulation around the cutoff. A significant test statistic suggests systematic sorting that could invalidate the design. In our simulation, the p-value should exceed conventional significance levels since we generated random APACHE scores without manipulation. The placebo test estimates effects at a false cutoff where no treatment discontinuity exists. Significant placebo effects suggest that observed discontinuities may reflect underlying trends rather than treatment effects, casting doubt on the main results. Successful placebo tests show estimates close to zero with insignificant p-values. Visual inspection provides additional validation. The plot should show smooth outcome trends on both sides of the cutoff with a clear discontinuity at the threshold. Binned scatter plots help reveal the underlying relationship while reducing noise from individual observations. Suspicious patterns, such as unusual curvature near the cutoff or multiple discontinuities, warrant further investigation.</p>
+</div>
+<div id="extensions-and-robustness" class="section level2 hasAnchor" number="6.4">
+<h2><span class="header-section-number">6.4</span> Extensions and Robustness<a href="causal-inference-in-practice-v-regression-discontinuity-design.html#extensions-and-robustness" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>RDD can be extended in several directions to enhance robustness and applicability. Multiple cutoffs designs exploit variation from several thresholds to improve precision and test assumption validity across different cutoff values. Geographic regression discontinuity uses spatial boundaries as cutoffs, identifying effects of policies that vary across jurisdictions. Dynamic RDD examines how treatment effects evolve over time when cutoffs change.</p>
+<p>Robustness checks assess sensitivity to key modeling choices. Bandwidth sensitivity tests examine how estimates change across different window sizes around the cutoff. Functional form tests compare linear, quadratic, and higher-order specifications to check parametric assumptions. Donut RDD excludes observations immediately around the cutoff to test for manipulation or measurement error effects.</p>
+<p>When compliance with treatment assignment is imperfect, fuzzy RDD designs require additional assumptions similar to instrumental variables. The exclusion restriction requires that crossing the cutoff affects outcomes only through changing treatment probability, not through other channels. Monotonicity assumes that crossing the cutoff never decreases treatment probability for any individual.</p>
+</div>
+<div id="limitations-and-considerations" class="section level2 hasAnchor" number="6.5">
+<h2><span class="header-section-number">6.5</span> Limitations and Considerations<a href="causal-inference-in-practice-v-regression-discontinuity-design.html#limitations-and-considerations" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>RDD faces several important limitations that researchers must consider. The method provides only local identification at the cutoff, limiting external validity to the broader population. Treatment effects may vary systematically across the running variable distribution, making cutoff-specific estimates unrepresentative of population-wide effects. This is particularly problematic when policy interest focuses on average treatment effects rather than local effects.</p>
+<p>Sample size requirements can be substantial, especially for nonparametric approaches that rely on observations near the cutoff. Power calculations suggest that RDD typically requires 2-3 times larger samples than randomized experiments to achieve comparable precision. This constraint may limit feasibility in settings with small samples or rare outcomes.</p>
+<p>Functional form misspecification poses risks in parametric implementations. Higher-order polynomials can create spurious discontinuities through overfitting, while overly restrictive specifications may mask true effects through bias. Nonparametric approaches mitigate these concerns but require careful bandwidth selection and may suffer from boundary bias near the cutoff.</p>
+<p>The method assumes precise measurement of the running variable and knowledge of the exact cutoff value. Measurement error in the running variable can attenuate estimates, while uncertainty about cutoff locations complicates interpretation. These issues are particularly relevant in settings with multiple decision-makers or evolving assignment rules.</p>
+</div>
+<div id="conclusion-4" class="section level2 hasAnchor" number="6.6">
+<h2><span class="header-section-number">6.6</span> Conclusion<a href="causal-inference-in-practice-v-regression-discontinuity-design.html#conclusion-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Regression Discontinuity Design offers a credible approach to causal inference when treatment assignment follows arbitrary cutoff rules. The method’s strength lies in its minimal assumptions and high internal validity near the threshold, making it particularly valuable for policy evaluation in healthcare, education, and other domains with rule-based allocation mechanisms. Our healthcare application demonstrates practical implementation using both parametric and nonparametric approaches, highlighting the importance of assumption testing and robustness checks.</p>
+<p>While RDD provides only local identification and may require large samples for precise estimation, its quasi-experimental nature often makes it preferable to approaches requiring stronger assumptions about selection or confounding. The method continues to evolve through methodological advances in bandwidth selection, inference procedures, and extension to more complex designs. Future research directions include integration with machine learning methods for improved flexibility and the development of approaches for settings with fuzzy or time-varying cutoffs.</p>
+<p>Successful RDD implementation requires careful attention to institutional details, thorough assumption validation, and transparent reporting of robustness checks. When these conditions are met, the design provides compelling evidence for causal effects that can inform policy decisions and advance scientific understanding in contexts where randomized experiments remain infeasible.</p>
+</div>
+<div id="references-4" class="section level2 hasAnchor" number="6.7">
+<h2><span class="header-section-number">6.7</span> References<a href="causal-inference-in-practice-v-regression-discontinuity-design.html#references-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li>Lee, D. S., &amp; Lemieux, T. (2010). Regression discontinuity designs in economics. <em>Journal of Economic Literature</em>, 48(2), 281-355.</li>
+<li>Imbens, G., &amp; Kalyanaraman, K. (2012). Optimal bandwidth choice for the regression discontinuity estimator. <em>Review of Economic Studies</em>, 79(3), 933-959.</li>
+<li>Calonico, S., Cattaneo, M. D., &amp; Titiunik, R. (2014). Robust nonparametric confidence intervals for regression-discontinuity designs. <em>Econometrica</em>, 82(6), 2295-2326.</li>
+<li>Cattaneo, M. D., Idrobo, N., &amp; Titiunik, R. (2019). <em>A Practical Introduction to Regression Discontinuity Designs: Foundations</em>. Cambridge University Press.</li>
+</ul>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="causal-inference-in-practice-iv-instrumental-variables-in-healthcare.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/edit/main/06-RDD.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/blob/main/06-RDD.Rmd",
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
