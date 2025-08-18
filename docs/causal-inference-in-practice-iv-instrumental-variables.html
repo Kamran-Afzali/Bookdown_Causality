@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 5 Causal Inference in Practice IV: Instrumental Variables | Causal Inference in R</title>
+  <meta name="description" content="Chapter 5 Causal Inference in Practice IV: Instrumental Variables | Causal Inference in R" />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 5 Causal Inference in Practice IV: Instrumental Variables | Causal Inference in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 5 Causal Inference in Practice IV: Instrumental Variables | Causal Inference in R" />
+  
+  
+  
+
+<meta name="author" content="Kamran Afzali" />
+
+
+<meta name="date" content="2025-08-18" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"/>
+<link rel="next" href="causal-inference-in-practice-v-regression-discontinuity-design.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Causality analysis in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Foundations of Causal Statistical Analysis</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#summary-table-techniques-for-causal-statistical-analysis"><i class="fa fa-check"></i><b>1.2</b> Summary Table: Techniques for Causal Statistical Analysis</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#methodological-deep-dive-with-practical-guidance"><i class="fa fa-check"></i><b>1.3</b> Methodological Deep Dive with Practical Guidance</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#discussion"><i class="fa fa-check"></i><b>1.4</b> Discussion</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><i class="fa fa-check"></i><b>2</b> Causal Inference in Practice I: Randomized Controlled Trials and Regression Adjustment</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#randomized-controlled-trials-design-and-analysis"><i class="fa fa-check"></i><b>2.2</b> 1. Randomized Controlled Trials: Design and Analysis</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#theoretical-foundations"><i class="fa fa-check"></i><b>2.2.1</b> Theoretical Foundations</a></li>
+<li class="chapter" data-level="2.2.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation"><i class="fa fa-check"></i><b>2.2.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.2.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#model-based-inference"><i class="fa fa-check"></i><b>2.2.3</b> Model-Based Inference</a></li>
+<li class="chapter" data-level="2.2.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#diagnostics-and-integrity"><i class="fa fa-check"></i><b>2.2.4</b> Diagnostics and Integrity</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#regression-adjustment-a-model-based-approach-to-causal-inference"><i class="fa fa-check"></i><b>2.3</b> 2. Regression Adjustment: A Model-Based Approach to Causal Inference</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conceptual-overview"><i class="fa fa-check"></i><b>2.3.1</b> Conceptual Overview</a></li>
+<li class="chapter" data-level="2.3.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation-1"><i class="fa fa-check"></i><b>2.3.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.3.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#limitations-and-diagnostics"><i class="fa fa-check"></i><b>2.3.3</b> Limitations and Diagnostics</a></li>
+<li class="chapter" data-level="2.3.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#causal-interpretation"><i class="fa fa-check"></i><b>2.3.4</b> Causal Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#toward-integrated-reasoning"><i class="fa fa-check"></i><b>2.4</b> Toward Integrated Reasoning</a></li>
+<li class="chapter" data-level="2.5" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conclusion"><i class="fa fa-check"></i><b>2.5</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><i class="fa fa-check"></i><b>3</b> Causal Inference in Practice II: Propensity Scores, Doubly Robust Estimators, and Inverse Probability Weighting</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#propensity-score-methods"><i class="fa fa-check"></i><b>3.1</b> Propensity Score Methods</a></li>
+<li class="chapter" data-level="3.2" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#inverse-probability-weighting-ipw"><i class="fa fa-check"></i><b>3.2</b> Inverse Probability Weighting (IPW)</a></li>
+<li class="chapter" data-level="3.3" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#doubly-robust-estimators"><i class="fa fa-check"></i><b>3.3</b> Doubly Robust Estimators</a></li>
+<li class="chapter" data-level="3.4" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#integrative-interpretation"><i class="fa fa-check"></i><b>3.4</b> Integrative Interpretation</a></li>
+<li class="chapter" data-level="3.5" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#summary-table"><i class="fa fa-check"></i><b>3.5</b> Summary Table</a></li>
+<li class="chapter" data-level="3.6" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#conclusion-1"><i class="fa fa-check"></i><b>3.6</b> Conclusion</a></li>
+<li class="chapter" data-level="3.7" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#references-1"><i class="fa fa-check"></i><b>3.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><i class="fa fa-check"></i><b>4</b> Causal Inference in Practice III: Difference-in-Differences with a Healthcare Application</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#introduction-2"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
+<li class="chapter" data-level="4.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#difference-in-differences-theoretical-framework"><i class="fa fa-check"></i><b>4.2</b> Difference-in-Differences: Theoretical Framework</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#core-concept"><i class="fa fa-check"></i><b>4.2.1</b> Core Concept</a></li>
+<li class="chapter" data-level="4.2.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#mathematical-formalism"><i class="fa fa-check"></i><b>4.2.2</b> Mathematical Formalism</a></li>
+<li class="chapter" data-level="4.2.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#key-assumption-parallel-trends"><i class="fa fa-check"></i><b>4.2.3</b> Key Assumption: Parallel Trends</a></li>
+<li class="chapter" data-level="4.2.4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#practical-considerations"><i class="fa fa-check"></i><b>4.2.4</b> Practical Considerations</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#application-evaluating-a-telemedicine-program-in-healthcare"><i class="fa fa-check"></i><b>4.3</b> Application: Evaluating a Telemedicine Program in Healthcare</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#scenario"><i class="fa fa-check"></i><b>4.3.1</b> Scenario</a></li>
+<li class="chapter" data-level="4.3.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#simulated-data"><i class="fa fa-check"></i><b>4.3.2</b> Simulated Data</a></li>
+<li class="chapter" data-level="4.3.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#r-implementation-2"><i class="fa fa-check"></i><b>4.3.3</b> R Implementation</a></li>
+<li class="chapter" data-level="4.3.4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#interpretation"><i class="fa fa-check"></i><b>4.3.4</b> Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#limitations-and-extensions"><i class="fa fa-check"></i><b>4.4</b> Limitations and Extensions</a></li>
+<li class="chapter" data-level="4.5" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#conclusion-2"><i class="fa fa-check"></i><b>4.5</b> Conclusion</a></li>
+<li class="chapter" data-level="4.6" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#references-2"><i class="fa fa-check"></i><b>4.6</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html"><i class="fa fa-check"></i><b>5</b> Causal Inference in Practice IV: Instrumental Variables</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#introduction-3"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#healthcare-case-study-hospital-quality-and-recovery-time"><i class="fa fa-check"></i><b>5.2</b> Healthcare Case Study: Hospital Quality and Recovery Time</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#r-implementation-3"><i class="fa fa-check"></i><b>5.2.1</b> R Implementation</a></li>
+<li class="chapter" data-level="5.2.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#interpreting-the-results"><i class="fa fa-check"></i><b>5.2.2</b> Interpreting the Results</a></li>
+<li class="chapter" data-level="5.2.3" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#robustness-checks"><i class="fa fa-check"></i><b>5.2.3</b> Robustness Checks</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#practical-considerations-and-extensions"><i class="fa fa-check"></i><b>5.3</b> Practical Considerations and Extensions</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#when-to-use-iv"><i class="fa fa-check"></i><b>5.3.1</b> When to Use IV</a></li>
+<li class="chapter" data-level="5.3.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#advanced-topics"><i class="fa fa-check"></i><b>5.3.2</b> Advanced Topics</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#conclusion-3"><i class="fa fa-check"></i><b>5.4</b> Conclusion</a></li>
+<li class="chapter" data-level="5.5" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#further-reading"><i class="fa fa-check"></i><b>5.5</b> Further Reading</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html"><i class="fa fa-check"></i><b>6</b> Causal Inference in Practice V: Regression Discontinuity Design</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#introduction-4"><i class="fa fa-check"></i><b>6.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#comparison-with-other-methods"><i class="fa fa-check"></i><b>6.1.1</b> Comparison with Other Methods</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#healthcare-application-icu-admission-and-mortality"><i class="fa fa-check"></i><b>6.2</b> Healthcare Application: ICU Admission and Mortality</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#scenario-1"><i class="fa fa-check"></i><b>6.2.1</b> Scenario</a></li>
+<li class="chapter" data-level="6.2.2" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#assumptions-and-validity"><i class="fa fa-check"></i><b>6.2.2</b> Assumptions and Validity</a></li>
+<li class="chapter" data-level="6.2.3" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#r-implementation-4"><i class="fa fa-check"></i><b>6.2.3</b> R Implementation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#interpretation-and-diagnostics"><i class="fa fa-check"></i><b>6.3</b> Interpretation and Diagnostics</a></li>
+<li class="chapter" data-level="6.4" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#extensions-and-robustness"><i class="fa fa-check"></i><b>6.4</b> Extensions and Robustness</a></li>
+<li class="chapter" data-level="6.5" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#limitations-and-considerations"><i class="fa fa-check"></i><b>6.5</b> Limitations and Considerations</a></li>
+<li class="chapter" data-level="6.6" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#conclusion-4"><i class="fa fa-check"></i><b>6.6</b> Conclusion</a></li>
+<li class="chapter" data-level="6.7" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#references-3"><i class="fa fa-check"></i><b>6.7</b> References</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Causal Inference in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="causal-inference-in-practice-iv-instrumental-variables" class="section level1 hasAnchor" number="5">
+<h1><span class="header-section-number">Chapter 5</span> Causal Inference in Practice IV: Instrumental Variables<a href="causal-inference-in-practice-iv-instrumental-variables.html#causal-inference-in-practice-iv-instrumental-variables" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction-3" class="section level2 hasAnchor" number="5.1">
+<h2><span class="header-section-number">5.1</span> Introduction<a href="causal-inference-in-practice-iv-instrumental-variables.html#introduction-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Imagine you’re a healthcare researcher trying to determine whether expensive, high-quality hospitals actually improve patient outcomes. The challenge? Patients don’t randomly choose hospitals—wealthier, more health-conscious patients often select premium facilities, making it nearly impossible to separate the hospital’s effect from patient characteristics you can’t measure.</p>
+<p>This is the fundamental problem of <strong>unmeasured confounding</strong> in observational studies. While methods like propensity score matching or Difference-in-Differences address specific scenarios, they rely on strong assumptions that often don’t hold when key confounders remain hidden. Instrumental Variables (IV) estimation offers a clever solution: it leverages exogenous variation—changes that occur “by chance” rather than by choice—to estimate causal effects even when important confounders are unmeasured.</p>
+<p>This guide explores IV methodology through a practical healthcare example: estimating how hospital quality affects patient recovery time. We’ll implement the method in R, verify key assumptions, and compare results with simpler approaches. By the end, you’ll understand when and how to apply IV estimation in your own research.</p>
+<p>Think of instrumental variables as nature’s randomized experiment. While we can’t randomly assign patients to hospitals, we can exploit factors that create “as good as random” variation in hospital choice. The key insight: if we find something that influences treatment assignment but doesn’t directly affect outcomes, we can use it to isolate the causal effect we’re interested in.</p>
+<p>Consider geographic proximity to high-quality hospitals. Patients living closer are more likely to choose these facilities, but distance itself shouldn’t affect recovery (assuming we control for other factors). This creates the variation we need for causal identification.</p>
+<p>A valid instrument must satisfy three critical conditions:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Relevance (Instrument affects treatment)</strong>: The instrument must meaningfully influence treatment assignment
+<ul>
+<li><em>Mathematical condition</em>: <span class="math inline">\(\text{Cov}(Z, D) \neq 0\)</span></li>
+<li><em>Practical test</em>: First-stage F-statistic &gt; 10</li>
+<li><em>Example</em>: Distance to high-quality hospital affects hospital choice</li>
+</ul></li>
+<li><strong>Exclusion Restriction (Instrument affects outcome only through treatment)</strong>: The instrument cannot have direct pathways to the outcome
+<ul>
+<li><em>Mathematical condition</em>: <span class="math inline">\(Y = f(D, X, \varepsilon)\)</span> with <span class="math inline">\(Z \notin f\)</span></li>
+<li><em>Practical consideration</em>: Requires subject matter expertise and careful reasoning</li>
+<li><em>Example</em>: Distance affects recovery only by influencing hospital choice, not through other channels</li>
+</ul></li>
+<li><strong>Independence (Instrument is exogenous)</strong>: The instrument must be uncorrelated with unmeasured confounders
+<ul>
+<li><em>Mathematical condition</em>: <span class="math inline">\(Z \perp \{Y(1), Y(0)\} \mid X\)</span></li>
+<li><em>Practical consideration</em>: Often the most challenging assumption to defend</li>
+<li><em>Example</em>: After controlling for observables, distance is unrelated to patient health consciousness</li>
+</ul></li>
+</ol>
+<p>Unlike randomized trials that estimate population-wide effects, IV identifies the <strong>Local Average Treatment Effect</strong>—the causal effect for “compliers,” individuals whose treatment status is influenced by the instrument. This is both a strength (we get unbiased causal estimates) and a limitation (results may not generalize to the full population).</p>
+<p>For binary instruments and treatments, the IV estimand is elegantly simple:</p>
+<p><span class="math display">\[\widehat{\text{LATE}} = \frac{\mathbb{E}[Y \mid Z = 1] - \mathbb{E}[Y \mid Z = 0]}{\mathbb{E}[D \mid Z = 1] - \mathbb{E}[D \mid Z = 0]}\]</span></p>
+<p>This ratio scales the “reduced-form” effect (instrument → outcome) by the “first-stage” effect (instrument → treatment). The intuition: we divide the total effect of the instrument on outcomes by how much the instrument changes treatment uptake.</p>
+<p>When dealing with continuous variables or multiple covariates, we use Two-Stage Least Squares (2SLS):</p>
+<p><strong>First Stage</strong>: Predict treatment using the instrument and controls
+<span class="math display">\[D_i = \pi_0 + \pi_1 Z_i + \pi_2^\top X_i + \nu_i\]</span></p>
+<p><strong>Second Stage</strong>: Use predicted treatment values to estimate the causal effect
+<span class="math display">\[Y_i = \alpha_0 + \alpha_1 \hat{D}_i + \alpha_2^\top X_i + \varepsilon_i\]</span></p>
+<p>The coefficient <span class="math inline">\(\alpha_1\)</span> provides our LATE estimate, robust to unmeasured confounding under valid IV assumptions.</p>
+<table>
+<colgroup>
+<col width="12%" />
+<col width="19%" />
+<col width="29%" />
+<col width="17%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Assumption</th>
+<th>Effect Estimated</th>
+<th>Strengths</th>
+<th>Limitations</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>IV</strong></td>
+<td>Valid instrument</td>
+<td>LATE (compliers only)</td>
+<td>Handles unmeasured confounding</td>
+<td>Requires strong instrument; limited generalizability</td>
+</tr>
+<tr class="even">
+<td><strong>Propensity Scores</strong></td>
+<td>Conditional ignorability</td>
+<td>ATE/ATT</td>
+<td>Intuitive; broad applicability</td>
+<td>Assumes all confounders observed</td>
+</tr>
+<tr class="odd">
+<td><strong>Difference-in-Differences</strong></td>
+<td>Parallel trends</td>
+<td>ATT</td>
+<td>Natural experiments</td>
+<td>Time-varying confounding issues</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="healthcare-case-study-hospital-quality-and-recovery-time" class="section level2 hasAnchor" number="5.2">
+<h2><span class="header-section-number">5.2</span> Healthcare Case Study: Hospital Quality and Recovery Time<a href="causal-inference-in-practice-iv-instrumental-variables.html#healthcare-case-study-hospital-quality-and-recovery-time" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong>Objective</strong>: Estimate the causal effect of hospital quality on post-surgical recovery time</p>
+<p><strong>Treatment</strong>: <span class="math inline">\(D_i = 1\)</span> for high-quality hospitals, <span class="math inline">\(D_i = 0\)</span> for standard hospitals<br />
+<strong>Outcome</strong>: <span class="math inline">\(Y_i\)</span> = recovery time in days (lower is better)<br />
+<strong>Instrument</strong>: <span class="math inline">\(Z_i = 1\)</span> if patient lives within 10 miles of a high-quality hospital</p>
+<p><strong>The Confounding Problem</strong>: Patients choosing high-quality hospitals may differ systematically in unmeasured ways (health consciousness, social support, etc.) that also affect recovery.</p>
+<ul>
+<li><strong>Assumption Verification</strong></li>
+</ul>
+<p><strong>Relevance</strong>: We expect proximity to strongly predict hospital choice. Patients prefer nearby facilities due to convenience, familiarity, and reduced travel burden.</p>
+<p><strong>Exclusion Restriction</strong>: Distance affects recovery only through hospital choice, not via:
+- Local healthcare infrastructure quality
+- Air quality or environmental factors
+- Socioeconomic clustering (controlled for through observables)</p>
+<p><strong>Independence</strong>: After controlling for income, education, and urban/rural status, proximity should be uncorrelated with unmeasured health behaviors.</p>
+<div id="r-implementation-3" class="section level3 hasAnchor" number="5.2.1">
+<h3><span class="header-section-number">5.2.1</span> R Implementation<a href="causal-inference-in-practice-iv-instrumental-variables.html#r-implementation-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Let’s implement IV estimation with simulated data that mirrors real-world healthcare scenarios:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-1" tabindex="-1"></a><span class="co"># Load required packages</span></span>
+<span id="cb10-2"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-2" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;AER&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;AER&quot;</span>)</span>
+<span id="cb10-3"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-3" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;ggplot2&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;ggplot2&quot;</span>)</span>
+<span id="cb10-4"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-4" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;dplyr&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;dplyr&quot;</span>)</span>
+<span id="cb10-5"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-5" tabindex="-1"></a><span class="fu">library</span>(AER)</span>
+<span id="cb10-6"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-6" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb10-7"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-7" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb10-8"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-8" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-9" tabindex="-1"></a><span class="co"># Set parameters for reproducible simulation</span></span>
+<span id="cb10-10"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-10" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb10-11"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-11" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1000</span>  <span class="co"># Sample size</span></span>
+<span id="cb10-12"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-12" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="dv">5</span>     <span class="co"># Number of covariates</span></span>
+<span id="cb10-13"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-13" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-14" tabindex="-1"></a><span class="co"># Generate realistic patient characteristics</span></span>
+<span id="cb10-15"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-15" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> p), <span class="at">nrow =</span> n)</span>
+<span id="cb10-16"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-16" tabindex="-1"></a><span class="fu">colnames</span>(X) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;income&quot;</span>, <span class="st">&quot;education&quot;</span>, <span class="st">&quot;comorbidities&quot;</span>, <span class="st">&quot;urban&quot;</span>)</span>
+<span id="cb10-17"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-17" tabindex="-1"></a></span>
+<span id="cb10-18"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-18" tabindex="-1"></a><span class="co"># Instrument: Geographic proximity (exogenous after controlling for observables)</span></span>
+<span id="cb10-19"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-19" tabindex="-1"></a>proximity_prob <span class="ot">&lt;-</span> <span class="fu">plogis</span>(<span class="sc">-</span><span class="fl">0.5</span> <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> X[, <span class="st">&quot;urban&quot;</span>] <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> X[, <span class="st">&quot;income&quot;</span>])</span>
+<span id="cb10-20"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-20" tabindex="-1"></a>Z <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, proximity_prob)</span>
+<span id="cb10-21"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-21" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-22" tabindex="-1"></a><span class="co"># Treatment: Hospital choice (influenced by proximity and patient characteristics)</span></span>
+<span id="cb10-23"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-23" tabindex="-1"></a><span class="co"># Strong first stage ensures instrument relevance</span></span>
+<span id="cb10-24"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-24" tabindex="-1"></a>hospital_choice_prob <span class="ot">&lt;-</span> <span class="fu">plogis</span>(<span class="sc">-</span><span class="fl">0.5</span> <span class="sc">+</span> <span class="fl">1.2</span> <span class="sc">*</span> Z <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> X[, <span class="st">&quot;income&quot;</span>] <span class="sc">+</span> </span>
+<span id="cb10-25"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-25" tabindex="-1"></a>                               <span class="fl">0.2</span> <span class="sc">*</span> X[, <span class="st">&quot;education&quot;</span>] <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> X[, <span class="st">&quot;urban&quot;</span>])</span>
+<span id="cb10-26"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-26" tabindex="-1"></a>D <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, hospital_choice_prob)</span>
+<span id="cb10-27"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-27" tabindex="-1"></a></span>
+<span id="cb10-28"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-28" tabindex="-1"></a><span class="co"># Outcome: Recovery time with unmeasured confounding</span></span>
+<span id="cb10-29"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-29" tabindex="-1"></a><span class="co"># Unmeasured confounder: health consciousness (affects both hospital choice and recovery)</span></span>
+<span id="cb10-30"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-30" tabindex="-1"></a>health_consciousness <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="fl">0.2</span> <span class="sc">*</span> X[, <span class="st">&quot;education&quot;</span>] <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> X[, <span class="st">&quot;income&quot;</span>])</span>
+<span id="cb10-31"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-31" tabindex="-1"></a></span>
+<span id="cb10-32"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-32" tabindex="-1"></a><span class="co"># True causal effect: -4 days for high-quality hospitals</span></span>
+<span id="cb10-33"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-33" tabindex="-1"></a>true_late <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">4</span></span>
+<span id="cb10-34"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-34" tabindex="-1"></a>recovery_time <span class="ot">&lt;-</span> <span class="dv">25</span> <span class="sc">+</span> true_late <span class="sc">*</span> D <span class="sc">+</span> </span>
+<span id="cb10-35"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-35" tabindex="-1"></a>                 <span class="dv">2</span> <span class="sc">*</span> X[, <span class="st">&quot;age&quot;</span>] <span class="sc">+</span> </span>
+<span id="cb10-36"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-36" tabindex="-1"></a>                 <span class="fl">1.5</span> <span class="sc">*</span> X[, <span class="st">&quot;comorbidities&quot;</span>] <span class="sc">+</span> </span>
+<span id="cb10-37"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-37" tabindex="-1"></a>                 <span class="dv">2</span> <span class="sc">*</span> health_consciousness <span class="sc">+</span>  <span class="co"># Unmeasured confounder</span></span>
+<span id="cb10-38"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-38" tabindex="-1"></a>                 <span class="fu">rnorm</span>(n, <span class="at">sd =</span> <span class="dv">3</span>)</span>
+<span id="cb10-39"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-39" tabindex="-1"></a></span>
+<span id="cb10-40"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-40" tabindex="-1"></a><span class="co"># Create analysis dataset</span></span>
+<span id="cb10-41"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-41" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb10-42"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-42" tabindex="-1"></a>  <span class="at">recovery_time =</span> recovery_time,</span>
+<span id="cb10-43"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-43" tabindex="-1"></a>  <span class="at">hospital_quality =</span> D,</span>
+<span id="cb10-44"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-44" tabindex="-1"></a>  <span class="at">proximity =</span> Z,</span>
+<span id="cb10-45"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-45" tabindex="-1"></a>  <span class="at">age =</span> X[, <span class="st">&quot;age&quot;</span>],</span>
+<span id="cb10-46"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-46" tabindex="-1"></a>  <span class="at">income =</span> X[, <span class="st">&quot;income&quot;</span>],</span>
+<span id="cb10-47"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-47" tabindex="-1"></a>  <span class="at">education =</span> X[, <span class="st">&quot;education&quot;</span>],</span>
+<span id="cb10-48"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-48" tabindex="-1"></a>  <span class="at">comorbidities =</span> X[, <span class="st">&quot;comorbidities&quot;</span>],</span>
+<span id="cb10-49"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-49" tabindex="-1"></a>  <span class="at">urban =</span> X[, <span class="st">&quot;urban&quot;</span>]</span>
+<span id="cb10-50"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-50" tabindex="-1"></a>)</span>
+<span id="cb10-51"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-51" tabindex="-1"></a></span>
+<span id="cb10-52"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-52" tabindex="-1"></a><span class="co"># Step 1: Check instrument relevance (First Stage)</span></span>
+<span id="cb10-53"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-53" tabindex="-1"></a>first_stage <span class="ot">&lt;-</span> <span class="fu">lm</span>(hospital_quality <span class="sc">~</span> proximity <span class="sc">+</span> age <span class="sc">+</span> income <span class="sc">+</span> education <span class="sc">+</span> </span>
+<span id="cb10-54"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-54" tabindex="-1"></a>                  comorbidities <span class="sc">+</span> urban, <span class="at">data =</span> data)</span>
+<span id="cb10-55"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-55" tabindex="-1"></a>first_stage_summary <span class="ot">&lt;-</span> <span class="fu">summary</span>(first_stage)</span>
+<span id="cb10-56"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-56" tabindex="-1"></a>f_stat <span class="ot">&lt;-</span> first_stage_summary<span class="sc">$</span>fstatistic[<span class="dv">1</span>]</span>
+<span id="cb10-57"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-57" tabindex="-1"></a></span>
+<span id="cb10-58"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb10-58" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;=== FIRST STAGE DIAGNOSTICS ===</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## === FIRST STAGE DIAGNOSTICS ===</code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb12-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;First-stage F-statistic:&quot;</span>, <span class="fu">round</span>(f_stat, <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## First-stage F-statistic: 19.19</code></pre>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb14-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Rule of thumb: F &gt; 10 indicates strong instrument</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Rule of thumb: F &gt; 10 indicates strong instrument</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb16-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Proximity coefficient:&quot;</span>, <span class="fu">round</span>(<span class="fu">coef</span>(first_stage)[<span class="st">&quot;proximity&quot;</span>], <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Proximity coefficient: 0.241</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb18-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;P-value:&quot;</span>, <span class="fu">round</span>(<span class="fu">coef</span>(first_stage_summary)[<span class="st">&quot;proximity&quot;</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>], <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## P-value: 0</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb20-1" tabindex="-1"></a><span class="co"># Step 2: Two-Stage Least Squares estimation</span></span>
+<span id="cb20-2"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb20-2" tabindex="-1"></a>iv_model <span class="ot">&lt;-</span> <span class="fu">ivreg</span>(recovery_time <span class="sc">~</span> hospital_quality <span class="sc">+</span> age <span class="sc">+</span> income <span class="sc">+</span> education <span class="sc">+</span> </span>
+<span id="cb20-3"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb20-3" tabindex="-1"></a>                  comorbidities <span class="sc">+</span> urban <span class="sc">|</span> proximity <span class="sc">+</span> age <span class="sc">+</span> income <span class="sc">+</span> education <span class="sc">+</span> </span>
+<span id="cb20-4"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb20-4" tabindex="-1"></a>                  comorbidities <span class="sc">+</span> urban, <span class="at">data =</span> data)</span>
+<span id="cb20-5"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb20-5" tabindex="-1"></a>iv_summary <span class="ot">&lt;-</span> <span class="fu">summary</span>(iv_model)</span>
+<span id="cb20-6"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb20-6" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb20-7" tabindex="-1"></a><span class="co"># Step 3: Wald estimator (simple version without covariates)</span></span>
+<span id="cb20-8"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb20-8" tabindex="-1"></a>reduced_form <span class="ot">&lt;-</span> <span class="fu">lm</span>(recovery_time <span class="sc">~</span> proximity, <span class="at">data =</span> data)</span>
+<span id="cb20-9"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb20-9" tabindex="-1"></a>first_stage_simple <span class="ot">&lt;-</span> <span class="fu">lm</span>(hospital_quality <span class="sc">~</span> proximity, <span class="at">data =</span> data)</span>
+<span id="cb20-10"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb20-10" tabindex="-1"></a>wald_estimate <span class="ot">&lt;-</span> <span class="fu">coef</span>(reduced_form)[<span class="st">&quot;proximity&quot;</span>] <span class="sc">/</span> <span class="fu">coef</span>(first_stage_simple)[<span class="st">&quot;proximity&quot;</span>]</span>
+<span id="cb20-11"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb20-11" tabindex="-1"></a></span>
+<span id="cb20-12"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb20-12" tabindex="-1"></a><span class="co"># Step 4: Naive OLS (biased due to unmeasured confounding)</span></span>
+<span id="cb20-13"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb20-13" tabindex="-1"></a>ols_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(recovery_time <span class="sc">~</span> hospital_quality <span class="sc">+</span> age <span class="sc">+</span> income <span class="sc">+</span> education <span class="sc">+</span> </span>
+<span id="cb20-14"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb20-14" tabindex="-1"></a>                comorbidities <span class="sc">+</span> urban, <span class="at">data =</span> data)</span>
+<span id="cb20-15"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb20-15" tabindex="-1"></a></span>
+<span id="cb20-16"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb20-16" tabindex="-1"></a><span class="co"># Display results</span></span>
+<span id="cb20-17"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb20-17" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;=== ESTIMATION RESULTS ===</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## === ESTIMATION RESULTS ===</code></pre>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb22-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;True LATE (simulation parameter):&quot;</span>, true_late, <span class="st">&quot;days</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## True LATE (simulation parameter): -4 days</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb24-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;2SLS estimate:&quot;</span>, <span class="fu">round</span>(<span class="fu">coef</span>(iv_summary)[<span class="st">&quot;hospital_quality&quot;</span>, <span class="st">&quot;Estimate&quot;</span>], <span class="dv">2</span>), <span class="st">&quot;days</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 2SLS estimate: -4.78 days</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb26-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;2SLS standard error:&quot;</span>, <span class="fu">round</span>(<span class="fu">coef</span>(iv_summary)[<span class="st">&quot;hospital_quality&quot;</span>, <span class="st">&quot;Std. Error&quot;</span>], <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 2SLS standard error: 1.01</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb28-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Wald estimate:&quot;</span>, <span class="fu">round</span>(wald_estimate, <span class="dv">2</span>), <span class="st">&quot;days</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Wald estimate: -4.53 days</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb30-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Naive OLS estimate:&quot;</span>, <span class="fu">round</span>(<span class="fu">coef</span>(ols_model)[<span class="st">&quot;hospital_quality&quot;</span>], <span class="dv">2</span>), <span class="st">&quot;days</span><span class="sc">\n\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Naive OLS estimate: -3.83 days</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-1" tabindex="-1"></a><span class="co"># Create visualization</span></span>
+<span id="cb32-2"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-2" tabindex="-1"></a>estimates_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb32-3"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-3" tabindex="-1"></a>  <span class="at">Method =</span> <span class="fu">c</span>(<span class="st">&quot;2SLS&quot;</span>, <span class="st">&quot;Wald&quot;</span>, <span class="st">&quot;OLS&quot;</span>, <span class="st">&quot;True LATE&quot;</span>),</span>
+<span id="cb32-4"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-4" tabindex="-1"></a>  <span class="at">Estimate =</span> <span class="fu">c</span>(</span>
+<span id="cb32-5"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-5" tabindex="-1"></a>    <span class="fu">coef</span>(iv_summary)[<span class="st">&quot;hospital_quality&quot;</span>, <span class="st">&quot;Estimate&quot;</span>],</span>
+<span id="cb32-6"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-6" tabindex="-1"></a>    wald_estimate,</span>
+<span id="cb32-7"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-7" tabindex="-1"></a>    <span class="fu">coef</span>(ols_model)[<span class="st">&quot;hospital_quality&quot;</span>],</span>
+<span id="cb32-8"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-8" tabindex="-1"></a>    true_late</span>
+<span id="cb32-9"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-9" tabindex="-1"></a>  ),</span>
+<span id="cb32-10"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-10" tabindex="-1"></a>  <span class="at">SE =</span> <span class="fu">c</span>(</span>
+<span id="cb32-11"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-11" tabindex="-1"></a>    <span class="fu">coef</span>(iv_summary)[<span class="st">&quot;hospital_quality&quot;</span>, <span class="st">&quot;Std. Error&quot;</span>],</span>
+<span id="cb32-12"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-12" tabindex="-1"></a>    <span class="cn">NA</span>,</span>
+<span id="cb32-13"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-13" tabindex="-1"></a>    <span class="fu">summary</span>(ols_model)<span class="sc">$</span>coefficients[<span class="st">&quot;hospital_quality&quot;</span>, <span class="st">&quot;Std. Error&quot;</span>],</span>
+<span id="cb32-14"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-14" tabindex="-1"></a>    <span class="cn">NA</span></span>
+<span id="cb32-15"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-15" tabindex="-1"></a>  )</span>
+<span id="cb32-16"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-16" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb32-17"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-17" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb32-18"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-18" tabindex="-1"></a>    <span class="at">Lower =</span> Estimate <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> SE,</span>
+<span id="cb32-19"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-19" tabindex="-1"></a>    <span class="at">Upper =</span> Estimate <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> SE,</span>
+<span id="cb32-20"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-20" tabindex="-1"></a>    <span class="at">Color =</span> <span class="fu">case_when</span>(</span>
+<span id="cb32-21"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-21" tabindex="-1"></a>      Method <span class="sc">==</span> <span class="st">&quot;True LATE&quot;</span> <span class="sc">~</span> <span class="st">&quot;Truth&quot;</span>,</span>
+<span id="cb32-22"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-22" tabindex="-1"></a>      Method <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;2SLS&quot;</span>, <span class="st">&quot;Wald&quot;</span>) <span class="sc">~</span> <span class="st">&quot;IV Methods&quot;</span>,</span>
+<span id="cb32-23"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-23" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;Biased&quot;</span></span>
+<span id="cb32-24"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-24" tabindex="-1"></a>    )</span>
+<span id="cb32-25"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-25" tabindex="-1"></a>  )</span>
+<span id="cb32-26"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-26" tabindex="-1"></a></span>
+<span id="cb32-27"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-27" tabindex="-1"></a><span class="co"># Enhanced visualization</span></span>
+<span id="cb32-28"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-28" tabindex="-1"></a><span class="fu">ggplot</span>(estimates_df, <span class="fu">aes</span>(<span class="at">x =</span> Method, <span class="at">y =</span> Estimate, <span class="at">fill =</span> Color)) <span class="sc">+</span></span>
+<span id="cb32-29"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-29" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">width =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb32-30"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-30" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> Lower, <span class="at">ymax =</span> Upper), <span class="at">width =</span> <span class="fl">0.2</span>, </span>
+<span id="cb32-31"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-31" tabindex="-1"></a>                <span class="at">color =</span> <span class="st">&quot;black&quot;</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb32-32"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-32" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> true_late, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, </span>
+<span id="cb32-33"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-33" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">&quot;red&quot;</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb32-34"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-34" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;IV Methods&quot;</span> <span class="ot">=</span> <span class="st">&quot;#2E86AB&quot;</span>, </span>
+<span id="cb32-35"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-35" tabindex="-1"></a>                               <span class="st">&quot;Biased&quot;</span> <span class="ot">=</span> <span class="st">&quot;#A23B72&quot;</span>, </span>
+<span id="cb32-36"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-36" tabindex="-1"></a>                               <span class="st">&quot;Truth&quot;</span> <span class="ot">=</span> <span class="st">&quot;#F18F01&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb32-37"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-37" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb32-38"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-38" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Hospital Quality Effect on Recovery Time&quot;</span>,</span>
+<span id="cb32-39"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-39" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">&quot;Comparison of estimation methods with 95% confidence intervals&quot;</span>,</span>
+<span id="cb32-40"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-40" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Effect on Recovery Time (Days)&quot;</span>,</span>
+<span id="cb32-41"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-41" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Estimation Method&quot;</span>,</span>
+<span id="cb32-42"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-42" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">&quot;Method Type&quot;</span>,</span>
+<span id="cb32-43"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-43" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">&quot;Dashed line shows true causal effect&quot;</span></span>
+<span id="cb32-44"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-44" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb32-45"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-45" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb32-46"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-46" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb32-47"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-47" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb32-48"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-48" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb32-49"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-49" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span></span>
+<span id="cb32-50"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb32-50" tabindex="-1"></a>  )</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+</div>
+<div id="interpreting-the-results" class="section level3 hasAnchor" number="5.2.2">
+<h3><span class="header-section-number">5.2.2</span> Interpreting the Results<a href="causal-inference-in-practice-iv-instrumental-variables.html#interpreting-the-results" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>First-Stage Strength</strong>: The F-statistic tests instrument relevance. Values above 10 indicate a strong instrument; above 20 is considered very strong. Weak instruments (F &lt; 10) lead to biased and imprecise estimates.</p>
+<p><strong>Estimate Comparison</strong>: In our simulation:
+- <strong>2SLS</strong> should recover the true LATE (-4 days) with appropriate uncertainty
+- <strong>Wald estimator</strong> provides similar point estimates but may be less precise without covariate adjustment
+- <strong>Naive OLS</strong> typically shows bias toward zero due to unmeasured confounding</p>
+<p>The 2SLS coefficient represents the LATE: the expected reduction in recovery time for patients whose hospital choice is influenced by proximity. This effect applies specifically to “compliers”—patients who would choose high-quality hospitals when living nearby but standard hospitals when living far away.</p>
+<p>Confidence intervals reflect estimation uncertainty. Wide intervals may indicate weak instruments, small sample sizes, or high outcome variability.</p>
+<ul>
+<li><strong>Common Threats to Validity</strong></li>
+</ul>
+<ol style="list-style-type: decimal">
+<li><p><strong>Weak Instruments</strong>: Low first-stage F-statistics indicate insufficient variation in treatment driven by the instrument</p></li>
+<li><p><strong>Exclusion Restriction Violations</strong>: Distance might affect recovery through:</p>
+<ul>
+<li>Proximity to other medical facilities</li>
+<li>Socioeconomic sorting by geography</li>
+<li>Environmental factors correlated with location</li>
+</ul></li>
+<li><p><strong>Independence Violations</strong>: Systematic differences between near/far patients in unmeasured characteristics</p></li>
+</ol>
+</div>
+<div id="robustness-checks" class="section level3 hasAnchor" number="5.2.3">
+<h3><span class="header-section-number">5.2.3</span> Robustness Checks<a href="causal-inference-in-practice-iv-instrumental-variables.html#robustness-checks" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb33-1" tabindex="-1"></a><span class="co"># Additional diagnostic: Examine balance on observables</span></span>
+<span id="cb33-2"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb33-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;=== BALANCE CHECK ===</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## === BALANCE CHECK ===</code></pre>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb35-1" tabindex="-1"></a>balance_test <span class="ot">&lt;-</span> <span class="fu">t.test</span>(data<span class="sc">$</span>income[data<span class="sc">$</span>proximity <span class="sc">==</span> <span class="dv">1</span>], </span>
+<span id="cb35-2"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb35-2" tabindex="-1"></a>                      data<span class="sc">$</span>income[data<span class="sc">$</span>proximity <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb35-3"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb35-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Income difference by proximity (p-value):&quot;</span>, <span class="fu">round</span>(balance_test<span class="sc">$</span>p.value, <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Income difference by proximity (p-value): 0</code></pre>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb37-1" tabindex="-1"></a><span class="co"># Examine complier population size</span></span>
+<span id="cb37-2"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb37-2" tabindex="-1"></a>complier_share <span class="ot">&lt;-</span> (<span class="fu">mean</span>(data<span class="sc">$</span>hospital_quality[data<span class="sc">$</span>proximity <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> </span>
+<span id="cb37-3"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb37-3" tabindex="-1"></a>                   <span class="fu">mean</span>(data<span class="sc">$</span>hospital_quality[data<span class="sc">$</span>proximity <span class="sc">==</span> <span class="dv">0</span>]))</span>
+<span id="cb37-4"><a href="causal-inference-in-practice-iv-instrumental-variables.html#cb37-4" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Estimated complier share:&quot;</span>, <span class="fu">round</span>(complier_share <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>), <span class="st">&quot;%</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Estimated complier share: 26.7 %</code></pre>
+</div>
+</div>
+<div id="practical-considerations-and-extensions" class="section level2 hasAnchor" number="5.3">
+<h2><span class="header-section-number">5.3</span> Practical Considerations and Extensions<a href="causal-inference-in-practice-iv-instrumental-variables.html#practical-considerations-and-extensions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="when-to-use-iv" class="section level3 hasAnchor" number="5.3.1">
+<h3><span class="header-section-number">5.3.1</span> When to Use IV<a href="causal-inference-in-practice-iv-instrumental-variables.html#when-to-use-iv" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Ideal scenarios</strong>:
+- Strong theoretical justification for instrument validity
+- Unmeasured confounding is suspected
+- Natural experiments or policy discontinuities create exogenous variation</p>
+<p><strong>Proceed with caution when</strong>:
+- Instruments are weak (F &lt; 10)
+- Exclusion restriction is questionable
+- Treatment effects are highly heterogeneous</p>
+</div>
+<div id="advanced-topics" class="section level3 hasAnchor" number="5.3.2">
+<h3><span class="header-section-number">5.3.2</span> Advanced Topics<a href="causal-inference-in-practice-iv-instrumental-variables.html#advanced-topics" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><strong>Multiple instruments</strong>: Hansen J-test for overidentification</li>
+<li><strong>Continuous treatments</strong>: Linear IV models with interpretation caveats</li>
+<li><strong>Machine learning</strong>: Regularized IV with many instruments</li>
+<li><strong>Heterogeneous effects</strong>: Marginal Treatment Effects framework</li>
+</ul>
+</div>
+</div>
+<div id="conclusion-3" class="section level2 hasAnchor" number="5.4">
+<h2><span class="header-section-number">5.4</span> Conclusion<a href="causal-inference-in-practice-iv-instrumental-variables.html#conclusion-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Instrumental Variables estimation provides a powerful approach for causal inference when unmeasured confounding threatens validity. Through our healthcare example, we’ve seen how geographic proximity can serve as an instrument to estimate hospital quality effects on recovery time.</p>
+<p>The method’s strength lies in its ability to handle hidden bias, but this comes with important trade-offs: the need for valid instruments and interpretation limited to complier populations. Success depends critically on careful instrument selection, thorough assumption verification, and honest assessment of potential violations.</p>
+<p>When applied thoughtfully with domain expertise, IV estimation can reveal causal relationships that would otherwise remain hidden in observational data, making it an invaluable tool for researchers tackling complex real-world questions.</p>
+</div>
+<div id="further-reading" class="section level2 hasAnchor" number="5.5">
+<h2><span class="header-section-number">5.5</span> Further Reading<a href="causal-inference-in-practice-iv-instrumental-variables.html#further-reading" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li>Angrist, J. D., &amp; Pischke, J.-S. (2009). <em>Mostly Harmless Econometrics: An Empiricist’s Companion</em>. Princeton University Press.</li>
+<li>Hernán, M. A., &amp; Robins, J. M. (2020). <em>Causal Inference: What If</em>. Chapman &amp; Hall/CRC.</li>
+<li>Imbens, G. W., &amp; Rubin, D. B. (2015). <em>Causal Inference for Statistics, Social, and Biomedical Sciences</em>. Cambridge University Press.</li>
+</ul>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="causal-inference-in-practice-v-regression-discontinuity-design.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/edit/main/05-IV.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/blob/main/05-IV.Rmd",
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
