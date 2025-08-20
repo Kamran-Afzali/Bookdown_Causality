@@ -64,3 +64,14 @@ extensions-and-robustness
 limitations-and-considerations
 conclusion-4
 references-3
+causal-inference-in-practice-vi-causal-forests
+introduction-5
+theoretical-framework-and-methodology
+potential-outcomes-and-identifying-assumptions
+the-causal-forest-algorithm
+estimation-and-inference
+application-personalized-diabetes-treatment
+data-simulation
+model-estimation-and-analysis
+results-and-interpretation
+conclusion-5

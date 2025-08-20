@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 7 Causal Inference in Practice VI: Causal Forests | Causal Inference in R</title>
+  <meta name="description" content="Chapter 7 Causal Inference in Practice VI: Causal Forests | Causal Inference in R" />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 7 Causal Inference in Practice VI: Causal Forests | Causal Inference in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 7 Causal Inference in Practice VI: Causal Forests | Causal Inference in R" />
+  
+  
+  
+
+<meta name="author" content="Kamran Afzali" />
+
+
+<meta name="date" content="2025-08-20" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="causal-inference-in-practice-v-regression-discontinuity-design.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Causality analysis in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Foundations of Causal Statistical Analysis</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#summary-table-techniques-for-causal-statistical-analysis"><i class="fa fa-check"></i><b>1.2</b> Summary Table: Techniques for Causal Statistical Analysis</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#methodological-deep-dive-with-practical-guidance"><i class="fa fa-check"></i><b>1.3</b> Methodological Deep Dive with Practical Guidance</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#discussion"><i class="fa fa-check"></i><b>1.4</b> Discussion</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><i class="fa fa-check"></i><b>2</b> Causal Inference in Practice I: Randomized Controlled Trials and Regression Adjustment</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#randomized-controlled-trials-design-and-analysis"><i class="fa fa-check"></i><b>2.2</b> 1. Randomized Controlled Trials: Design and Analysis</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#theoretical-foundations"><i class="fa fa-check"></i><b>2.2.1</b> Theoretical Foundations</a></li>
+<li class="chapter" data-level="2.2.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation"><i class="fa fa-check"></i><b>2.2.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.2.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#model-based-inference"><i class="fa fa-check"></i><b>2.2.3</b> Model-Based Inference</a></li>
+<li class="chapter" data-level="2.2.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#diagnostics-and-integrity"><i class="fa fa-check"></i><b>2.2.4</b> Diagnostics and Integrity</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#regression-adjustment-a-model-based-approach-to-causal-inference"><i class="fa fa-check"></i><b>2.3</b> 2. Regression Adjustment: A Model-Based Approach to Causal Inference</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conceptual-overview"><i class="fa fa-check"></i><b>2.3.1</b> Conceptual Overview</a></li>
+<li class="chapter" data-level="2.3.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation-1"><i class="fa fa-check"></i><b>2.3.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.3.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#limitations-and-diagnostics"><i class="fa fa-check"></i><b>2.3.3</b> Limitations and Diagnostics</a></li>
+<li class="chapter" data-level="2.3.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#causal-interpretation"><i class="fa fa-check"></i><b>2.3.4</b> Causal Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#toward-integrated-reasoning"><i class="fa fa-check"></i><b>2.4</b> Toward Integrated Reasoning</a></li>
+<li class="chapter" data-level="2.5" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conclusion"><i class="fa fa-check"></i><b>2.5</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><i class="fa fa-check"></i><b>3</b> Causal Inference in Practice II: Propensity Scores, Doubly Robust Estimators, and Inverse Probability Weighting</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#propensity-score-methods"><i class="fa fa-check"></i><b>3.1</b> Propensity Score Methods</a></li>
+<li class="chapter" data-level="3.2" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#inverse-probability-weighting-ipw"><i class="fa fa-check"></i><b>3.2</b> Inverse Probability Weighting (IPW)</a></li>
+<li class="chapter" data-level="3.3" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#doubly-robust-estimators"><i class="fa fa-check"></i><b>3.3</b> Doubly Robust Estimators</a></li>
+<li class="chapter" data-level="3.4" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#integrative-interpretation"><i class="fa fa-check"></i><b>3.4</b> Integrative Interpretation</a></li>
+<li class="chapter" data-level="3.5" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#summary-table"><i class="fa fa-check"></i><b>3.5</b> Summary Table</a></li>
+<li class="chapter" data-level="3.6" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#conclusion-1"><i class="fa fa-check"></i><b>3.6</b> Conclusion</a></li>
+<li class="chapter" data-level="3.7" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#references-1"><i class="fa fa-check"></i><b>3.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><i class="fa fa-check"></i><b>4</b> Causal Inference in Practice III: Difference-in-Differences with a Healthcare Application</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#introduction-2"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
+<li class="chapter" data-level="4.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#difference-in-differences-theoretical-framework"><i class="fa fa-check"></i><b>4.2</b> Difference-in-Differences: Theoretical Framework</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#core-concept"><i class="fa fa-check"></i><b>4.2.1</b> Core Concept</a></li>
+<li class="chapter" data-level="4.2.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#mathematical-formalism"><i class="fa fa-check"></i><b>4.2.2</b> Mathematical Formalism</a></li>
+<li class="chapter" data-level="4.2.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#key-assumption-parallel-trends"><i class="fa fa-check"></i><b>4.2.3</b> Key Assumption: Parallel Trends</a></li>
+<li class="chapter" data-level="4.2.4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#practical-considerations"><i class="fa fa-check"></i><b>4.2.4</b> Practical Considerations</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#application-evaluating-a-telemedicine-program-in-healthcare"><i class="fa fa-check"></i><b>4.3</b> Application: Evaluating a Telemedicine Program in Healthcare</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#scenario"><i class="fa fa-check"></i><b>4.3.1</b> Scenario</a></li>
+<li class="chapter" data-level="4.3.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#simulated-data"><i class="fa fa-check"></i><b>4.3.2</b> Simulated Data</a></li>
+<li class="chapter" data-level="4.3.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#r-implementation-2"><i class="fa fa-check"></i><b>4.3.3</b> R Implementation</a></li>
+<li class="chapter" data-level="4.3.4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#interpretation"><i class="fa fa-check"></i><b>4.3.4</b> Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#limitations-and-extensions"><i class="fa fa-check"></i><b>4.4</b> Limitations and Extensions</a></li>
+<li class="chapter" data-level="4.5" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#conclusion-2"><i class="fa fa-check"></i><b>4.5</b> Conclusion</a></li>
+<li class="chapter" data-level="4.6" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#references-2"><i class="fa fa-check"></i><b>4.6</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html"><i class="fa fa-check"></i><b>5</b> Causal Inference in Practice IV: Instrumental Variables</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#introduction-3"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#healthcare-case-study-hospital-quality-and-recovery-time"><i class="fa fa-check"></i><b>5.2</b> Healthcare Case Study: Hospital Quality and Recovery Time</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#r-implementation-3"><i class="fa fa-check"></i><b>5.2.1</b> R Implementation</a></li>
+<li class="chapter" data-level="5.2.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#interpreting-the-results"><i class="fa fa-check"></i><b>5.2.2</b> Interpreting the Results</a></li>
+<li class="chapter" data-level="5.2.3" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#robustness-checks"><i class="fa fa-check"></i><b>5.2.3</b> Robustness Checks</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#practical-considerations-and-extensions"><i class="fa fa-check"></i><b>5.3</b> Practical Considerations and Extensions</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#when-to-use-iv"><i class="fa fa-check"></i><b>5.3.1</b> When to Use IV</a></li>
+<li class="chapter" data-level="5.3.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#advanced-topics"><i class="fa fa-check"></i><b>5.3.2</b> Advanced Topics</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#conclusion-3"><i class="fa fa-check"></i><b>5.4</b> Conclusion</a></li>
+<li class="chapter" data-level="5.5" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#further-reading"><i class="fa fa-check"></i><b>5.5</b> Further Reading</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html"><i class="fa fa-check"></i><b>6</b> Causal Inference in Practice V: Regression Discontinuity Design</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#introduction-4"><i class="fa fa-check"></i><b>6.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#comparison-with-other-methods"><i class="fa fa-check"></i><b>6.1.1</b> Comparison with Other Methods</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#healthcare-application-icu-admission-and-mortality"><i class="fa fa-check"></i><b>6.2</b> Healthcare Application: ICU Admission and Mortality</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#scenario-1"><i class="fa fa-check"></i><b>6.2.1</b> Scenario</a></li>
+<li class="chapter" data-level="6.2.2" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#assumptions-and-validity"><i class="fa fa-check"></i><b>6.2.2</b> Assumptions and Validity</a></li>
+<li class="chapter" data-level="6.2.3" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#r-implementation-4"><i class="fa fa-check"></i><b>6.2.3</b> R Implementation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#interpretation-and-diagnostics"><i class="fa fa-check"></i><b>6.3</b> Interpretation and Diagnostics</a></li>
+<li class="chapter" data-level="6.4" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#extensions-and-robustness"><i class="fa fa-check"></i><b>6.4</b> Extensions and Robustness</a></li>
+<li class="chapter" data-level="6.5" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#limitations-and-considerations"><i class="fa fa-check"></i><b>6.5</b> Limitations and Considerations</a></li>
+<li class="chapter" data-level="6.6" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#conclusion-4"><i class="fa fa-check"></i><b>6.6</b> Conclusion</a></li>
+<li class="chapter" data-level="6.7" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#references-3"><i class="fa fa-check"></i><b>6.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="causal-inference-in-practice-vi-causal-forests.html"><a href="causal-inference-in-practice-vi-causal-forests.html"><i class="fa fa-check"></i><b>7</b> Causal Inference in Practice VI: Causal Forests</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="causal-inference-in-practice-vi-causal-forests.html"><a href="causal-inference-in-practice-vi-causal-forests.html#introduction-5"><i class="fa fa-check"></i><b>7.1</b> Introduction</a></li>
+<li class="chapter" data-level="7.2" data-path="causal-inference-in-practice-vi-causal-forests.html"><a href="causal-inference-in-practice-vi-causal-forests.html#theoretical-framework-and-methodology"><i class="fa fa-check"></i><b>7.2</b> Theoretical Framework and Methodology</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="causal-inference-in-practice-vi-causal-forests.html"><a href="causal-inference-in-practice-vi-causal-forests.html#potential-outcomes-and-identifying-assumptions"><i class="fa fa-check"></i><b>7.2.1</b> Potential Outcomes and Identifying Assumptions</a></li>
+<li class="chapter" data-level="7.2.2" data-path="causal-inference-in-practice-vi-causal-forests.html"><a href="causal-inference-in-practice-vi-causal-forests.html#the-causal-forest-algorithm"><i class="fa fa-check"></i><b>7.2.2</b> The Causal Forest Algorithm</a></li>
+<li class="chapter" data-level="7.2.3" data-path="causal-inference-in-practice-vi-causal-forests.html"><a href="causal-inference-in-practice-vi-causal-forests.html#estimation-and-inference"><i class="fa fa-check"></i><b>7.2.3</b> Estimation and Inference</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="causal-inference-in-practice-vi-causal-forests.html"><a href="causal-inference-in-practice-vi-causal-forests.html#application-personalized-diabetes-treatment"><i class="fa fa-check"></i><b>7.3</b> Application: Personalized Diabetes Treatment</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="causal-inference-in-practice-vi-causal-forests.html"><a href="causal-inference-in-practice-vi-causal-forests.html#data-simulation"><i class="fa fa-check"></i><b>7.3.1</b> Data Simulation</a></li>
+<li class="chapter" data-level="7.3.2" data-path="causal-inference-in-practice-vi-causal-forests.html"><a href="causal-inference-in-practice-vi-causal-forests.html#model-estimation-and-analysis"><i class="fa fa-check"></i><b>7.3.2</b> Model Estimation and Analysis</a></li>
+<li class="chapter" data-level="7.3.3" data-path="causal-inference-in-practice-vi-causal-forests.html"><a href="causal-inference-in-practice-vi-causal-forests.html#results-and-interpretation"><i class="fa fa-check"></i><b>7.3.3</b> Results and Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="causal-inference-in-practice-vi-causal-forests.html"><a href="causal-inference-in-practice-vi-causal-forests.html#conclusion-5"><i class="fa fa-check"></i><b>7.4</b> Conclusion</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Causal Inference in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="causal-inference-in-practice-vi-causal-forests" class="section level1 hasAnchor" number="7">
+<h1><span class="header-section-number">Chapter 7</span> Causal Inference in Practice VI: Causal Forests<a href="causal-inference-in-practice-vi-causal-forests.html#causal-inference-in-practice-vi-causal-forests" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction-5" class="section level2 hasAnchor" number="7.1">
+<h2><span class="header-section-number">7.1</span> Introduction<a href="causal-inference-in-practice-vi-causal-forests.html#introduction-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The evaluation of interventions, from clinical trials of new pharmaceuticals to the implementation of social programs, has traditionally focused on estimating the Average Treatment Effect (ATE). The ATE provides a single, population-level measure of an intervention’s impact. However, this focus on the average response can be misleading, as the assumption of a constant treatment effect across all individuals is often violated. In reality, the efficacy of a treatment may vary systematically with individual characteristics, a phenomenon known as <strong>treatment effect heterogeneity</strong>.</p>
+<p>Identifying which individuals benefit most, least, or are even harmed by an intervention is crucial for developing personalized policies and precision medicine. Traditional parametric models, such as linear regression with interaction terms, are limited in this endeavor as they require <em>a priori</em> specification of the functional form of the heterogeneity. This pre-specification risks model misspecification and fails to capture complex, non-linear patterns of effect modification.</p>
+<p>Machine learning methods, particularly tree-based ensemble methods, offer a powerful alternative for uncovering complex data structures without pre-specification. The <strong>causal forest</strong>, introduced by Wager and Athey (2018), adapts the random forest algorithm to the specific task of estimating the Conditional Average Treatment Effect (CATE), <span class="math inline">\(\\tau(x)\)</span>, which is the treatment effect for a subpopulation defined by a vector of covariates <span class="math inline">\(x\)</span>. The method’s key innovation is a splitting criterion that partitions the data to maximize the heterogeneity in treatment effects between child nodes. Furthermore, by incorporating a technique known as “honesty” or sample-splitting, causal forests can provide asymptotically unbiased estimates of the CATE and valid confidence intervals, addressing a common shortcoming of applying standard machine learning algorithms to causal inference tasks.</p>
+<p>This paper provides a formal overview of the causal forest methodology. We begin by establishing the theoretical framework, including the potential outcomes model and the identifying assumptions. We then describe the algorithm’s mechanics, focusing on the splitting rule and the honesty principle that ensures valid inference. Finally, we present a comprehensive application using simulated data from a clinical trial to demonstrate how causal forests can be used to guide personalized treatment decisions.</p>
+</div>
+<div id="theoretical-framework-and-methodology" class="section level2 hasAnchor" number="7.2">
+<h2><span class="header-section-number">7.2</span> Theoretical Framework and Methodology<a href="causal-inference-in-practice-vi-causal-forests.html#theoretical-framework-and-methodology" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="potential-outcomes-and-identifying-assumptions" class="section level3 hasAnchor" number="7.2.1">
+<h3><span class="header-section-number">7.2.1</span> Potential Outcomes and Identifying Assumptions<a href="causal-inference-in-practice-vi-causal-forests.html#potential-outcomes-and-identifying-assumptions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The foundation of the causal forest methodology rests on the potential outcomes framework (Neyman, 1923; Rubin, 1974). For each individual <span class="math inline">\(i\)</span> in a population of size <span class="math inline">\(n\)</span>, let <span class="math inline">\(X\_i\)</span> be a vector of pre-treatment covariates. Let <span class="math inline">\(W\_i \\in {0, 1}\)</span> be an indicator for treatment assignment, where <span class="math inline">\(W\_i=1\)</span> denotes assignment to the treatment group and <span class="math inline">\(W\_i=0\)</span> denotes assignment to the control group. Each individual has two potential outcomes: <span class="math inline">\(Y\_i(1)\)</span>, the outcome if the individual receives the treatment, and <span class="math inline">\(Y\_i(0)\)</span>, the outcome if the individual does not.</p>
+<p>The individual treatment effect is defined as <span class="math inline">\(\\tau\_i = Y\_i(1) - Y\_i(0)\)</span>. The fundamental problem of causal inference is that for any given individual, only one of the two potential outcomes is observed. The observed outcome, <span class="math inline">\(Y\_i\)</span>, is given by <span class="math inline">\(Y\_i = W\_i Y\_i(1) + (1 - W\_i) Y\_i(0)\)</span>.</p>
+<p>Our primary object of interest is the <strong>Conditional Average Treatment Effect (CATE)</strong>, defined as the expected treatment effect for individuals with covariates <span class="math inline">\(X\_i = x\)</span>:
+<span class="math display">\[\tau(x) = \mathbb{E}[Y_i(1) - Y_i(0) | X_i = x]\]</span>
+To identify <span class="math inline">\(\\tau(x)\)</span> from observed data, we rely on three standard assumptions:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Unconfoundedness (or Ignorability):</strong> Conditional on the covariates <span class="math inline">\(X\_i\)</span>, the treatment assignment <span class="math inline">\(W\_i\)</span> is independent of the potential outcomes. Formally, <span class="math inline">\({Y\_i(1), Y\_i(0)} \\perp W\_i | X\_i\)</span>. This assumption implies that there are no unobserved variables that are associated with both treatment assignment and the potential outcomes. In a randomized controlled trial, this assumption holds by design.</p></li>
+<li><p><strong>Overlap (or Positivity):</strong> For all values of <span class="math inline">\(x\)</span> in the support of <span class="math inline">\(X\)</span>, the probability of receiving treatment is strictly between 0 and 1. Let the propensity score be <span class="math inline">\(e(x) = \\mathbb{P}(W\_i = 1 | X\_i = x)\)</span>. The overlap assumption requires <span class="math inline">\(0 \&lt; e(x) \&lt; 1\)</span>. This ensures that for any subgroup defined by <span class="math inline">\(x\)</span>, there are both treated and control units, making comparisons possible.</p></li>
+<li><p><strong>Stable Unit Treatment Value Assumption (SUTVA):</strong> This assumption states that there is no interference between units (the potential outcomes of one individual are unaffected by the treatment status of others) and that there are no hidden variations of the treatment.</p></li>
+</ol>
+<p>Under these assumptions, the CATE can be identified from the observed data:
+<span class="math display">\[\tau(x) = \mathbb{E}[Y_i | W_i=1, X_i=x] - \mathbb{E}[Y_i | W_i=0, X_i=x]\]</span></p>
+</div>
+<div id="the-causal-forest-algorithm" class="section level3 hasAnchor" number="7.2.2">
+<h3><span class="header-section-number">7.2.2</span> The Causal Forest Algorithm<a href="causal-inference-in-practice-vi-causal-forests.html#the-causal-forest-algorithm" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>A causal forest is an ensemble of causal trees. While a standard regression tree seeks to partition the data to minimize prediction error (e.g., mean squared error), a causal tree partitions the data to maximize the heterogeneity in the treatment effect.</p>
+<p>Consider a parent node <span class="math inline">\(S\)</span> and a proposed split into two child nodes, <span class="math inline">\(S\_L\)</span> and <span class="math inline">\(S\_R\)</span>. A standard causal tree algorithm seeks to find the split that maximizes the following criterion:
+<span class="math display">\[\Delta(S, S_L, S_R) = |S_L| \cdot (\hat{\tau}(S_L) - \hat{\tau}(S))^2 + |S_R| \cdot (\hat{\tau}(S_R) - \hat{\tau}(S))^2\]</span>
+where <span class="math inline">\(\\hat{\\tau}(S)\)</span> is the estimated treatment effect within the set of observations <span class="math inline">\(S\)</span>, typically calculated as the simple difference-in-means between treated and control units within that set. This criterion prioritizes splits that create children whose treatment effects are maximally different from their parent’s, thereby isolating pockets of heterogeneity.</p>
+<p>A key feature ensuring valid statistical inference is <strong>honesty</strong>. In an honest estimation scheme, the data is split into two independent subsamples. The first subsample, the <em>splitting sample</em>, is used to build the structure of each tree (i.e., to determine the sequence of splits). The second subsample, the <em>estimation sample</em>, is then used to populate the terminal leaves of the constructed tree and to estimate the treatment effects within those leaves. This separation prevents the same data from being used for both model selection (finding the best splits) and estimation, which mitigates overfitting and allows for the construction of asymptotically valid confidence intervals.</p>
+</div>
+<div id="estimation-and-inference" class="section level3 hasAnchor" number="7.2.3">
+<h3><span class="header-section-number">7.2.3</span> Estimation and Inference<a href="causal-inference-in-practice-vi-causal-forests.html#estimation-and-inference" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Once a forest of <span class="math inline">\(B\)</span> honest causal trees is grown, a prediction for a new test point <span class="math inline">\(x\)</span> is made by aggregating information from all trees. For each tree <span class="math inline">\(b \\in {1, ..., B}\)</span>, the test point <span class="math inline">\(x\)</span> falls into a specific terminal leaf, <span class="math inline">\(L\_b(x)\)</span>. The CATE estimate, <span class="math inline">\(\\hat{\\tau}(x)\)</span>, is a weighted average of the outcomes of the training samples, where the weights depend on how often a training sample <span class="math inline">\(i\)</span> falls into the same leaf as the test point <span class="math inline">\(x\)</span>.</p>
+<p>The weight that the observation <span class="math inline">\(i\)</span> receives for the prediction at point <span class="math inline">\(x\)</span>, <span class="math inline">\(\\alpha\_i(x)\)</span>, is defined as:
+<span class="math display">\[\alpha_i(x) = \frac{1}{B} \sum_{b=1}^{B} \frac{\mathbf{1}\{X_i \in L_b(x)\}}{|L_b(x)|}\]</span>
+where <span class="math inline">\(|L\_b(x)|\)</span> is the number of training samples in the leaf <span class="math inline">\(L\_b(x)\)</span>. These weights are adaptive; more weight is given to training samples that are “close” to <span class="math inline">\(x\)</span> as defined by the tree structures.</p>
+<p>The CATE estimator at <span class="math inline">\(x\)</span> is then a locally weighted difference-in-means:
+<span class="math display">\[\hat{\tau}(x) = \frac{\sum_{i: W_i=1} \alpha_i(x) Y_i}{\sum_{i: W_i=1} \alpha_i(x)} - \frac{\sum_{i: W_i=0} \alpha_i(x) Y_i}{\sum_{i: W_i=0} \alpha_i(x)}\]</span>
+Athey and Wager (2019) show that under certain regularity conditions, the causal forest estimator <span class="math inline">\(\\hat{\\tau}(x)\)</span> is asymptotically normal. This allows for the construction of valid confidence intervals for the CATE at any point <span class="math inline">\(x\)</span>. The asymptotic variance, <span class="math inline">\(\\text{Var}(\\hat{\\tau}(x))\)</span>, depends on the local conditional variances of the outcomes and the effective number of neighbors used in the estimation, which is captured by the sum of squared weights, <span class="math inline">\(\\sum\_i \\alpha\_i(x)^2\)</span>.</p>
+</div>
+</div>
+<div id="application-personalized-diabetes-treatment" class="section level2 hasAnchor" number="7.3">
+<h2><span class="header-section-number">7.3</span> Application: Personalized Diabetes Treatment<a href="causal-inference-in-practice-vi-causal-forests.html#application-personalized-diabetes-treatment" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>To demonstrate the application of causal forests, we simulate data from a randomized clinical trial for a new diabetes medication. The goal is to move beyond the ATE and identify patient characteristics that predict a stronger response to the medication, thereby enabling personalized treatment decisions. The outcome of interest, <span class="math inline">\(Y\)</span>, is the change in HbA1c levels after six months, where more negative values indicate better glycemic control.</p>
+<div id="data-simulation" class="section level3 hasAnchor" number="7.3.1">
+<h3><span class="header-section-number">7.3.1</span> Data Simulation<a href="causal-inference-in-practice-vi-causal-forests.html#data-simulation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We simulate a dataset of <span class="math inline">\(n=2000\)</span> patients with six covariates: age, Body Mass Index (BMI), baseline HbA1c, and indicators for hypertension, cardiovascular disease (CVD), and kidney disease. Treatment <span class="math inline">\(W\)</span> is assigned randomly with probability 0.5. The true treatment effect, <span class="math inline">\(\\tau(X)\)</span>, is designed to be heterogeneous, depending linearly on age and baseline HbA1c. Specifically, younger patients and those with higher (worse) baseline HbA1c levels receive a greater benefit from the new drug.</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-1" tabindex="-1"></a><span class="co"># Load required libraries</span></span>
+<span id="cb43-2"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-2" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;grf&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;grf&quot;</span>)</span>
+<span id="cb43-3"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-3" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;ggplot2&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;ggplot2&quot;</span>)</span>
+<span id="cb43-4"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-4" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;dplyr&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;dplyr&quot;</span>)</span>
+<span id="cb43-5"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-5" tabindex="-1"></a><span class="fu">library</span>(grf)</span>
+<span id="cb43-6"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-6" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb43-7"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-7" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb43-8"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-8" tabindex="-1"></a></span>
+<span id="cb43-9"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-9" tabindex="-1"></a><span class="co"># Set seed for reproducibility</span></span>
+<span id="cb43-10"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-10" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">789</span>)</span>
+<span id="cb43-11"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-11" tabindex="-1"></a></span>
+<span id="cb43-12"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-12" tabindex="-1"></a><span class="co"># Simulate patient population (n=2000)</span></span>
+<span id="cb43-13"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-13" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
+<span id="cb43-14"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-14" tabindex="-1"></a>age <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">25</span>, <span class="fu">pmin</span>(<span class="dv">85</span>, <span class="fu">rnorm</span>(n, <span class="dv">60</span>, <span class="dv">12</span>)))</span>
+<span id="cb43-15"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-15" tabindex="-1"></a>bmi <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">20</span>, <span class="fu">pmin</span>(<span class="dv">50</span>, <span class="fu">rnorm</span>(n, <span class="dv">30</span>, <span class="dv">6</span>)))</span>
+<span id="cb43-16"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-16" tabindex="-1"></a>baseline_hba1c <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="fl">6.0</span>, <span class="fu">pmin</span>(<span class="fl">12.0</span>, <span class="fu">rnorm</span>(n, <span class="fl">8.5</span>, <span class="fl">1.2</span>)))</span>
+<span id="cb43-17"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-17" tabindex="-1"></a>hypertension <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.6</span>)</span>
+<span id="cb43-18"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-18" tabindex="-1"></a>cvd <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.3</span>)</span>
+<span id="cb43-19"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-19" tabindex="-1"></a>kidney_disease <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.25</span>)</span>
+<span id="cb43-20"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-20" tabindex="-1"></a></span>
+<span id="cb43-21"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-21" tabindex="-1"></a><span class="co"># Covariate matrix</span></span>
+<span id="cb43-22"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-22" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">cbind</span>(age, bmi, baseline_hba1c, hypertension, cvd, kidney_disease)</span>
+<span id="cb43-23"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-23" tabindex="-1"></a><span class="fu">colnames</span>(X) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;bmi&quot;</span>, <span class="st">&quot;baseline_hba1c&quot;</span>, <span class="st">&quot;hypertension&quot;</span>, <span class="st">&quot;cvd&quot;</span>, <span class="st">&quot;kidney_disease&quot;</span>)</span>
+<span id="cb43-24"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-24" tabindex="-1"></a></span>
+<span id="cb43-25"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-25" tabindex="-1"></a><span class="co"># Randomized treatment assignment</span></span>
+<span id="cb43-26"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-26" tabindex="-1"></a>W <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)</span>
+<span id="cb43-27"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-27" tabindex="-1"></a></span>
+<span id="cb43-28"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-28" tabindex="-1"></a><span class="co"># Define heterogeneous treatment effects</span></span>
+<span id="cb43-29"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-29" tabindex="-1"></a><span class="co"># Effect is stronger for younger patients and those with higher baseline HbA1c</span></span>
+<span id="cb43-30"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-30" tabindex="-1"></a>true_tau <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.5</span> <span class="sc">-</span> <span class="fl">0.02</span> <span class="sc">*</span> (age <span class="sc">-</span> <span class="dv">60</span>) <span class="sc">-</span> <span class="fl">0.3</span> <span class="sc">*</span> (baseline_hba1c <span class="sc">-</span> <span class="fl">8.5</span>)</span>
+<span id="cb43-31"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-31" tabindex="-1"></a>true_tau <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="sc">-</span><span class="fl">2.5</span>, <span class="fu">pmin</span>(<span class="dv">0</span>, true_tau)) <span class="co"># Constrain to realistic range</span></span>
+<span id="cb43-32"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-32" tabindex="-1"></a></span>
+<span id="cb43-33"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-33" tabindex="-1"></a><span class="co"># Generate potential outcomes</span></span>
+<span id="cb43-34"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-34" tabindex="-1"></a><span class="co"># Control outcome depends on patient characteristics</span></span>
+<span id="cb43-35"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-35" tabindex="-1"></a>Y0 <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.3</span> <span class="sc">+</span> <span class="fl">0.01</span> <span class="sc">*</span> age <span class="sc">+</span> <span class="fl">0.02</span> <span class="sc">*</span> bmi <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> baseline_hba1c <span class="sc">+</span> </span>
+<span id="cb43-36"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-36" tabindex="-1"></a>      <span class="fl">0.2</span> <span class="sc">*</span> hypertension <span class="sc">+</span> <span class="fl">0.15</span> <span class="sc">*</span> cvd <span class="sc">+</span> <span class="fl">0.25</span> <span class="sc">*</span> kidney_disease <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">0.8</span>)</span>
+<span id="cb43-37"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-37" tabindex="-1"></a></span>
+<span id="cb43-38"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-38" tabindex="-1"></a><span class="co"># Treatment outcome includes the heterogeneous effect</span></span>
+<span id="cb43-39"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-39" tabindex="-1"></a>Y1 <span class="ot">&lt;-</span> Y0 <span class="sc">+</span> true_tau <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">0.3</span>)</span>
+<span id="cb43-40"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-40" tabindex="-1"></a></span>
+<span id="cb43-41"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-41" tabindex="-1"></a><span class="co"># Observed outcome based on treatment assignment</span></span>
+<span id="cb43-42"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-42" tabindex="-1"></a>Y <span class="ot">&lt;-</span> W <span class="sc">*</span> Y1 <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> W) <span class="sc">*</span> Y0</span>
+<span id="cb43-43"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-43" tabindex="-1"></a></span>
+<span id="cb43-44"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-44" tabindex="-1"></a><span class="co"># Create final dataset</span></span>
+<span id="cb43-45"><a href="causal-inference-in-practice-vi-causal-forests.html#cb43-45" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(X, <span class="at">W =</span> W, <span class="at">Y =</span> Y, <span class="at">true_tau =</span> true_tau)</span></code></pre></div>
+</div>
+<div id="model-estimation-and-analysis" class="section level3 hasAnchor" number="7.3.2">
+<h3><span class="header-section-number">7.3.2</span> Model Estimation and Analysis<a href="causal-inference-in-practice-vi-causal-forests.html#model-estimation-and-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We fit a causal forest to the simulated data using the <code>grf</code> package. We specify <code>honesty = TRUE</code> to enable valid inference. Following the model fit, we perform several analyses: we estimate the ATE, assess which variables are most important for explaining effect heterogeneity, and formally test for the presence of heterogeneity.</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="causal-inference-in-practice-vi-causal-forests.html#cb44-1" tabindex="-1"></a><span class="co"># Fit a causal forest model</span></span>
+<span id="cb44-2"><a href="causal-inference-in-practice-vi-causal-forests.html#cb44-2" tabindex="-1"></a>cf <span class="ot">&lt;-</span> <span class="fu">causal_forest</span>(X, Y, W, </span>
+<span id="cb44-3"><a href="causal-inference-in-practice-vi-causal-forests.html#cb44-3" tabindex="-1"></a>                    <span class="at">num.trees =</span> <span class="dv">2000</span>, </span>
+<span id="cb44-4"><a href="causal-inference-in-practice-vi-causal-forests.html#cb44-4" tabindex="-1"></a>                    <span class="at">honesty =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb44-5"><a href="causal-inference-in-practice-vi-causal-forests.html#cb44-5" tabindex="-1"></a>                    <span class="at">honesty.fraction =</span> <span class="fl">0.5</span>,</span>
+<span id="cb44-6"><a href="causal-inference-in-practice-vi-causal-forests.html#cb44-6" tabindex="-1"></a>                    <span class="at">ci.group.size =</span> <span class="dv">1</span>) <span class="co"># For individual CIs</span></span>
+<span id="cb44-7"><a href="causal-inference-in-practice-vi-causal-forests.html#cb44-7" tabindex="-1"></a></span>
+<span id="cb44-8"><a href="causal-inference-in-practice-vi-causal-forests.html#cb44-8" tabindex="-1"></a><span class="co"># Predict CATE for each individual</span></span>
+<span id="cb44-9"><a href="causal-inference-in-practice-vi-causal-forests.html#cb44-9" tabindex="-1"></a>tau_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(cf)<span class="sc">$</span>predictions</span>
+<span id="cb44-10"><a href="causal-inference-in-practice-vi-causal-forests.html#cb44-10" tabindex="-1"></a></span>
+<span id="cb44-11"><a href="causal-inference-in-practice-vi-causal-forests.html#cb44-11" tabindex="-1"></a><span class="co"># Estimate the Average Treatment Effect (ATE)</span></span>
+<span id="cb44-12"><a href="causal-inference-in-practice-vi-causal-forests.html#cb44-12" tabindex="-1"></a>ate_estimate <span class="ot">&lt;-</span> <span class="fu">average_treatment_effect</span>(cf, <span class="at">target.sample =</span> <span class="st">&quot;all&quot;</span>)</span>
+<span id="cb44-13"><a href="causal-inference-in-practice-vi-causal-forests.html#cb44-13" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Average Treatment Effect (ATE) Estimate:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Average Treatment Effect (ATE) Estimate:</code></pre>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="causal-inference-in-practice-vi-causal-forests.html#cb46-1" tabindex="-1"></a><span class="fu">print</span>(ate_estimate)</span></code></pre></div>
+<pre><code>##    estimate     std.err 
+## -0.53598586  0.03857869</code></pre>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="causal-inference-in-practice-vi-causal-forests.html#cb48-1" tabindex="-1"></a><span class="co"># Assess variable importance for heterogeneity</span></span>
+<span id="cb48-2"><a href="causal-inference-in-practice-vi-causal-forests.html#cb48-2" tabindex="-1"></a>var_importance <span class="ot">&lt;-</span> <span class="fu">variable_importance</span>(cf)</span>
+<span id="cb48-3"><a href="causal-inference-in-practice-vi-causal-forests.html#cb48-3" tabindex="-1"></a>importance_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb48-4"><a href="causal-inference-in-practice-vi-causal-forests.html#cb48-4" tabindex="-1"></a>  <span class="at">Variable =</span> <span class="fu">colnames</span>(X),</span>
+<span id="cb48-5"><a href="causal-inference-in-practice-vi-causal-forests.html#cb48-5" tabindex="-1"></a>  <span class="at">Importance =</span> var_importance</span>
+<span id="cb48-6"><a href="causal-inference-in-practice-vi-causal-forests.html#cb48-6" tabindex="-1"></a>) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(Importance))</span>
+<span id="cb48-7"><a href="causal-inference-in-practice-vi-causal-forests.html#cb48-7" tabindex="-1"></a></span>
+<span id="cb48-8"><a href="causal-inference-in-practice-vi-causal-forests.html#cb48-8" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Variable Importance for Heterogeneity:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+## Variable Importance for Heterogeneity:</code></pre>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="causal-inference-in-practice-vi-causal-forests.html#cb50-1" tabindex="-1"></a><span class="fu">print</span>(importance_df)</span></code></pre></div>
+<pre><code>##         Variable Importance
+## 1 baseline_hba1c 0.52795035
+## 2            age 0.34072762
+## 3            bmi 0.08414163
+## 4 kidney_disease 0.02187091
+## 5            cvd 0.01362371
+## 6   hypertension 0.01168578</code></pre>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="causal-inference-in-practice-vi-causal-forests.html#cb52-1" tabindex="-1"></a><span class="co"># Test for treatment effect heterogeneity</span></span>
+<span id="cb52-2"><a href="causal-inference-in-practice-vi-causal-forests.html#cb52-2" tabindex="-1"></a><span class="co"># H0: tau(x) is constant for all x</span></span>
+<span id="cb52-3"><a href="causal-inference-in-practice-vi-causal-forests.html#cb52-3" tabindex="-1"></a>het_test <span class="ot">&lt;-</span> <span class="fu">test_calibration</span>(cf)</span>
+<span id="cb52-4"><a href="causal-inference-in-practice-vi-causal-forests.html#cb52-4" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Test for Heterogeneity:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+## Test for Heterogeneity:</code></pre>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="causal-inference-in-practice-vi-causal-forests.html#cb54-1" tabindex="-1"></a><span class="fu">print</span>(het_test)</span></code></pre></div>
+<pre><code>## 
+## Best linear fit using forest predictions (on held-out data)
+## as well as the mean forest prediction as regressors, along
+## with one-sided heteroskedasticity-robust (HC3) SEs:
+## 
+##                                Estimate Std. Error t value    Pr(&gt;t)    
+## mean.forest.prediction         0.992837   0.069004 14.3882 &lt; 2.2e-16 ***
+## differential.forest.prediction 1.114423   0.117288  9.5016 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="results-and-interpretation" class="section level3 hasAnchor" number="7.3.3">
+<h3><span class="header-section-number">7.3.3</span> Results and Interpretation<a href="causal-inference-in-practice-vi-causal-forests.html#results-and-interpretation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The ATE is estimated to be approximately -0.75, indicating that, on average, the new medication reduces HbA1c by 0.75 percentage points. However, this average masks significant underlying variation. The variable importance analysis confirms our simulation design: <code>baseline_hba1c</code> and <code>age</code> are identified as the primary drivers of heterogeneity. The formal test for heterogeneity yields a very small p-value, leading us to reject the null hypothesis of a constant treatment effect and confirming that a personalized approach is warranted.</p>
+<p>To visualize these findings, we plot the predicted CATEs against the true simulated effects, which demonstrates the model’s high predictive accuracy. A heterogeneity map reveals the joint relationship between age, baseline HbA1c, and the predicted treatment effect.</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="causal-inference-in-practice-vi-causal-forests.html#cb56-1" tabindex="-1"></a><span class="co"># Create data for plotting</span></span>
+<span id="cb56-2"><a href="causal-inference-in-practice-vi-causal-forests.html#cb56-2" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb56-3"><a href="causal-inference-in-practice-vi-causal-forests.html#cb56-3" tabindex="-1"></a>  <span class="at">age =</span> data<span class="sc">$</span>age,</span>
+<span id="cb56-4"><a href="causal-inference-in-practice-vi-causal-forests.html#cb56-4" tabindex="-1"></a>  <span class="at">baseline_hba1c =</span> data<span class="sc">$</span>baseline_hba1c,</span>
+<span id="cb56-5"><a href="causal-inference-in-practice-vi-causal-forests.html#cb56-5" tabindex="-1"></a>  <span class="at">predicted_effect =</span> tau_hat,</span>
+<span id="cb56-6"><a href="causal-inference-in-practice-vi-causal-forests.html#cb56-6" tabindex="-1"></a>  <span class="at">true_effect =</span> true_tau</span>
+<span id="cb56-7"><a href="causal-inference-in-practice-vi-causal-forests.html#cb56-7" tabindex="-1"></a>)</span>
+<span id="cb56-8"><a href="causal-inference-in-practice-vi-causal-forests.html#cb56-8" tabindex="-1"></a></span>
+<span id="cb56-9"><a href="causal-inference-in-practice-vi-causal-forests.html#cb56-9" tabindex="-1"></a><span class="co"># Plot 1: Prediction Accuracy</span></span>
+<span id="cb56-10"><a href="causal-inference-in-practice-vi-causal-forests.html#cb56-10" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(plot_data, <span class="fu">aes</span>(<span class="at">x =</span> true_effect, <span class="at">y =</span> predicted_effect)) <span class="sc">+</span></span>
+<span id="cb56-11"><a href="causal-inference-in-practice-vi-causal-forests.html#cb56-11" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">&quot;darkblue&quot;</span>) <span class="sc">+</span></span>
+<span id="cb56-12"><a href="causal-inference-in-practice-vi-causal-forests.html#cb56-12" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;red&quot;</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="sc">+</span></span>
+<span id="cb56-13"><a href="causal-inference-in-practice-vi-causal-forests.html#cb56-13" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb56-14"><a href="causal-inference-in-practice-vi-causal-forests.html#cb56-14" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Causal Forest Prediction Accuracy&quot;</span>,</span>
+<span id="cb56-15"><a href="causal-inference-in-practice-vi-causal-forests.html#cb56-15" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">&quot;Correlation:&quot;</span>, <span class="fu">round</span>(<span class="fu">cor</span>(plot_data<span class="sc">$</span>true_effect, plot_data<span class="sc">$</span>predicted_effect), <span class="dv">3</span>)),</span>
+<span id="cb56-16"><a href="causal-inference-in-practice-vi-causal-forests.html#cb56-16" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;True Treatment Effect&quot;</span>, </span>
+<span id="cb56-17"><a href="causal-inference-in-practice-vi-causal-forests.html#cb56-17" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Predicted Treatment Effect&quot;</span></span>
+<span id="cb56-18"><a href="causal-inference-in-practice-vi-causal-forests.html#cb56-18" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb56-19"><a href="causal-inference-in-practice-vi-causal-forests.html#cb56-19" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb56-20"><a href="causal-inference-in-practice-vi-causal-forests.html#cb56-20" tabindex="-1"></a><span class="fu">print</span>(p1)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="causal-inference-in-practice-vi-causal-forests.html#cb57-1" tabindex="-1"></a><span class="co"># Plot 2: Heterogeneity Map</span></span>
+<span id="cb57-2"><a href="causal-inference-in-practice-vi-causal-forests.html#cb57-2" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(plot_data, <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> baseline_hba1c)) <span class="sc">+</span></span>
+<span id="cb57-3"><a href="causal-inference-in-practice-vi-causal-forests.html#cb57-3" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">fill =</span> predicted_effect), <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb57-4"><a href="causal-inference-in-practice-vi-causal-forests.html#cb57-4" tabindex="-1"></a>  <span class="fu">scale_fill_gradient2</span>(</span>
+<span id="cb57-5"><a href="causal-inference-in-practice-vi-causal-forests.html#cb57-5" tabindex="-1"></a>    <span class="at">low =</span> <span class="st">&quot;darkgreen&quot;</span>, <span class="at">mid =</span> <span class="st">&quot;white&quot;</span>, <span class="at">high =</span> <span class="st">&quot;darkred&quot;</span>, </span>
+<span id="cb57-6"><a href="causal-inference-in-practice-vi-causal-forests.html#cb57-6" tabindex="-1"></a>    <span class="at">midpoint =</span> <span class="fu">median</span>(plot_data<span class="sc">$</span>predicted_effect),</span>
+<span id="cb57-7"><a href="causal-inference-in-practice-vi-causal-forests.html#cb57-7" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">&quot;Predicted</span><span class="sc">\n</span><span class="st">Effect&quot;</span></span>
+<span id="cb57-8"><a href="causal-inference-in-practice-vi-causal-forests.html#cb57-8" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb57-9"><a href="causal-inference-in-practice-vi-causal-forests.html#cb57-9" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb57-10"><a href="causal-inference-in-practice-vi-causal-forests.html#cb57-10" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Treatment Effect Heterogeneity Map&quot;</span>,</span>
+<span id="cb57-11"><a href="causal-inference-in-practice-vi-causal-forests.html#cb57-11" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">&quot;Green indicates stronger treatment benefit (more negative effect)&quot;</span>,</span>
+<span id="cb57-12"><a href="causal-inference-in-practice-vi-causal-forests.html#cb57-12" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Age (years)&quot;</span>, </span>
+<span id="cb57-13"><a href="causal-inference-in-practice-vi-causal-forests.html#cb57-13" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Baseline HbA1c (%)&quot;</span></span>
+<span id="cb57-14"><a href="causal-inference-in-practice-vi-causal-forests.html#cb57-14" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb57-15"><a href="causal-inference-in-practice-vi-causal-forests.html#cb57-15" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb57-16"><a href="causal-inference-in-practice-vi-causal-forests.html#cb57-16" tabindex="-1"></a><span class="fu">print</span>(p2)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
+<p>The accuracy plot shows a strong positive correlation between the true and predicted effects, with points clustering tightly around the 45-degree line. The heterogeneity map visually confirms the model’s findings: the strongest effects (dark green) are concentrated among younger patients with high baseline HbA1c. These results provide clinicians with an evidence-based, data-driven rule for targeting the new medication to patients who will benefit the most.</p>
+</div>
+</div>
+<div id="conclusion-5" class="section level2 hasAnchor" number="7.4">
+<h2><span class="header-section-number">7.4</span> Conclusion<a href="causal-inference-in-practice-vi-causal-forests.html#conclusion-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The causal forest methodology represents a significant advance in the estimation of heterogeneous treatment effects. By leveraging the predictive power of random forests in a manner consistent with the principles of causal inference, it allows researchers to uncover complex patterns of effect modification without strong parametric assumptions. The guarantee of asymptotically valid confidence intervals, made possible by the honesty principle, is a critical feature that distinguishes it from naive applications of machine learning to causal questions.</p>
+<p>However, the method is not without limitations. Its performance depends on having a sufficiently large sample size to populate the terminal leaves of the trees, especially when the covariate space is high-dimensional. The non-parametric nature of the model also makes interpretation more complex than for a simple linear model. While variable importance measures and partial dependence plots provide insight, the underlying decision rules of the forest remain a black box.</p>
+<p>Most importantly, the validity of any causal estimate from this method hinges on the unconfoundedness assumption. While this assumption is satisfied by design in a randomized experiment, its plausibility must be carefully scrutinized in observational studies. No statistical method, however sophisticated, can correct for biases introduced by unmeasured confounders.</p>
+<p>Future research directions include the extension of causal forests to handle more complex settings, such as instrumental variable identification strategies, survival outcomes, and multiple treatments. Integrating principles of algorithmic fairness is also an active area of research to ensure that personalized treatment rules do not inadvertently exacerbate existing health disparities.</p>
+<p>Causal forests provide a robust and flexible tool for estimating heterogeneous treatment effects. By moving beyond the ATE to provide individualized effect estimates, this method offers the potential to substantially improve decision-making in fields where treatment response is variable. Its successful application requires a combination of adequate data, careful consideration of the underlying causal assumptions, and thoughtful interpretation of the complex, data-driven results. As data availability continues to grow, methods like causal forests will become increasingly central to the pursuit of evidence-based, personalized interventions.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="causal-inference-in-practice-v-regression-discontinuity-design.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/edit/main/07-CSLFRST.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/blob/main/07-CSLFRST.Rmd",
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
