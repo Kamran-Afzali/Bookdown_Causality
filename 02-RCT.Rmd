@@ -34,7 +34,7 @@ This estimator is unbiased and consistent, provided randomization is successfull
 
 Let’s simulate a simple RCT to estimate the effect of a binary treatment on an outcome.
 
-```r
+```{r}
 # Load necessary libraries
 library(tidyverse)
 
@@ -63,7 +63,7 @@ print(ate_estimate)
 
 While RCTs do not require model-based adjustments, regression models are often used to improve precision or adjust for residual imbalances. In the RCT context, such models are descriptive rather than corrective.
 
-```r
+```{r}
 # Linear regression with treatment as predictor
 lm_rct <- lm(outcome ~ treatment, data = data_rct)
 summary(lm_rct)
@@ -101,7 +101,7 @@ The coefficient $\beta_1$ is interpreted as the average treatment effect, assumi
 
 We now simulate observational data with a confounder to demonstrate regression adjustment.
 
-```r
+```{r}
 # Simulate observational data
 set.seed(123)
 n <- 1000
@@ -134,7 +134,7 @@ Moreover, regression does not address **overlap**—the requirement that all uni
 
 One strategy to assess covariate overlap is to model the propensity score and visualize its distribution across treatment groups.
 
-```r
+```{r}
 # Estimate propensity scores
 ps_model <- glm(treatment ~ covariate, data = data_obs, family = binomial())
 data_obs <- data_obs %>% mutate(pscore = predict(ps_model, type = "response"))
