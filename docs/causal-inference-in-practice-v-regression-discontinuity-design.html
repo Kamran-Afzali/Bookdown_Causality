@@ -321,162 +321,176 @@ D_i = \begin{cases}
 <div id="r-implementation-4" class="section level3 hasAnchor" number="6.2.3">
 <h3><span class="header-section-number">6.2.3</span> R Implementation<a href="causal-inference-in-practice-v-regression-discontinuity-design.html#r-implementation-4" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>We simulate data for 2000 emergency department patients with APACHE scores ranging from 10 to 20. The true treatment effect is a 15 percentage point reduction in mortality risk for ICU patients at the cutoff. Our implementation includes both parametric and nonparametric estimation approaches.</p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-1" tabindex="-1"></a><span class="co"># Load required libraries</span></span>
-<span id="cb54-2"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-2" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;rdrobust&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;rdrobust&quot;</span>)</span>
-<span id="cb54-3"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-3" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;ggplot2&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;ggplot2&quot;</span>)</span>
-<span id="cb54-4"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-4" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;dplyr&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;dplyr&quot;</span>)</span>
-<span id="cb54-5"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-5" tabindex="-1"></a><span class="fu">library</span>(rdrobust)</span>
-<span id="cb54-6"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-6" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb54-7"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-7" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb54-8"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-8" tabindex="-1"></a></span>
-<span id="cb54-9"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-9" tabindex="-1"></a><span class="co"># Set seed for reproducibility</span></span>
-<span id="cb54-10"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-10" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">456</span>)</span>
-<span id="cb54-11"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-11" tabindex="-1"></a></span>
-<span id="cb54-12"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-12" tabindex="-1"></a><span class="co"># Simulate data</span></span>
-<span id="cb54-13"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-13" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
-<span id="cb54-14"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-14" tabindex="-1"></a>cutoff <span class="ot">&lt;-</span> <span class="dv">15</span></span>
-<span id="cb54-15"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-15" tabindex="-1"></a></span>
-<span id="cb54-16"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-16" tabindex="-1"></a><span class="co"># Running variable: APACHE score (10-20)</span></span>
-<span id="cb54-17"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-17" tabindex="-1"></a>apache_score <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="dv">10</span>, <span class="dv">20</span>)</span>
-<span id="cb54-18"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-18" tabindex="-1"></a></span>
-<span id="cb54-19"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-19" tabindex="-1"></a><span class="co"># Treatment: ICU admission (sharp design)</span></span>
-<span id="cb54-20"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-20" tabindex="-1"></a>icu_admission <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(apache_score <span class="sc">&gt;=</span> cutoff)</span>
-<span id="cb54-21"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-21" tabindex="-1"></a></span>
-<span id="cb54-22"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-22" tabindex="-1"></a><span class="co"># Baseline mortality risk (smooth function of APACHE score)</span></span>
-<span id="cb54-23"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-23" tabindex="-1"></a>baseline_risk <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="sc">+</span> <span class="fl">0.03</span> <span class="sc">*</span> (apache_score <span class="sc">-</span> <span class="dv">15</span>) <span class="sc">+</span> <span class="fl">0.001</span> <span class="sc">*</span> (apache_score <span class="sc">-</span> <span class="dv">15</span>)<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb54-24"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-24" tabindex="-1"></a></span>
-<span id="cb54-25"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-25" tabindex="-1"></a><span class="co"># True treatment effect: -0.15 (15 percentage point reduction)</span></span>
-<span id="cb54-26"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-26" tabindex="-1"></a>true_effect <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.15</span></span>
-<span id="cb54-27"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-27" tabindex="-1"></a>mortality_prob <span class="ot">&lt;-</span> baseline_risk <span class="sc">+</span> true_effect <span class="sc">*</span> icu_admission</span>
-<span id="cb54-28"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-28" tabindex="-1"></a></span>
-<span id="cb54-29"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-29" tabindex="-1"></a><span class="co"># Add random noise and generate binary outcome</span></span>
-<span id="cb54-30"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-30" tabindex="-1"></a>mortality_prob <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">0</span>, <span class="fu">pmin</span>(<span class="dv">1</span>, mortality_prob <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">0.05</span>)))</span>
-<span id="cb54-31"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-31" tabindex="-1"></a>mortality <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, mortality_prob)</span>
-<span id="cb54-32"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-32" tabindex="-1"></a></span>
-<span id="cb54-33"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-33" tabindex="-1"></a><span class="co"># Create dataset</span></span>
-<span id="cb54-34"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-34" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb54-35"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-35" tabindex="-1"></a>  <span class="at">apache_score =</span> apache_score,</span>
-<span id="cb54-36"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-36" tabindex="-1"></a>  <span class="at">icu_admission =</span> icu_admission,</span>
-<span id="cb54-37"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-37" tabindex="-1"></a>  <span class="at">mortality =</span> mortality,</span>
-<span id="cb54-38"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-38" tabindex="-1"></a>  <span class="at">centered_score =</span> apache_score <span class="sc">-</span> cutoff</span>
-<span id="cb54-39"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-39" tabindex="-1"></a>)</span>
-<span id="cb54-40"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-40" tabindex="-1"></a></span>
-<span id="cb54-41"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-41" tabindex="-1"></a><span class="co"># Parametric estimation with local linear regression</span></span>
-<span id="cb54-42"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-42" tabindex="-1"></a>param_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(mortality <span class="sc">~</span> icu_admission <span class="sc">+</span> centered_score <span class="sc">+</span> </span>
-<span id="cb54-43"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-43" tabindex="-1"></a>                 <span class="fu">I</span>(centered_score <span class="sc">*</span> icu_admission), <span class="at">data =</span> data)</span>
-<span id="cb54-44"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-44" tabindex="-1"></a>param_effect <span class="ot">&lt;-</span> <span class="fu">coef</span>(param_model)[<span class="st">&quot;icu_admission&quot;</span>]</span>
-<span id="cb54-45"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-45" tabindex="-1"></a>param_se <span class="ot">&lt;-</span> <span class="fu">summary</span>(param_model)<span class="sc">$</span>coefficients[<span class="st">&quot;icu_admission&quot;</span>, <span class="st">&quot;Std. Error&quot;</span>]</span>
-<span id="cb54-46"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-46" tabindex="-1"></a></span>
-<span id="cb54-47"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-47" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Parametric RDD estimate:&quot;</span>, <span class="fu">round</span>(param_effect, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
-<span id="cb54-48"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-48" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Standard error:&quot;</span>, <span class="fu">round</span>(param_se, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb55-1" tabindex="-1"></a><span class="co"># Nonparametric estimation using rdrobust</span></span>
-<span id="cb55-2"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb55-2" tabindex="-1"></a>rd_result <span class="ot">&lt;-</span> <span class="fu">rdrobust</span>(<span class="at">y =</span> data<span class="sc">$</span>mortality, <span class="at">x =</span> data<span class="sc">$</span>apache_score, <span class="at">c =</span> cutoff)</span>
-<span id="cb55-3"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb55-3" tabindex="-1"></a>nonparam_effect <span class="ot">&lt;-</span> rd_result<span class="sc">$</span>coef[<span class="st">&quot;Robust&quot;</span>, ]</span>
-<span id="cb55-4"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb55-4" tabindex="-1"></a>nonparam_se <span class="ot">&lt;-</span> rd_result<span class="sc">$</span>se[<span class="st">&quot;Robust&quot;</span>, ]</span>
-<span id="cb55-5"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb55-5" tabindex="-1"></a>optimal_bandwidth <span class="ot">&lt;-</span> rd_result<span class="sc">$</span>bws[<span class="st">&quot;h&quot;</span>, <span class="st">&quot;left&quot;</span>]</span>
-<span id="cb55-6"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb55-6" tabindex="-1"></a></span>
-<span id="cb55-7"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb55-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Nonparametric RDD estimate:&quot;</span>, <span class="fu">round</span>(nonparam_effect, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
-<span id="cb55-8"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb55-8" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Robust standard error:&quot;</span>, <span class="fu">round</span>(nonparam_se, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
-<span id="cb55-9"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb55-9" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Optimal bandwidth:&quot;</span>, <span class="fu">round</span>(optimal_bandwidth, <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb56-1" tabindex="-1"></a></span>
-<span id="cb56-2"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb56-2" tabindex="-1"></a><span class="co"># Placebo test at false cutoff</span></span>
-<span id="cb56-3"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb56-3" tabindex="-1"></a>false_cutoff <span class="ot">&lt;-</span> <span class="dv">13</span></span>
-<span id="cb56-4"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb56-4" tabindex="-1"></a>placebo_result <span class="ot">&lt;-</span> <span class="fu">rdrobust</span>(<span class="at">y =</span> data<span class="sc">$</span>mortality, <span class="at">x =</span> data<span class="sc">$</span>apache_score, <span class="at">c =</span> false_cutoff)</span>
-<span id="cb56-5"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb56-5" tabindex="-1"></a>placebo_effect <span class="ot">&lt;-</span> placebo_result<span class="sc">$</span>coef[<span class="st">&quot;Robust&quot;</span>, ]</span>
-<span id="cb56-6"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb56-6" tabindex="-1"></a>placebo_se <span class="ot">&lt;-</span> placebo_result<span class="sc">$</span>se[<span class="st">&quot;Robust&quot;</span>, ]</span>
-<span id="cb56-7"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb56-7" tabindex="-1"></a></span>
-<span id="cb56-8"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb56-8" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Placebo test estimate:&quot;</span>, <span class="fu">round</span>(placebo_effect, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
-<span id="cb56-9"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb56-9" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Placebo test p-value:&quot;</span>, <span class="fu">round</span>(<span class="dv">2</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(placebo_effect <span class="sc">/</span> placebo_se))), <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
-<pre><code># Visualization
-# Create prediction data for smooth curves
-pred_data &lt;- data.frame(apache_score = seq(10, 20, 0.1))
-pred_data$centered_score &lt;- pred_data$apache_score - cutoff
-pred_data$icu_admission &lt;- as.numeric(pred_data$apache_score &gt;= cutoff)
-
-# Separate models for each side
-left_model &lt;- lm(mortality ~ centered_score, data = data[data$apache_score &lt; cutoff, ])
-right_model &lt;- lm(mortality ~ centered_score, data = data[data$apache_score &gt;= cutoff, ])
-
-pred_left &lt;- predict(left_model, 
-                    newdata = pred_data[pred_data$apache_score &lt; cutoff, ],
-                    se.fit = TRUE)
-pred_right &lt;- predict(right_model, 
-                     newdata = pred_data[pred_data$apache_score &gt;= cutoff, ],
-                     se.fit = TRUE)
-
-# Combine predictions
-plot_data &lt;- data.frame(
-  apache_score = c(pred_data$apache_score[pred_data$apache_score &lt; cutoff],
-                   pred_data$apache_score[pred_data$apache_score &gt;= cutoff]),
-  predicted = c(pred_left$fit, pred_right$fit),
-  se = c(pred_left$se.fit, pred_right$se.fit),
-  side = c(rep(&quot;Control&quot;, sum(pred_data$apache_score &lt; cutoff)),
-           rep(&quot;Treatment&quot;, sum(pred_data$apache_score &gt;= cutoff)))
-)
-
-plot_data$lower &lt;- plot_data$predicted - 1.96 * plot_data$se
-plot_data$upper &lt;- plot_data$predicted + 1.96 * plot_data$se
-
-# Create binned scatter plot
-bin_data &lt;- data %&gt;%
-  mutate(bin = round(apache_score * 2) / 2) %&gt;%
-  group_by(bin) %&gt;%
-  summarise(mean_mortality = mean(mortality),
-            se_mortality = sd(mortality) / sqrt(n()),
-            .groups = &#39;drop&#39;) %&gt;%
-  filter(bin &gt;= 12 &amp; bin &lt;= 18)
-
-# Main plot
-p1 &lt;- ggplot() +
-  geom_point(data = bin_data, aes(x = bin, y = mean_mortality), 
-             alpha = 0.7, size = 2) +
-  geom_errorbar(data = bin_data, 
-                aes(x = bin, ymin = mean_mortality - 1.96 * se_mortality,
-                    ymax = mean_mortality + 1.96 * se_mortality),
-                width = 0.1, alpha = 0.7) +
-  geom_line(data = plot_data, aes(x = apache_score, y = predicted, color = side), 
-            size = 1.2) +
-  geom_ribbon(data = plot_data, 
-              aes(x = apache_score, ymin = lower, ymax = upper, fill = side),
-              alpha = 0.2) +
-  geom_vline(xintercept = cutoff, linetype = &quot;dashed&quot;, color = &quot;red&quot;, size = 1) +
-  scale_color_manual(values = c(&quot;Control&quot; = &quot;#1f77b4&quot;, &quot;Treatment&quot; = &quot;#ff7f0e&quot;)) +
-  scale_fill_manual(values = c(&quot;Control&quot; = &quot;#1f77b4&quot;, &quot;Treatment&quot; = &quot;#ff7f0e&quot;)) +
-  labs(title = &quot;RDD: Effect of ICU Admission on 30-Day Mortality&quot;,
-       x = &quot;APACHE Score&quot;, 
-       y = &quot;30-Day Mortality Rate&quot;,
-       color = &quot;Treatment Status&quot;,
-       fill = &quot;Treatment Status&quot;) +
-  theme_minimal() +
-  theme(legend.position = &quot;bottom&quot;) +
-  annotate(&quot;text&quot;, x = cutoff + 0.5, y = 0.25, 
-           label = paste(&quot;ICU Cutoff\n(Score ≥&quot;, cutoff, &quot;)&quot;), 
-           color = &quot;red&quot;, size = 3)
-
-print(p1)
-
-# Results summary
-results &lt;- data.frame(
-  Method = c(&quot;Parametric&quot;, &quot;Nonparametric&quot;, &quot;Placebo Test&quot;),
-  Estimate = c(param_effect, nonparam_effect, placebo_effect),
-  SE = c(param_se, nonparam_se, placebo_se),
-  Lower_CI = c(param_effect - 1.96 * param_se,
-               nonparam_effect - 1.96 * nonparam_se,
-               placebo_effect - 1.96 * placebo_se),
-  Upper_CI = c(param_effect + 1.96 * param_se,
-               nonparam_effect + 1.96 * nonparam_se,
-               placebo_effect + 1.96 * placebo_se)
-)
-
-print(results)
-
-# Effect size interpretation
-cat(&quot;\nInterpretation:\n&quot;)
-cat(&quot;True effect:&quot;, true_effect, &quot;(15 percentage point reduction)\n&quot;)
-cat(&quot;Parametric estimate suggests&quot;, round(abs(param_effect) * 100, 1), 
-    &quot;percentage point reduction in mortality\n&quot;)
-cat(&quot;Nonparametric estimate suggests&quot;, round(abs(nonparam_effect) * 100, 1), 
-    &quot;percentage point reduction in mortality\n&quot;)</code></pre>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-1" tabindex="-1"></a><span class="co"># Load required libraries</span></span>
+<span id="cb44-2"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-2" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;rdrobust&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;rdrobust&quot;</span>)</span>
+<span id="cb44-3"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-3" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;ggplot2&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;ggplot2&quot;</span>)</span>
+<span id="cb44-4"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-4" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;dplyr&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;dplyr&quot;</span>)</span>
+<span id="cb44-5"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-5" tabindex="-1"></a><span class="fu">library</span>(rdrobust)</span>
+<span id="cb44-6"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-6" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb44-7"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-7" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb44-8"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-8" tabindex="-1"></a></span>
+<span id="cb44-9"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-9" tabindex="-1"></a><span class="co"># Set seed for reproducibility</span></span>
+<span id="cb44-10"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-10" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">456</span>)</span>
+<span id="cb44-11"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-11" tabindex="-1"></a></span>
+<span id="cb44-12"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-12" tabindex="-1"></a><span class="co"># Simulate data</span></span>
+<span id="cb44-13"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-13" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
+<span id="cb44-14"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-14" tabindex="-1"></a>cutoff <span class="ot">&lt;-</span> <span class="dv">15</span></span>
+<span id="cb44-15"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-15" tabindex="-1"></a></span>
+<span id="cb44-16"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-16" tabindex="-1"></a><span class="co"># Running variable: APACHE score (10-20)</span></span>
+<span id="cb44-17"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-17" tabindex="-1"></a>apache_score <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="dv">10</span>, <span class="dv">20</span>)</span>
+<span id="cb44-18"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-18" tabindex="-1"></a></span>
+<span id="cb44-19"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-19" tabindex="-1"></a><span class="co"># Treatment: ICU admission (sharp design)</span></span>
+<span id="cb44-20"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-20" tabindex="-1"></a>icu_admission <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(apache_score <span class="sc">&gt;=</span> cutoff)</span>
+<span id="cb44-21"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-21" tabindex="-1"></a></span>
+<span id="cb44-22"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-22" tabindex="-1"></a><span class="co"># Baseline mortality risk (smooth function of APACHE score)</span></span>
+<span id="cb44-23"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-23" tabindex="-1"></a>baseline_risk <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="sc">+</span> <span class="fl">0.03</span> <span class="sc">*</span> (apache_score <span class="sc">-</span> <span class="dv">15</span>) <span class="sc">+</span> <span class="fl">0.001</span> <span class="sc">*</span> (apache_score <span class="sc">-</span> <span class="dv">15</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb44-24"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-24" tabindex="-1"></a></span>
+<span id="cb44-25"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-25" tabindex="-1"></a><span class="co"># True treatment effect: -0.15 (15 percentage point reduction)</span></span>
+<span id="cb44-26"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-26" tabindex="-1"></a>true_effect <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.15</span></span>
+<span id="cb44-27"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-27" tabindex="-1"></a>mortality_prob <span class="ot">&lt;-</span> baseline_risk <span class="sc">+</span> true_effect <span class="sc">*</span> icu_admission</span>
+<span id="cb44-28"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-28" tabindex="-1"></a></span>
+<span id="cb44-29"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-29" tabindex="-1"></a><span class="co"># Add random noise and generate binary outcome</span></span>
+<span id="cb44-30"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-30" tabindex="-1"></a>mortality_prob <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">0</span>, <span class="fu">pmin</span>(<span class="dv">1</span>, mortality_prob <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">0.05</span>)))</span>
+<span id="cb44-31"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-31" tabindex="-1"></a>mortality <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, mortality_prob)</span>
+<span id="cb44-32"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-32" tabindex="-1"></a></span>
+<span id="cb44-33"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-33" tabindex="-1"></a><span class="co"># Create dataset</span></span>
+<span id="cb44-34"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-34" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb44-35"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-35" tabindex="-1"></a>  <span class="at">apache_score =</span> apache_score,</span>
+<span id="cb44-36"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-36" tabindex="-1"></a>  <span class="at">icu_admission =</span> icu_admission,</span>
+<span id="cb44-37"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-37" tabindex="-1"></a>  <span class="at">mortality =</span> mortality,</span>
+<span id="cb44-38"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-38" tabindex="-1"></a>  <span class="at">centered_score =</span> apache_score <span class="sc">-</span> cutoff</span>
+<span id="cb44-39"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-39" tabindex="-1"></a>)</span>
+<span id="cb44-40"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-40" tabindex="-1"></a></span>
+<span id="cb44-41"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-41" tabindex="-1"></a><span class="co"># Parametric estimation with local linear regression</span></span>
+<span id="cb44-42"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-42" tabindex="-1"></a>param_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(mortality <span class="sc">~</span> icu_admission <span class="sc">+</span> centered_score <span class="sc">+</span> </span>
+<span id="cb44-43"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-43" tabindex="-1"></a>                 <span class="fu">I</span>(centered_score <span class="sc">*</span> icu_admission), <span class="at">data =</span> data)</span>
+<span id="cb44-44"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-44" tabindex="-1"></a>param_effect <span class="ot">&lt;-</span> <span class="fu">coef</span>(param_model)[<span class="st">&quot;icu_admission&quot;</span>]</span>
+<span id="cb44-45"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-45" tabindex="-1"></a>param_se <span class="ot">&lt;-</span> <span class="fu">summary</span>(param_model)<span class="sc">$</span>coefficients[<span class="st">&quot;icu_admission&quot;</span>, <span class="st">&quot;Std. Error&quot;</span>]</span>
+<span id="cb44-46"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-46" tabindex="-1"></a></span>
+<span id="cb44-47"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb44-47" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Parametric RDD estimate:&quot;</span>, <span class="fu">round</span>(param_effect, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Parametric RDD estimate: -0.0593</code></pre>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb46-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Standard error:&quot;</span>, <span class="fu">round</span>(param_se, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Standard error: 0.0174</code></pre>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb48-1" tabindex="-1"></a><span class="co"># Nonparametric estimation using rdrobust</span></span>
+<span id="cb48-2"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb48-2" tabindex="-1"></a>rd_result <span class="ot">&lt;-</span> <span class="fu">rdrobust</span>(<span class="at">y =</span> data<span class="sc">$</span>mortality, <span class="at">x =</span> data<span class="sc">$</span>apache_score, <span class="at">c =</span> cutoff)</span>
+<span id="cb48-3"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb48-3" tabindex="-1"></a>nonparam_effect <span class="ot">&lt;-</span> rd_result<span class="sc">$</span>coef[<span class="st">&quot;Robust&quot;</span>, ]</span>
+<span id="cb48-4"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb48-4" tabindex="-1"></a>nonparam_se <span class="ot">&lt;-</span> rd_result<span class="sc">$</span>se[<span class="st">&quot;Robust&quot;</span>, ]</span>
+<span id="cb48-5"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb48-5" tabindex="-1"></a>optimal_bandwidth <span class="ot">&lt;-</span> rd_result<span class="sc">$</span>bws[<span class="st">&quot;h&quot;</span>, <span class="st">&quot;left&quot;</span>]</span>
+<span id="cb48-6"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb48-6" tabindex="-1"></a></span>
+<span id="cb48-7"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb48-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Nonparametric RDD estimate:&quot;</span>, <span class="fu">round</span>(nonparam_effect, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Nonparametric RDD estimate: -0.0116</code></pre>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb50-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Robust standard error:&quot;</span>, <span class="fu">round</span>(nonparam_se, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Robust standard error: 0.032</code></pre>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb52-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Optimal bandwidth:&quot;</span>, <span class="fu">round</span>(optimal_bandwidth, <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Optimal bandwidth: 1.14</code></pre>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-1" tabindex="-1"></a><span class="co"># Placebo test at false cutoff</span></span>
+<span id="cb54-2"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-2" tabindex="-1"></a>false_cutoff <span class="ot">&lt;-</span> <span class="dv">13</span></span>
+<span id="cb54-3"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-3" tabindex="-1"></a>placebo_result <span class="ot">&lt;-</span> <span class="fu">rdrobust</span>(<span class="at">y =</span> data<span class="sc">$</span>mortality, <span class="at">x =</span> data<span class="sc">$</span>apache_score, <span class="at">c =</span> false_cutoff)</span>
+<span id="cb54-4"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-4" tabindex="-1"></a>placebo_effect <span class="ot">&lt;-</span> placebo_result<span class="sc">$</span>coef[<span class="st">&quot;Robust&quot;</span>, ]</span>
+<span id="cb54-5"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-5" tabindex="-1"></a>placebo_se <span class="ot">&lt;-</span> placebo_result<span class="sc">$</span>se[<span class="st">&quot;Robust&quot;</span>, ]</span>
+<span id="cb54-6"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-6" tabindex="-1"></a></span>
+<span id="cb54-7"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb54-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Placebo test estimate:&quot;</span>, <span class="fu">round</span>(placebo_effect, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Placebo test estimate: 0.0092</code></pre>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb56-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Placebo test p-value:&quot;</span>, <span class="fu">round</span>(<span class="dv">2</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(placebo_effect <span class="sc">/</span> placebo_se))), <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Placebo test p-value: 0.908</code></pre>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-1" tabindex="-1"></a><span class="co"># Visualization</span></span>
+<span id="cb58-2"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-2" tabindex="-1"></a><span class="co"># Create prediction data for smooth curves</span></span>
+<span id="cb58-3"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-3" tabindex="-1"></a>pred_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">apache_score =</span> <span class="fu">seq</span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="fl">0.1</span>))</span>
+<span id="cb58-4"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-4" tabindex="-1"></a>pred_data<span class="sc">$</span>centered_score <span class="ot">&lt;-</span> pred_data<span class="sc">$</span>apache_score <span class="sc">-</span> cutoff</span>
+<span id="cb58-5"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-5" tabindex="-1"></a>pred_data<span class="sc">$</span>icu_admission <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(pred_data<span class="sc">$</span>apache_score <span class="sc">&gt;=</span> cutoff)</span>
+<span id="cb58-6"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-6" tabindex="-1"></a></span>
+<span id="cb58-7"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-7" tabindex="-1"></a><span class="co"># Separate models for each side</span></span>
+<span id="cb58-8"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-8" tabindex="-1"></a>left_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(mortality <span class="sc">~</span> centered_score, <span class="at">data =</span> data[data<span class="sc">$</span>apache_score <span class="sc">&lt;</span> cutoff, ])</span>
+<span id="cb58-9"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-9" tabindex="-1"></a>right_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(mortality <span class="sc">~</span> centered_score, <span class="at">data =</span> data[data<span class="sc">$</span>apache_score <span class="sc">&gt;=</span> cutoff, ])</span>
+<span id="cb58-10"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-10" tabindex="-1"></a></span>
+<span id="cb58-11"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-11" tabindex="-1"></a>pred_left <span class="ot">&lt;-</span> <span class="fu">predict</span>(left_model, </span>
+<span id="cb58-12"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-12" tabindex="-1"></a>                    <span class="at">newdata =</span> pred_data[pred_data<span class="sc">$</span>apache_score <span class="sc">&lt;</span> cutoff, ],</span>
+<span id="cb58-13"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-13" tabindex="-1"></a>                    <span class="at">se.fit =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb58-14"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-14" tabindex="-1"></a>pred_right <span class="ot">&lt;-</span> <span class="fu">predict</span>(right_model, </span>
+<span id="cb58-15"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-15" tabindex="-1"></a>                     <span class="at">newdata =</span> pred_data[pred_data<span class="sc">$</span>apache_score <span class="sc">&gt;=</span> cutoff, ],</span>
+<span id="cb58-16"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-16" tabindex="-1"></a>                     <span class="at">se.fit =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb58-17"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-17" tabindex="-1"></a></span>
+<span id="cb58-18"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-18" tabindex="-1"></a><span class="co"># Combine predictions</span></span>
+<span id="cb58-19"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-19" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb58-20"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-20" tabindex="-1"></a>  <span class="at">apache_score =</span> <span class="fu">c</span>(pred_data<span class="sc">$</span>apache_score[pred_data<span class="sc">$</span>apache_score <span class="sc">&lt;</span> cutoff],</span>
+<span id="cb58-21"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-21" tabindex="-1"></a>                   pred_data<span class="sc">$</span>apache_score[pred_data<span class="sc">$</span>apache_score <span class="sc">&gt;=</span> cutoff]),</span>
+<span id="cb58-22"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-22" tabindex="-1"></a>  <span class="at">predicted =</span> <span class="fu">c</span>(pred_left<span class="sc">$</span>fit, pred_right<span class="sc">$</span>fit),</span>
+<span id="cb58-23"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-23" tabindex="-1"></a>  <span class="at">se =</span> <span class="fu">c</span>(pred_left<span class="sc">$</span>se.fit, pred_right<span class="sc">$</span>se.fit),</span>
+<span id="cb58-24"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-24" tabindex="-1"></a>  <span class="at">side =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">&quot;Control&quot;</span>, <span class="fu">sum</span>(pred_data<span class="sc">$</span>apache_score <span class="sc">&lt;</span> cutoff)),</span>
+<span id="cb58-25"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-25" tabindex="-1"></a>           <span class="fu">rep</span>(<span class="st">&quot;Treatment&quot;</span>, <span class="fu">sum</span>(pred_data<span class="sc">$</span>apache_score <span class="sc">&gt;=</span> cutoff)))</span>
+<span id="cb58-26"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-26" tabindex="-1"></a>)</span>
+<span id="cb58-27"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-27" tabindex="-1"></a></span>
+<span id="cb58-28"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-28" tabindex="-1"></a>plot_data<span class="sc">$</span>lower <span class="ot">&lt;-</span> plot_data<span class="sc">$</span>predicted <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> plot_data<span class="sc">$</span>se</span>
+<span id="cb58-29"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-29" tabindex="-1"></a>plot_data<span class="sc">$</span>upper <span class="ot">&lt;-</span> plot_data<span class="sc">$</span>predicted <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> plot_data<span class="sc">$</span>se</span>
+<span id="cb58-30"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-30" tabindex="-1"></a></span>
+<span id="cb58-31"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-31" tabindex="-1"></a><span class="co"># Create binned scatter plot</span></span>
+<span id="cb58-32"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-32" tabindex="-1"></a>bin_data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb58-33"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-33" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">bin =</span> <span class="fu">round</span>(apache_score <span class="sc">*</span> <span class="dv">2</span>) <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb58-34"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-34" tabindex="-1"></a>  <span class="fu">group_by</span>(bin) <span class="sc">%&gt;%</span></span>
+<span id="cb58-35"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-35" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_mortality =</span> <span class="fu">mean</span>(mortality),</span>
+<span id="cb58-36"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-36" tabindex="-1"></a>            <span class="at">se_mortality =</span> <span class="fu">sd</span>(mortality) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb58-37"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-37" tabindex="-1"></a>            <span class="at">.groups =</span> <span class="st">&#39;drop&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb58-38"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-38" tabindex="-1"></a>  <span class="fu">filter</span>(bin <span class="sc">&gt;=</span> <span class="dv">12</span> <span class="sc">&amp;</span> bin <span class="sc">&lt;=</span> <span class="dv">18</span>)</span>
+<span id="cb58-39"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-39" tabindex="-1"></a></span>
+<span id="cb58-40"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-40" tabindex="-1"></a><span class="co"># Main plot</span></span>
+<span id="cb58-41"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-41" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb58-42"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-42" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> bin_data, <span class="fu">aes</span>(<span class="at">x =</span> bin, <span class="at">y =</span> mean_mortality), </span>
+<span id="cb58-43"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-43" tabindex="-1"></a>             <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb58-44"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-44" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="at">data =</span> bin_data, </span>
+<span id="cb58-45"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-45" tabindex="-1"></a>                <span class="fu">aes</span>(<span class="at">x =</span> bin, <span class="at">ymin =</span> mean_mortality <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> se_mortality,</span>
+<span id="cb58-46"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-46" tabindex="-1"></a>                    <span class="at">ymax =</span> mean_mortality <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> se_mortality),</span>
+<span id="cb58-47"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-47" tabindex="-1"></a>                <span class="at">width =</span> <span class="fl">0.1</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb58-48"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-48" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> plot_data, <span class="fu">aes</span>(<span class="at">x =</span> apache_score, <span class="at">y =</span> predicted, <span class="at">color =</span> side), </span>
+<span id="cb58-49"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-49" tabindex="-1"></a>            <span class="at">size =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb58-50"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-50" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data =</span> plot_data, </span>
+<span id="cb58-51"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-51" tabindex="-1"></a>              <span class="fu">aes</span>(<span class="at">x =</span> apache_score, <span class="at">ymin =</span> lower, <span class="at">ymax =</span> upper, <span class="at">fill =</span> side),</span>
+<span id="cb58-52"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-52" tabindex="-1"></a>              <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb58-53"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-53" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> cutoff, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">color =</span> <span class="st">&quot;red&quot;</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb58-54"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-54" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;Control&quot;</span> <span class="ot">=</span> <span class="st">&quot;#1f77b4&quot;</span>, <span class="st">&quot;Treatment&quot;</span> <span class="ot">=</span> <span class="st">&quot;#ff7f0e&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb58-55"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-55" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;Control&quot;</span> <span class="ot">=</span> <span class="st">&quot;#1f77b4&quot;</span>, <span class="st">&quot;Treatment&quot;</span> <span class="ot">=</span> <span class="st">&quot;#ff7f0e&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb58-56"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-56" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;RDD: Effect of ICU Admission on 30-Day Mortality&quot;</span>,</span>
+<span id="cb58-57"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-57" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;APACHE Score&quot;</span>, </span>
+<span id="cb58-58"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-58" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;30-Day Mortality Rate&quot;</span>,</span>
+<span id="cb58-59"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-59" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">&quot;Treatment Status&quot;</span>,</span>
+<span id="cb58-60"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-60" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">&quot;Treatment Status&quot;</span>) <span class="sc">+</span></span>
+<span id="cb58-61"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-61" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb58-62"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-62" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="sc">+</span></span>
+<span id="cb58-63"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-63" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="at">x =</span> cutoff <span class="sc">+</span> <span class="fl">0.5</span>, <span class="at">y =</span> <span class="fl">0.25</span>, </span>
+<span id="cb58-64"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-64" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">paste</span>(<span class="st">&quot;ICU Cutoff</span><span class="sc">\n</span><span class="st">(Score ≥&quot;</span>, cutoff, <span class="st">&quot;)&quot;</span>), </span>
+<span id="cb58-65"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-65" tabindex="-1"></a>           <span class="at">color =</span> <span class="st">&quot;red&quot;</span>, <span class="at">size =</span> <span class="dv">3</span>)</span>
+<span id="cb58-66"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-66" tabindex="-1"></a></span>
+<span id="cb58-67"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb58-67" tabindex="-1"></a><span class="fu">print</span>(p1)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb59-1" tabindex="-1"></a><span class="co"># Results summary</span></span>
+<span id="cb59-2"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb59-2" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb59-3"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb59-3" tabindex="-1"></a>  <span class="at">Method =</span> <span class="fu">c</span>(<span class="st">&quot;Parametric&quot;</span>, <span class="st">&quot;Nonparametric&quot;</span>, <span class="st">&quot;Placebo Test&quot;</span>),</span>
+<span id="cb59-4"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb59-4" tabindex="-1"></a>  <span class="at">Estimate =</span> <span class="fu">c</span>(param_effect, nonparam_effect, placebo_effect),</span>
+<span id="cb59-5"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb59-5" tabindex="-1"></a>  <span class="at">SE =</span> <span class="fu">c</span>(param_se, nonparam_se, placebo_se),</span>
+<span id="cb59-6"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb59-6" tabindex="-1"></a>  <span class="at">Lower_CI =</span> <span class="fu">c</span>(param_effect <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> param_se,</span>
+<span id="cb59-7"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb59-7" tabindex="-1"></a>               nonparam_effect <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> nonparam_se,</span>
+<span id="cb59-8"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb59-8" tabindex="-1"></a>               placebo_effect <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> placebo_se),</span>
+<span id="cb59-9"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb59-9" tabindex="-1"></a>  <span class="at">Upper_CI =</span> <span class="fu">c</span>(param_effect <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> param_se,</span>
+<span id="cb59-10"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb59-10" tabindex="-1"></a>               nonparam_effect <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> nonparam_se,</span>
+<span id="cb59-11"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb59-11" tabindex="-1"></a>               placebo_effect <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> placebo_se)</span>
+<span id="cb59-12"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb59-12" tabindex="-1"></a>)</span>
+<span id="cb59-13"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb59-13" tabindex="-1"></a></span>
+<span id="cb59-14"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb59-14" tabindex="-1"></a><span class="fu">print</span>(results)</span></code></pre></div>
+<pre><code>##          Method     Estimate         SE    Lower_CI    Upper_CI
+## 1    Parametric -0.059252445 0.01744663 -0.09344783 -0.02505706
+## 2 Nonparametric -0.011599070 0.03202451 -0.07436711  0.05116897
+## 3  Placebo Test  0.009224179 0.07984869 -0.14727926  0.16572762</code></pre>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb61-1" tabindex="-1"></a><span class="co"># Effect size interpretation</span></span>
+<span id="cb61-2"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb61-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Interpretation:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+## Interpretation:</code></pre>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb63-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;True effect:&quot;</span>, true_effect, <span class="st">&quot;(15 percentage point reduction)</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## True effect: -0.15 (15 percentage point reduction)</code></pre>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb65-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Parametric estimate suggests&quot;</span>, <span class="fu">round</span>(<span class="fu">abs</span>(param_effect) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>), </span>
+<span id="cb65-2"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb65-2" tabindex="-1"></a>    <span class="st">&quot;percentage point reduction in mortality</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Parametric estimate suggests 5.9 percentage point reduction in mortality</code></pre>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb67-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Nonparametric estimate suggests&quot;</span>, <span class="fu">round</span>(<span class="fu">abs</span>(nonparam_effect) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>), </span>
+<span id="cb67-2"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#cb67-2" tabindex="-1"></a>    <span class="st">&quot;percentage point reduction in mortality</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Nonparametric estimate suggests 1.2 percentage point reduction in mortality</code></pre>
 </div>
 </div>
 <div id="interpretation-and-diagnostics" class="section level2 hasAnchor" number="6.3">

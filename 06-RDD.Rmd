@@ -69,7 +69,7 @@ Several empirical tests can assess assumption validity. Density tests examine wh
 
 We simulate data for 2000 emergency department patients with APACHE scores ranging from 10 to 20. The true treatment effect is a 15 percentage point reduction in mortality risk for ICU patients at the cutoff. Our implementation includes both parametric and nonparametric estimation approaches.
 
-```r
+```{r}
 # Load required libraries
 if (!requireNamespace("rdrobust", quietly = TRUE)) install.packages("rdrobust")
 if (!requireNamespace("ggplot2", quietly = TRUE)) install.packages("ggplot2")
@@ -120,7 +120,7 @@ cat("Parametric RDD estimate:", round(param_effect, 4), "\n")
 cat("Standard error:", round(param_se, 4), "\n")
 ```
 
-```r
+```{r}
 # Nonparametric estimation using rdrobust
 rd_result <- rdrobust(y = data$mortality, x = data$apache_score, c = cutoff)
 nonparam_effect <- rd_result$coef["Robust", ]
@@ -132,7 +132,7 @@ cat("Robust standard error:", round(nonparam_se, 4), "\n")
 cat("Optimal bandwidth:", round(optimal_bandwidth, 2), "\n")
 ```
 
-```r
+```{r}
 
 # Placebo test at false cutoff
 false_cutoff <- 13
@@ -144,7 +144,7 @@ cat("Placebo test estimate:", round(placebo_effect, 4), "\n")
 cat("Placebo test p-value:", round(2 * (1 - pnorm(abs(placebo_effect / placebo_se))), 4), "\n")
 ```
 
-```
+```{r}
 # Visualization
 # Create prediction data for smooth curves
 pred_data <- data.frame(apache_score = seq(10, 20, 0.1))
