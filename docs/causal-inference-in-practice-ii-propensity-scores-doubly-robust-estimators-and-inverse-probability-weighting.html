@@ -23,7 +23,7 @@
 <meta name="author" content="Kamran Afzali" />
 
 
-<meta name="date" content="2025-08-25" />
+<meta name="date" content="2025-08-29" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -281,36 +281,70 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 \widehat{\text{ATE}} = \frac{1}{n} \sum_{i=1}^n \left( \frac{D_i Y_i}{\hat e(X_i)} - \frac{(1-D_i)Y_i}{1 - \hat e(X_i)} \right).
 \]</span></p>
 <p>In practice, one normally models <span class="math inline">\(e(x)\)</span> with logistic regression:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb10-2"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-2" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb10-4"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-4" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
-<span id="cb10-5"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-5" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
-<span id="cb10-6"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-6" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n,<span class="dv">1</span>,<span class="fl">0.3</span>)</span>
-<span id="cb10-7"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-7" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">plogis</span>(<span class="sc">-</span><span class="fl">0.5</span> <span class="sc">+</span> <span class="fl">0.8</span> <span class="sc">*</span> x1 <span class="sc">-</span> <span class="fl">0.4</span> <span class="sc">*</span> x2)</span>
-<span id="cb10-8"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-8" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n,<span class="dv">1</span>,e)</span>
-<span id="cb10-9"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-9" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> d <span class="sc">+</span> <span class="fl">1.2</span> <span class="sc">*</span> x1 <span class="sc">-</span> <span class="fl">0.5</span> <span class="sc">*</span> x2 <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
-<span id="cb10-10"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-10" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(x1, x2, <span class="at">treatment =</span> d, <span class="at">outcome =</span> y)</span>
-<span id="cb10-11"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-11" tabindex="-1"></a></span>
-<span id="cb10-12"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-12" tabindex="-1"></a>ps_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(treatment <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">data =</span> data, <span class="at">family =</span> binomial)</span>
-<span id="cb10-13"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-13" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">pscore =</span> <span class="fu">predict</span>(ps_model, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>))</span>
-<span id="cb10-14"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-14" tabindex="-1"></a></span>
-<span id="cb10-15"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-15" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> pscore, <span class="at">color =</span> <span class="fu">factor</span>(treatment))) <span class="sc">+</span></span>
-<span id="cb10-16"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-16" tabindex="-1"></a>  <span class="fu">geom_density</span>() <span class="sc">+</span></span>
-<span id="cb10-17"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-17" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Propensity Score by Treatment Group&quot;</span>)</span>
-<span id="cb10-18"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-18" tabindex="-1"></a></span>
-<span id="cb10-19"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-19" tabindex="-1"></a></span>
-<span id="cb10-20"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-20" tabindex="-1"></a></span>
-<span id="cb10-21"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb10-21" tabindex="-1"></a></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb12-2"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-2" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb12-4"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-4" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
+<span id="cb12-5"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-5" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb12-6"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-6" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n,<span class="dv">1</span>,<span class="fl">0.3</span>)</span>
+<span id="cb12-7"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-7" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">plogis</span>(<span class="sc">-</span><span class="fl">0.5</span> <span class="sc">+</span> <span class="fl">0.8</span> <span class="sc">*</span> x1 <span class="sc">-</span> <span class="fl">0.4</span> <span class="sc">*</span> x2)</span>
+<span id="cb12-8"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-8" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n,<span class="dv">1</span>,e)</span>
+<span id="cb12-9"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-9" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> d <span class="sc">+</span> <span class="fl">1.2</span> <span class="sc">*</span> x1 <span class="sc">-</span> <span class="fl">0.5</span> <span class="sc">*</span> x2 <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb12-10"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-10" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(x1, x2, <span class="at">treatment =</span> d, <span class="at">outcome =</span> y)</span>
+<span id="cb12-11"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-11" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-12" tabindex="-1"></a>ps_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(treatment <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">data =</span> data, <span class="at">family =</span> binomial)</span>
+<span id="cb12-13"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-13" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">pscore =</span> <span class="fu">predict</span>(ps_model, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>))</span>
+<span id="cb12-14"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-14" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-15" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> pscore, <span class="at">color =</span> <span class="fu">factor</span>(treatment))) <span class="sc">+</span></span>
+<span id="cb12-16"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-16" tabindex="-1"></a>  <span class="fu">geom_density</span>() <span class="sc">+</span></span>
+<span id="cb12-17"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-17" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Propensity Score by Treatment Group&quot;</span>)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>To estimate ATE by matching:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb11-1" tabindex="-1"></a><span class="fu">library</span>(MatchIt)</span>
-<span id="cb11-2"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb11-2" tabindex="-1"></a>match_out <span class="ot">&lt;-</span> <span class="fu">matchit</span>(treatment <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">data =</span> data, <span class="at">method =</span> <span class="st">&quot;nearest&quot;</span>, <span class="at">ratio =</span> <span class="dv">1</span>)</span>
-<span id="cb11-3"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb11-3" tabindex="-1"></a>matched <span class="ot">&lt;-</span> <span class="fu">match.data</span>(match_out)</span>
-<span id="cb11-4"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb11-4" tabindex="-1"></a>lm_matched <span class="ot">&lt;-</span> <span class="fu">lm</span>(outcome <span class="sc">~</span> treatment, <span class="at">data =</span> matched)</span>
-<span id="cb11-5"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb11-5" tabindex="-1"></a><span class="fu">summary</span>(lm_matched)</span>
-<span id="cb11-6"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb11-6" tabindex="-1"></a>lm_non_matched <span class="ot">&lt;-</span> <span class="fu">lm</span>(outcome <span class="sc">~</span> treatment, <span class="at">data =</span> data)</span>
-<span id="cb11-7"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb11-7" tabindex="-1"></a><span class="fu">summary</span>(lm_non_matched)</span>
-<span id="cb11-8"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb11-8" tabindex="-1"></a><span class="fu">plot</span>(match_out, <span class="at">type =</span> <span class="st">&quot;qq&quot;</span>, <span class="at">interactive =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb13-1" tabindex="-1"></a><span class="fu">library</span>(MatchIt)</span>
+<span id="cb13-2"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb13-2" tabindex="-1"></a>match_out <span class="ot">&lt;-</span> <span class="fu">matchit</span>(treatment <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">data =</span> data, <span class="at">method =</span> <span class="st">&quot;nearest&quot;</span>, <span class="at">ratio =</span> <span class="dv">1</span>)</span>
+<span id="cb13-3"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb13-3" tabindex="-1"></a>matched <span class="ot">&lt;-</span> <span class="fu">match.data</span>(match_out)</span>
+<span id="cb13-4"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb13-4" tabindex="-1"></a>lm_matched <span class="ot">&lt;-</span> <span class="fu">lm</span>(outcome <span class="sc">~</span> treatment, <span class="at">data =</span> matched)</span>
+<span id="cb13-5"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb13-5" tabindex="-1"></a><span class="fu">summary</span>(lm_matched)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = outcome ~ treatment, data = matched)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.5247 -1.0339  0.0542  1.0316  4.3563 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  3.13150    0.05470   57.25   &lt;2e-16 ***
+## treatment    2.24252    0.07736   28.99   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.484 on 1470 degrees of freedom
+## Multiple R-squared:  0.3637, Adjusted R-squared:  0.3633 
+## F-statistic: 840.3 on 1 and 1470 DF,  p-value: &lt; 2.2e-16</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb15-1" tabindex="-1"></a>lm_non_matched <span class="ot">&lt;-</span> <span class="fu">lm</span>(outcome <span class="sc">~</span> treatment, <span class="at">data =</span> data)</span>
+<span id="cb15-2"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb15-2" tabindex="-1"></a><span class="fu">summary</span>(lm_non_matched)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = outcome ~ treatment, data = data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.9920 -1.0709  0.0172  1.0472  4.7084 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  2.51663    0.04359   57.73   &lt;2e-16 ***
+## treatment    2.85739    0.07186   39.77   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.55 on 1998 degrees of freedom
+## Multiple R-squared:  0.4418, Adjusted R-squared:  0.4415 
+## F-statistic:  1581 on 1 and 1998 DF,  p-value: &lt; 2.2e-16</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb17-1" tabindex="-1"></a><span class="fu">plot</span>(match_out, <span class="at">type =</span> <span class="st">&quot;qq&quot;</span>, <span class="at">interactive =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>Here, <code>coefficients()</code> for treatment gives the ATE among matched units, interpretable under the assumption of balance on <span class="math inline">\(X\)</span>. Diagnostics should include covariate balance checks after matching (e.g., <code>plot(match_out, type="jitter")</code>).</p>
 </div>
 <div id="inverse-probability-weighting-ipw" class="section level2 hasAnchor" number="3.2">
@@ -324,11 +358,41 @@ w_i = \frac{D_i}{\hat e(X_i)} + \frac{1-D_i}{1-\hat e(X_i)}.
 \widehat{\text{ATE}}_{\text{IPW}} = \frac{\sum_i w_i Y_i}{\sum_i w_i}.
 \]</span></p>
 <p>IPW estimates the ATE without explicit modeling of <span class="math inline">\(E[Y \mid D, X]\)</span>, but hinge critically on correctly specified propensity scores and stable overlap.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-1" tabindex="-1"></a><span class="fu">library</span>(survey)</span>
-<span id="cb12-2"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-2" tabindex="-1"></a>data<span class="sc">$</span>wt <span class="ot">&lt;-</span> <span class="fu">with</span>(data, <span class="fu">ifelse</span>(treatment <span class="sc">==</span> <span class="dv">1</span>, <span class="dv">1</span><span class="sc">/</span>pscore, <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>pscore)))</span>
-<span id="cb12-3"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-3" tabindex="-1"></a>design <span class="ot">&lt;-</span> <span class="fu">svydesign</span>(<span class="at">ids =</span> <span class="sc">~</span><span class="dv">1</span>, <span class="at">weights =</span> <span class="sc">~</span>wt, <span class="at">data =</span> data)</span>
-<span id="cb12-4"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-4" tabindex="-1"></a>ipw_mod <span class="ot">&lt;-</span> <span class="fu">svyglm</span>(outcome <span class="sc">~</span> treatment, <span class="at">design =</span> design)</span>
-<span id="cb12-5"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-5" tabindex="-1"></a><span class="fu">summary</span>(ipw_mod)</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb18-1" tabindex="-1"></a><span class="fu">library</span>(survey)</span></code></pre></div>
+<pre><code>## Loading required package: grid</code></pre>
+<pre><code>## Loading required package: Matrix</code></pre>
+<pre><code>## 
+## Attaching package: &#39;Matrix&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:tidyr&#39;:
+## 
+##     expand, pack, unpack</code></pre>
+<pre><code>## Loading required package: survival</code></pre>
+<pre><code>## 
+## Attaching package: &#39;survey&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:graphics&#39;:
+## 
+##     dotchart</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb26-1" tabindex="-1"></a>data<span class="sc">$</span>wt <span class="ot">&lt;-</span> <span class="fu">with</span>(data, <span class="fu">ifelse</span>(treatment <span class="sc">==</span> <span class="dv">1</span>, <span class="dv">1</span><span class="sc">/</span>pscore, <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>pscore)))</span>
+<span id="cb26-2"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb26-2" tabindex="-1"></a>design <span class="ot">&lt;-</span> <span class="fu">svydesign</span>(<span class="at">ids =</span> <span class="sc">~</span><span class="dv">1</span>, <span class="at">weights =</span> <span class="sc">~</span>wt, <span class="at">data =</span> data)</span>
+<span id="cb26-3"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb26-3" tabindex="-1"></a>ipw_mod <span class="ot">&lt;-</span> <span class="fu">svyglm</span>(outcome <span class="sc">~</span> treatment, <span class="at">design =</span> design)</span>
+<span id="cb26-4"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb26-4" tabindex="-1"></a><span class="fu">summary</span>(ipw_mod)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## svyglm(formula = outcome ~ treatment, design = design)
+## 
+## Survey design:
+## svydesign(ids = ~1, weights = ~wt, data = data)
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  2.86192    0.05166   55.40   &lt;2e-16 ***
+## treatment    1.84788    0.09692   19.07   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for gaussian family taken to be 2.628476)
+## 
+## Number of Fisher Scoring iterations: 2</code></pre>
 <p>The coefficient on <strong>treatment</strong> gives the IPW-estimated ATE. One must check for <strong>extreme weights</strong> using summaries (<code>summary(data_obs$wt)</code>) and consider trimming.</p>
 </div>
 <div id="doubly-robust-estimators" class="section level2 hasAnchor" number="3.3">
@@ -338,13 +402,14 @@ w_i = \frac{D_i}{\hat e(X_i)} + \frac{1-D_i}{1-\hat e(X_i)}.
 \widehat{\text{ATE}}_{\text{DR}} = \frac{1}{n} \sum_{i=1}^{n} \left[ m_1(X_i) - m_0(X_i) + \frac{D_i(Y_i - m_1(X_i))}{\hat{e}(X_i)} - \frac{(1 - D_i)(Y_i - m_0(X_i))}{1 - \hat{e}(X_i)} \right]
 \]</span></p>
 <p>where <span class="math inline">\(\hat m(D, X)\)</span> is an estimated regression of outcome on treatment and covariates.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb13-1" tabindex="-1"></a>om_mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(outcome <span class="sc">~</span> treatment <span class="sc">+</span> x1 <span class="sc">+</span> x2, <span class="at">data =</span> data)</span>
-<span id="cb13-2"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb13-2" tabindex="-1"></a>data<span class="sc">$</span>mu1_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(om_mod, <span class="at">newdata =</span> <span class="fu">transform</span>(data, <span class="at">treatment =</span> <span class="dv">1</span>))</span>
-<span id="cb13-3"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb13-3" tabindex="-1"></a>data<span class="sc">$</span>mu0_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(om_mod, <span class="at">newdata =</span> <span class="fu">transform</span>(data, <span class="at">treatment =</span> <span class="dv">0</span>))</span>
-<span id="cb13-4"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb13-4" tabindex="-1"></a></span>
-<span id="cb13-5"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb13-5" tabindex="-1"></a><span class="co"># Doubly robust ATE</span></span>
-<span id="cb13-6"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb13-6" tabindex="-1"></a>dr_ate <span class="ot">&lt;-</span> <span class="fu">with</span>(data, <span class="fu">mean</span>((treatment<span class="sc">/</span>pscore <span class="sc">-</span> (<span class="dv">1</span><span class="sc">-</span>treatment)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>pscore))<span class="sc">*</span>(outcome <span class="sc">-</span> (treatment<span class="sc">*</span>mu1_hat <span class="sc">+</span> (<span class="dv">1</span><span class="sc">-</span>treatment)<span class="sc">*</span>mu0_hat)) <span class="sc">+</span> mu1_hat <span class="sc">-</span> mu0_hat))</span>
-<span id="cb13-7"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb13-7" tabindex="-1"></a>dr_ate</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb28-1" tabindex="-1"></a>om_mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(outcome <span class="sc">~</span> treatment <span class="sc">+</span> x1 <span class="sc">+</span> x2, <span class="at">data =</span> data)</span>
+<span id="cb28-2"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb28-2" tabindex="-1"></a>data<span class="sc">$</span>mu1_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(om_mod, <span class="at">newdata =</span> <span class="fu">transform</span>(data, <span class="at">treatment =</span> <span class="dv">1</span>))</span>
+<span id="cb28-3"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb28-3" tabindex="-1"></a>data<span class="sc">$</span>mu0_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(om_mod, <span class="at">newdata =</span> <span class="fu">transform</span>(data, <span class="at">treatment =</span> <span class="dv">0</span>))</span>
+<span id="cb28-4"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb28-4" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb28-5" tabindex="-1"></a><span class="co"># Doubly robust ATE</span></span>
+<span id="cb28-6"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb28-6" tabindex="-1"></a>dr_ate <span class="ot">&lt;-</span> <span class="fu">with</span>(data, <span class="fu">mean</span>((treatment<span class="sc">/</span>pscore <span class="sc">-</span> (<span class="dv">1</span><span class="sc">-</span>treatment)<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>pscore))<span class="sc">*</span>(outcome <span class="sc">-</span> (treatment<span class="sc">*</span>mu1_hat <span class="sc">+</span> (<span class="dv">1</span><span class="sc">-</span>treatment)<span class="sc">*</span>mu0_hat)) <span class="sc">+</span> mu1_hat <span class="sc">-</span> mu0_hat))</span>
+<span id="cb28-7"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb28-7" tabindex="-1"></a>dr_ate</span></code></pre></div>
+<pre><code>## [1] 1.903413</code></pre>
 <p>This <code>dr_ate</code> estimate is <strong>doubly robust</strong>: consistent if either propensity or outcome model is correct. Practical use involves bootstrapping for variance.</p>
 </div>
 <div id="integrative-interpretation" class="section level2 hasAnchor" number="3.4">

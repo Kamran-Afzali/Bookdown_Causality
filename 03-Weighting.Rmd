@@ -13,7 +13,7 @@ $$
 
 In practice, one normally models $e(x)$ with logistic regression:
 
-```r
+```{r}
 library(tidyverse)
 
 set.seed(42)
@@ -40,7 +40,7 @@ ggplot(data, aes(x = pscore, color = factor(treatment))) +
 
 To estimate ATE by matching:
 
-```r
+```{r}
 library(MatchIt)
 match_out <- matchit(treatment ~ x1 + x2, data = data, method = "nearest", ratio = 1)
 matched <- match.data(match_out)
@@ -72,7 +72,7 @@ $$
 
 IPW estimates the ATE without explicit modeling of $E[Y \mid D, X]$, but hinge critically on correctly specified propensity scores and stable overlap.
 
-```r
+```{r}
 library(survey)
 data$wt <- with(data, ifelse(treatment == 1, 1/pscore, 1/(1-pscore)))
 design <- svydesign(ids = ~1, weights = ~wt, data = data)
@@ -94,7 +94,7 @@ $$
 
 where $\hat m(D, X)$ is an estimated regression of outcome on treatment and covariates.
 
-```r
+```{r}
 om_mod <- lm(outcome ~ treatment + x1 + x2, data = data)
 data$mu1_hat <- predict(om_mod, newdata = transform(data, treatment = 1))
 data$mu0_hat <- predict(om_mod, newdata = transform(data, treatment = 0))
