@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 8 Bayesian Structural Time Series for Causal Inference | Causal Inference in R</title>
+  <meta name="description" content="Chapter 8 Bayesian Structural Time Series for Causal Inference | Causal Inference in R" />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 8 Bayesian Structural Time Series for Causal Inference | Causal Inference in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 8 Bayesian Structural Time Series for Causal Inference | Causal Inference in R" />
+  
+  
+  
+
+<meta name="author" content="Kamran Afzali" />
+
+
+<meta name="date" content="2025-09-14" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Causality analysis in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Foundations of Causal Statistical Analysis</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#summary-table-techniques-for-causal-statistical-analysis"><i class="fa fa-check"></i><b>1.2</b> Summary Table: Techniques for Causal Statistical Analysis</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#methodological-deep-dive-with-practical-guidance"><i class="fa fa-check"></i><b>1.3</b> Methodological Deep Dive with Practical Guidance</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#discussion"><i class="fa fa-check"></i><b>1.4</b> Discussion</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><i class="fa fa-check"></i><b>2</b> Causal Inference in Practice I: Randomized Controlled Trials and Regression Adjustment</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#randomized-controlled-trials-design-and-analysis"><i class="fa fa-check"></i><b>2.2</b> 1. Randomized Controlled Trials: Design and Analysis</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#theoretical-foundations"><i class="fa fa-check"></i><b>2.2.1</b> Theoretical Foundations</a></li>
+<li class="chapter" data-level="2.2.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation"><i class="fa fa-check"></i><b>2.2.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.2.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#model-based-inference"><i class="fa fa-check"></i><b>2.2.3</b> Model-Based Inference</a></li>
+<li class="chapter" data-level="2.2.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#diagnostics-and-integrity"><i class="fa fa-check"></i><b>2.2.4</b> Diagnostics and Integrity</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#regression-adjustment-a-model-based-approach-to-causal-inference"><i class="fa fa-check"></i><b>2.3</b> 2. Regression Adjustment: A Model-Based Approach to Causal Inference</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conceptual-overview"><i class="fa fa-check"></i><b>2.3.1</b> Conceptual Overview</a></li>
+<li class="chapter" data-level="2.3.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation-1"><i class="fa fa-check"></i><b>2.3.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.3.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#limitations-and-diagnostics"><i class="fa fa-check"></i><b>2.3.3</b> Limitations and Diagnostics</a></li>
+<li class="chapter" data-level="2.3.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#causal-interpretation"><i class="fa fa-check"></i><b>2.3.4</b> Causal Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#toward-integrated-reasoning"><i class="fa fa-check"></i><b>2.4</b> Toward Integrated Reasoning</a></li>
+<li class="chapter" data-level="2.5" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conclusion"><i class="fa fa-check"></i><b>2.5</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><i class="fa fa-check"></i><b>3</b> Causal Inference in Practice II: Propensity Scores, Doubly Robust Estimators, and Inverse Probability Weighting</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#propensity-score-methods"><i class="fa fa-check"></i><b>3.1</b> Propensity Score Methods</a></li>
+<li class="chapter" data-level="3.2" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#inverse-probability-weighting-ipw"><i class="fa fa-check"></i><b>3.2</b> Inverse Probability Weighting (IPW)</a></li>
+<li class="chapter" data-level="3.3" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#doubly-robust-estimators"><i class="fa fa-check"></i><b>3.3</b> Doubly Robust Estimators</a></li>
+<li class="chapter" data-level="3.4" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#integrative-interpretation"><i class="fa fa-check"></i><b>3.4</b> Integrative Interpretation</a></li>
+<li class="chapter" data-level="3.5" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#summary-table"><i class="fa fa-check"></i><b>3.5</b> Summary Table</a></li>
+<li class="chapter" data-level="3.6" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#conclusion-1"><i class="fa fa-check"></i><b>3.6</b> Conclusion</a></li>
+<li class="chapter" data-level="3.7" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#references-1"><i class="fa fa-check"></i><b>3.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><i class="fa fa-check"></i><b>4</b> Causal Inference in Practice III: Difference-in-Differences with a Healthcare Application</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#introduction-2"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
+<li class="chapter" data-level="4.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#difference-in-differences-theoretical-framework"><i class="fa fa-check"></i><b>4.2</b> Difference-in-Differences: Theoretical Framework</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#core-concept"><i class="fa fa-check"></i><b>4.2.1</b> Core Concept</a></li>
+<li class="chapter" data-level="4.2.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#mathematical-formalism"><i class="fa fa-check"></i><b>4.2.2</b> Mathematical Formalism</a></li>
+<li class="chapter" data-level="4.2.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#key-assumption-parallel-trends"><i class="fa fa-check"></i><b>4.2.3</b> Key Assumption: Parallel Trends</a></li>
+<li class="chapter" data-level="4.2.4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#practical-considerations"><i class="fa fa-check"></i><b>4.2.4</b> Practical Considerations</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#application-evaluating-a-telemedicine-program-in-healthcare"><i class="fa fa-check"></i><b>4.3</b> Application: Evaluating a Telemedicine Program in Healthcare</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#scenario"><i class="fa fa-check"></i><b>4.3.1</b> Scenario</a></li>
+<li class="chapter" data-level="4.3.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#simulated-data"><i class="fa fa-check"></i><b>4.3.2</b> Simulated Data</a></li>
+<li class="chapter" data-level="4.3.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#r-implementation-2"><i class="fa fa-check"></i><b>4.3.3</b> R Implementation</a></li>
+<li class="chapter" data-level="4.3.4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#interpretation"><i class="fa fa-check"></i><b>4.3.4</b> Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#limitations-and-extensions"><i class="fa fa-check"></i><b>4.4</b> Limitations and Extensions</a></li>
+<li class="chapter" data-level="4.5" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#conclusion-2"><i class="fa fa-check"></i><b>4.5</b> Conclusion</a></li>
+<li class="chapter" data-level="4.6" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#references-2"><i class="fa fa-check"></i><b>4.6</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html"><i class="fa fa-check"></i><b>5</b> Causal Inference in Practice IV: Instrumental Variables</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#introduction-3"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#healthcare-case-study-hospital-quality-and-recovery-time"><i class="fa fa-check"></i><b>5.2</b> Healthcare Case Study: Hospital Quality and Recovery Time</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#r-implementation-3"><i class="fa fa-check"></i><b>5.2.1</b> R Implementation</a></li>
+<li class="chapter" data-level="5.2.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#interpreting-the-results"><i class="fa fa-check"></i><b>5.2.2</b> Interpreting the Results</a></li>
+<li class="chapter" data-level="5.2.3" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#robustness-checks"><i class="fa fa-check"></i><b>5.2.3</b> Robustness Checks</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#practical-considerations-and-extensions"><i class="fa fa-check"></i><b>5.3</b> Practical Considerations and Extensions</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#when-to-use-iv"><i class="fa fa-check"></i><b>5.3.1</b> When to Use IV</a></li>
+<li class="chapter" data-level="5.3.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#advanced-topics"><i class="fa fa-check"></i><b>5.3.2</b> Advanced Topics</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#conclusion-3"><i class="fa fa-check"></i><b>5.4</b> Conclusion</a></li>
+<li class="chapter" data-level="5.5" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#further-reading"><i class="fa fa-check"></i><b>5.5</b> Further Reading</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html"><i class="fa fa-check"></i><b>6</b> Causal Inference in Practice V: Regression Discontinuity Design</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#introduction-4"><i class="fa fa-check"></i><b>6.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#comparison-with-other-methods"><i class="fa fa-check"></i><b>6.1.1</b> Comparison with Other Methods</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#healthcare-application-icu-admission-and-mortality"><i class="fa fa-check"></i><b>6.2</b> Healthcare Application: ICU Admission and Mortality</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#scenario-1"><i class="fa fa-check"></i><b>6.2.1</b> Scenario</a></li>
+<li class="chapter" data-level="6.2.2" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#assumptions-and-validity"><i class="fa fa-check"></i><b>6.2.2</b> Assumptions and Validity</a></li>
+<li class="chapter" data-level="6.2.3" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#r-implementation-4"><i class="fa fa-check"></i><b>6.2.3</b> R Implementation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#interpretation-and-diagnostics"><i class="fa fa-check"></i><b>6.3</b> Interpretation and Diagnostics</a></li>
+<li class="chapter" data-level="6.4" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#extensions-and-robustness"><i class="fa fa-check"></i><b>6.4</b> Extensions and Robustness</a></li>
+<li class="chapter" data-level="6.5" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#limitations-and-considerations"><i class="fa fa-check"></i><b>6.5</b> Limitations and Considerations</a></li>
+<li class="chapter" data-level="6.6" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#conclusion-4"><i class="fa fa-check"></i><b>6.6</b> Conclusion</a></li>
+<li class="chapter" data-level="6.7" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#references-3"><i class="fa fa-check"></i><b>6.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><i class="fa fa-check"></i><b>7</b> Causal Forests for Personalized Medicine: A Comprehensive Guide</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#introduction-5"><i class="fa fa-check"></i><b>7.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#why-traditional-approaches-fall-short"><i class="fa fa-check"></i><b>7.1.1</b> Why Traditional Approaches Fall Short</a></li>
+<li class="chapter" data-level="7.1.2" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#the-causal-forest-solution"><i class="fa fa-check"></i><b>7.1.2</b> The Causal Forest Solution</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#theoretical-foundation-how-causal-forests-work"><i class="fa fa-check"></i><b>7.2</b> Theoretical Foundation: How Causal Forests Work</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#from-random-forests-to-causal-discovery"><i class="fa fa-check"></i><b>7.2.1</b> From Random Forests to Causal Discovery</a></li>
+<li class="chapter" data-level="7.2.2" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#the-potential-outcomes-framework"><i class="fa fa-check"></i><b>7.2.2</b> The Potential Outcomes Framework</a></li>
+<li class="chapter" data-level="7.2.3" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#key-identifying-assumptions"><i class="fa fa-check"></i><b>7.2.3</b> Key Identifying Assumptions</a></li>
+<li class="chapter" data-level="7.2.4" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#the-splitting-innovation"><i class="fa fa-check"></i><b>7.2.4</b> The Splitting Innovation</a></li>
+<li class="chapter" data-level="7.2.5" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#the-honesty-principle"><i class="fa fa-check"></i><b>7.2.5</b> The Honesty Principle</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#making-predictions-from-trees-to-treatment-recommendations"><i class="fa fa-check"></i><b>7.3</b> Making Predictions: From Trees to Treatment Recommendations</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#adaptive-weighting-for-individual-predictions"><i class="fa fa-check"></i><b>7.3.1</b> Adaptive Weighting for Individual Predictions</a></li>
+<li class="chapter" data-level="7.3.2" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#honest-confidence-intervals"><i class="fa fa-check"></i><b>7.3.2</b> Honest Confidence Intervals</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#precision-medicine-case-study-personalized-diabetes-treatment"><i class="fa fa-check"></i><b>7.4</b> Precision Medicine Case Study: Personalized Diabetes Treatment</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#clinical-scenario"><i class="fa fa-check"></i><b>7.4.1</b> Clinical Scenario</a></li>
+<li class="chapter" data-level="7.4.2" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#data-generation-and-setup"><i class="fa fa-check"></i><b>7.4.2</b> Data Generation and Setup</a></li>
+<li class="chapter" data-level="7.4.3" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#fitting-the-causal-forest"><i class="fa fa-check"></i><b>7.4.3</b> Fitting the Causal Forest</a></li>
+<li class="chapter" data-level="7.4.4" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#variable-importance-analysis"><i class="fa fa-check"></i><b>7.4.4</b> Variable Importance Analysis</a></li>
+<li class="chapter" data-level="7.4.5" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#statistical-testing-for-heterogeneity"><i class="fa fa-check"></i><b>7.4.5</b> Statistical Testing for Heterogeneity</a></li>
+<li class="chapter" data-level="7.4.6" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#visualization-and-pattern-discovery"><i class="fa fa-check"></i><b>7.4.6</b> Visualization and Pattern Discovery</a></li>
+<li class="chapter" data-level="7.4.7" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#personalized-treatment-strategy-development"><i class="fa fa-check"></i><b>7.4.7</b> Personalized Treatment Strategy Development</a></li>
+<li class="chapter" data-level="7.4.8" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#partial-dependence-analysis"><i class="fa fa-check"></i><b>7.4.8</b> Partial Dependence Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#clinical-insights-and-implementation"><i class="fa fa-check"></i><b>7.5</b> Clinical Insights and Implementation</a></li>
+<li class="chapter" data-level="7.6" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#understanding-limitations-and-model-robustness"><i class="fa fa-check"></i><b>7.6</b> Understanding Limitations and Model Robustness</a></li>
+<li class="chapter" data-level="7.7" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#future-directions-and-extensions"><i class="fa fa-check"></i><b>7.7</b> Future Directions and Extensions</a></li>
+<li class="chapter" data-level="7.8" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#conclusion-transforming-precision-medicine"><i class="fa fa-check"></i><b>7.8</b> Conclusion: Transforming Precision Medicine</a></li>
+<li class="chapter" data-level="7.9" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#references-4"><i class="fa fa-check"></i><b>7.9</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html"><i class="fa fa-check"></i><b>8</b> Bayesian Structural Time Series for Causal Inference</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#introduction-6"><i class="fa fa-check"></i><b>8.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="8.1.1" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#theoretical-framework"><i class="fa fa-check"></i><b>8.1.1</b> Theoretical Framework</a></li>
+<li class="chapter" data-level="8.1.2" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#control-variable-selection"><i class="fa fa-check"></i><b>8.1.2</b> Control Variable Selection</a></li>
+<li class="chapter" data-level="8.1.3" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#healthcare-policy-evaluation-tobacco-tax-impact-analysis"><i class="fa fa-check"></i><b>8.1.3</b> Healthcare Policy Evaluation: Tobacco Tax Impact Analysis</a></li>
+<li class="chapter" data-level="8.1.4" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#scenario-description"><i class="fa fa-check"></i><b>8.1.4</b> Scenario Description</a></li>
+<li class="chapter" data-level="8.1.5" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#implementation-and-analysis"><i class="fa fa-check"></i><b>8.1.5</b> Implementation and Analysis</a></li>
+<li class="chapter" data-level="8.1.6" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#example-2-mental-health-intervention-evaluation"><i class="fa fa-check"></i><b>8.1.6</b> Example 2: Mental Health Intervention Evaluation</a></li>
+<li class="chapter" data-level="8.1.7" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#implementation-guidelines-for-healthcare-applications"><i class="fa fa-check"></i><b>8.1.7</b> Implementation Guidelines for Healthcare Applications</a></li>
+<li class="chapter" data-level="8.1.8" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#limitations-and-considerations-1"><i class="fa fa-check"></i><b>8.1.8</b> Limitations and Considerations</a></li>
+<li class="chapter" data-level="8.1.9" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#comparison-with-alternative-methods"><i class="fa fa-check"></i><b>8.1.9</b> Comparison with Alternative Methods</a></li>
+<li class="chapter" data-level="8.1.10" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#conclusion-5"><i class="fa fa-check"></i><b>8.1.10</b> Conclusion</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Causal Inference in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="bayesian-structural-time-series-for-causal-inference" class="section level1 hasAnchor" number="8">
+<h1><span class="header-section-number">Chapter 8</span> Bayesian Structural Time Series for Causal Inference<a href="bayesian-structural-time-series-for-causal-inference.html#bayesian-structural-time-series-for-causal-inference" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction-6" class="section level2 hasAnchor" number="8.1">
+<h2><span class="header-section-number">8.1</span> Introduction<a href="bayesian-structural-time-series-for-causal-inference.html#introduction-6" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Bayesian Structural Time Series (BSTS) is a powerful statistical method for causal inference in settings where randomized controlled trials are infeasible, unethical, or impractical. This makes it invaluable for evaluating population-level health interventions, policy changes, and medical treatments. While traditional methods like difference-in-differences assume parallel trends between treatment and control groups—a condition that rarely holds in complex healthcare data—BSTS overcomes this limitation. It models complex temporal patterns (such as trends and seasonality) and learns an optimal, data-driven combination of control series to build a synthetic counterfactual.</p>
+<p>The method’s foundation combines state-space modeling with Bayesian inference, enabling robust uncertainty quantification. Instead of providing a single point estimate of a causal effect, BSTS generates a full posterior distribution for the counterfactual outcome. This probabilistic approach provides a credible interval for the intervention’s effect, naturally integrating uncertainty from the model, its parameters, and the prediction itself. This comprehensive view is crucial for making informed decisions in healthcare.</p>
+<div id="theoretical-framework" class="section level3 hasAnchor" number="8.1.1">
+<h3><span class="header-section-number">8.1.1</span> Theoretical Framework<a href="bayesian-structural-time-series-for-causal-inference.html#theoretical-framework" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>BSTS models a time series by decomposing it into several unobserved components, such as a trend, seasonal effects, and the influence of regression variables. For a healthcare outcome <span class="math inline">\(y\_t\)</span> observed from <span class="math inline">\(t=1\)</span> to <span class="math inline">\(T\)</span>, with an intervention at time <span class="math inline">\(T\_0+1\)</span>, the model’s goal is to predict the counterfactual outcome—what would have happened to <span class="math inline">\(y\_t\)</span> after <span class="math inline">\(T\_0\)</span> if the intervention had not occurred.</p>
+<p>The core model is specified as a state-space model, which consists of an observation equation and a state equation.</p>
+<ol style="list-style-type: decimal">
+<li><strong>Observation Equation</strong>: Links the observed data <span class="math inline">\(y\_t\)</span> to the unobserved state vector <span class="math inline">\(\\alpha\_t\)</span>.
+<span class="math display">\[y_t = Z_t^T \alpha_t + \epsilon_t, \quad \epsilon_t \sim \mathcal{N}(0, \sigma_t^2)\]</span></li>
+<li><strong>State Equation</strong>: Describes how the state vector <span class="math inline">\(\\alpha\_t\)</span> evolves over time.
+<span class="math display">\[\alpha_{t+1} = T_t \alpha_t + R_t \eta_t, \quad \eta_t \sim \mathcal{N}(0, Q_t)\]</span></li>
+</ol>
+<p>The state vector <span class="math inline">\(\\alpha\_t\)</span> contains the interpretable components. A typical decomposition for a healthcare outcome might be:
+<span class="math display">\[y_t = \mu_t + \gamma_t + \beta^T x_t + \epsilon_t\]</span>
+where:</p>
+<ul>
+<li><span class="math inline">\(\\mu\_t\)</span> is the <strong>trend component</strong>, often modeled as a local linear trend, which allows the baseline level and growth rate to change over time.
+<span class="math display">\[\mu_{t+1} = \mu_t + \delta_t + u_{\mu, t}\]</span> <span class="math display">\[\delta_{t+1} = \delta_t + u_{\delta, t}\]</span></li>
+<li><span class="math inline">\(\\gamma\_t\)</span> is the <strong>seasonal component</strong>, which captures periodic patterns (e.g., weekly hospital admission cycles or annual flu seasons).</li>
+<li><span class="math inline">\(\\beta^T x\_t\)</span> is the <strong>regression component</strong>, which models the contemporaneous relationship between the outcome <span class="math inline">\(y\_t\)</span> and a set of control time series <span class="math inline">\(x\_t\)</span> that are not affected by the intervention.</li>
+</ul>
+<p>The causal effect at each post-intervention time point <span class="math inline">\(t \&gt; T\_0\)</span> is then estimated as the difference between the observed outcome and the predicted counterfactual:
+<span class="math display">\[\text{Effect}_t = y_t - \hat{y}_t^{\text{counterfactual}}\]</span>
+The model is fit using data only from the pre-intervention period (<span class="math inline">\(t \\le T\_0\)</span>). It then projects the counterfactual outcome into the post-intervention period (<span class="math inline">\(t \&gt; T\_0\)</span>) to estimate the causal impact.</p>
+</div>
+<div id="control-variable-selection" class="section level3 hasAnchor" number="8.1.2">
+<h3><span class="header-section-number">8.1.2</span> Control Variable Selection<a href="bayesian-structural-time-series-for-causal-inference.html#control-variable-selection" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>A key feature of the BSTS framework is its ability to perform automatic variable selection for the regression component. This is typically achieved using <strong>spike-and-slab priors</strong> on the regression coefficients <span class="math inline">\(\\beta\_j\)</span>. Each coefficient’s prior is a mixture of two distributions: a “slab” (a diffuse distribution, like a Normal) and a “spike” (a distribution tightly concentrated at zero).
+<span class="math display">\[\beta_j | \pi_j \sim (1 - \pi_j) \cdot \mathcal{N}(0, \tau^2) + \pi_j \cdot \delta_0\]</span>
+Here, <span class="math inline">\(\\pi\_j\)</span> is the probability of the coefficient being in the “spike” (i.e., effectively zero), and <span class="math inline">\(\\delta\_0\)</span> is a point mass at zero. During the model fitting process (via MCMC), the posterior probability of each variable’s inclusion is estimated, allowing the model to automatically select the most relevant predictors from a potentially large set of control variables.</p>
+</div>
+<div id="healthcare-policy-evaluation-tobacco-tax-impact-analysis" class="section level3 hasAnchor" number="8.1.3">
+<h3><span class="header-section-number">8.1.3</span> Healthcare Policy Evaluation: Tobacco Tax Impact Analysis<a href="bayesian-structural-time-series-for-causal-inference.html#healthcare-policy-evaluation-tobacco-tax-impact-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</div>
+<div id="scenario-description" class="section level3 hasAnchor" number="8.1.4">
+<h3><span class="header-section-number">8.1.4</span> Scenario Description<a href="bayesian-structural-time-series-for-causal-inference.html#scenario-description" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We analyze the causal impact of a new tobacco tax on smoking-related hospital admissions. A state implements a significant tax increase per pack of cigarettes, while neighboring states do not. An experimental design is not feasible. The objective is to estimate the reduction in hospital admissions caused by the tax, accounting for seasonality, underlying trends, and other confounding factors.</p>
+<p>The outcome variable is monthly smoking-related hospital admissions per 100,000 population, observed for 60 months. The tax is introduced at month 37. Control variables include unemployment rates, healthcare access indicators, demographic data, and admission rates from neighboring states without the tax change.</p>
+</div>
+<div id="implementation-and-analysis" class="section level3 hasAnchor" number="8.1.5">
+<h3><span class="header-section-number">8.1.5</span> Implementation and Analysis<a href="bayesian-structural-time-series-for-causal-inference.html#implementation-and-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The following R code simulates data for this scenario and applies a BSTS model to estimate the causal effect.</p>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb106-1" tabindex="-1"></a><span class="co"># Load required libraries</span></span>
+<span id="cb106-2"><a href="bayesian-structural-time-series-for-causal-inference.html#cb106-2" tabindex="-1"></a><span class="fu">library</span>(bsts)</span></code></pre></div>
+<pre><code>## Warning: package &#39;bsts&#39; was built under R version 4.5.1</code></pre>
+<pre><code>## Loading required package: BoomSpikeSlab</code></pre>
+<pre><code>## Warning: package &#39;BoomSpikeSlab&#39; was built under R version 4.5.1</code></pre>
+<pre><code>## Loading required package: Boom</code></pre>
+<pre><code>## Warning: package &#39;Boom&#39; was built under R version 4.5.1</code></pre>
+<pre><code>## 
+## Attaching package: &#39;Boom&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     rWishart</code></pre>
+<pre><code>## 
+## Attaching package: &#39;BoomSpikeSlab&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     knots</code></pre>
+<pre><code>## Loading required package: xts</code></pre>
+<pre><code>## 
+## ######################### Warning from &#39;xts&#39; package ##########################
+## #                                                                             #
+## # The dplyr lag() function breaks how base R&#39;s lag() function is supposed to  #
+## # work, which breaks lag(my_xts). Calls to lag(my_xts) that you type or       #
+## # source() into this session won&#39;t work correctly.                            #
+## #                                                                             #
+## # Use stats::lag() to make sure you&#39;re not using dplyr::lag(), or you can add #
+## # conflictRules(&#39;dplyr&#39;, exclude = &#39;lag&#39;) to your .Rprofile to stop           #
+## # dplyr from breaking base R&#39;s lag() function.                                #
+## #                                                                             #
+## # Code in packages is not affected. It&#39;s protected by R&#39;s namespace mechanism #
+## # Set `options(xts.warn_dplyr_breaks_lag = FALSE)` to suppress this warning.  #
+## #                                                                             #
+## ###############################################################################</code></pre>
+<pre><code>## 
+## Attaching package: &#39;xts&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:dplyr&#39;:
+## 
+##     first, last</code></pre>
+<pre><code>## 
+## Attaching package: &#39;bsts&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:BoomSpikeSlab&#39;:
+## 
+##     SuggestBurn</code></pre>
+<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-1" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb122-2"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb122-3"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-3" tabindex="-1"></a></span>
+<span id="cb122-4"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-4" tabindex="-1"></a><span class="co"># -- 1. Simulate Healthcare Data --</span></span>
+<span id="cb122-5"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-5" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12345</span>)</span>
+<span id="cb122-6"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-6" tabindex="-1"></a>n_months <span class="ot">&lt;-</span> <span class="dv">60</span></span>
+<span id="cb122-7"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-7" tabindex="-1"></a>intervention_month <span class="ot">&lt;-</span> <span class="dv">36</span></span>
+<span id="cb122-8"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-8" tabindex="-1"></a>pre_period <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span>intervention_month</span>
+<span id="cb122-9"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-9" tabindex="-1"></a>post_period <span class="ot">&lt;-</span> (intervention_month <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>n_months</span>
+<span id="cb122-10"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-10" tabindex="-1"></a></span>
+<span id="cb122-11"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-11" tabindex="-1"></a><span class="co"># Create time index</span></span>
+<span id="cb122-12"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-12" tabindex="-1"></a>dates <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="fu">as.Date</span>(<span class="st">&quot;2020-01-01&quot;</span>), <span class="at">by =</span> <span class="st">&quot;month&quot;</span>, <span class="at">length.out =</span> n_months)</span>
+<span id="cb122-13"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-13" tabindex="-1"></a>time_idx <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span>n_months</span>
+<span id="cb122-14"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-14" tabindex="-1"></a></span>
+<span id="cb122-15"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-15" tabindex="-1"></a><span class="co"># Generate seasonal components reflecting healthcare patterns</span></span>
+<span id="cb122-16"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-16" tabindex="-1"></a>seasonal_respiratory <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">*</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> time_idx <span class="sc">/</span> <span class="dv">12</span> <span class="sc">-</span> pi<span class="sc">/</span><span class="dv">2</span>) <span class="co"># Winter peak</span></span>
+<span id="cb122-17"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-17" tabindex="-1"></a>seasonal_stress <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">cos</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> time_idx <span class="sc">/</span> <span class="dv">12</span> <span class="sc">+</span> pi<span class="sc">/</span><span class="dv">4</span>)      <span class="co"># Holiday effects</span></span>
+<span id="cb122-18"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-18" tabindex="-1"></a></span>
+<span id="cb122-19"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-19" tabindex="-1"></a><span class="co"># Generate baseline trend</span></span>
+<span id="cb122-20"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-20" tabindex="-1"></a>baseline_trend <span class="ot">&lt;-</span> <span class="dv">50</span> <span class="sc">+</span> <span class="fu">cumsum</span>(<span class="fu">rnorm</span>(n_months, <span class="at">mean =</span> <span class="fl">0.1</span>, <span class="at">sd =</span> <span class="fl">0.5</span>))</span>
+<span id="cb122-21"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-21" tabindex="-1"></a></span>
+<span id="cb122-22"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-22" tabindex="-1"></a><span class="co"># Generate control variables (potential predictors)</span></span>
+<span id="cb122-23"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-23" tabindex="-1"></a>unemployment_rate <span class="ot">&lt;-</span> <span class="dv">6</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> time_idx <span class="sc">/</span> <span class="dv">12</span>) <span class="sc">+</span> <span class="fu">rnorm</span>(n_months, <span class="dv">0</span>, <span class="fl">0.5</span>)</span>
+<span id="cb122-24"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-24" tabindex="-1"></a>healthcare_access <span class="ot">&lt;-</span> <span class="dv">80</span> <span class="sc">+</span> <span class="fu">cumsum</span>(<span class="fu">rnorm</span>(n_months, <span class="dv">0</span>, <span class="dv">1</span>))</span>
+<span id="cb122-25"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-25" tabindex="-1"></a>population_65plus <span class="ot">&lt;-</span> <span class="dv">15</span> <span class="sc">+</span> <span class="fl">0.05</span> <span class="sc">*</span> time_idx <span class="sc">+</span> <span class="fu">rnorm</span>(n_months, <span class="dv">0</span>, <span class="fl">0.2</span>)</span>
+<span id="cb122-26"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-26" tabindex="-1"></a><span class="co"># A strong predictor: admissions in a similar region</span></span>
+<span id="cb122-27"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-27" tabindex="-1"></a>neighboring_state_admissions <span class="ot">&lt;-</span> baseline_trend <span class="sc">*</span> <span class="fl">0.8</span> <span class="sc">+</span> seasonal_respiratory <span class="sc">*</span> <span class="fl">0.7</span> <span class="sc">+</span> <span class="fu">rnorm</span>(n_months, <span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb122-28"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-28" tabindex="-1"></a><span class="co"># A noise variable</span></span>
+<span id="cb122-29"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-29" tabindex="-1"></a>economic_index <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="sc">+</span> <span class="fu">cumsum</span>(<span class="fu">rnorm</span>(n_months, <span class="dv">0</span>, <span class="fl">0.8</span>))</span>
+<span id="cb122-30"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-30" tabindex="-1"></a></span>
+<span id="cb122-31"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-31" tabindex="-1"></a><span class="co"># Combine controls into a matrix</span></span>
+<span id="cb122-32"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-32" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">cbind</span>(unemployment_rate, healthcare_access, population_65plus, </span>
+<span id="cb122-33"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-33" tabindex="-1"></a>           neighboring_state_admissions, economic_index)</span>
+<span id="cb122-34"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-34" tabindex="-1"></a></span>
+<span id="cb122-35"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-35" tabindex="-1"></a><span class="co"># Generate true intervention effect (gradual reduction in admissions)</span></span>
+<span id="cb122-36"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-36" tabindex="-1"></a>true_effect <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, n_months)</span>
+<span id="cb122-37"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-37" tabindex="-1"></a>n_post <span class="ot">&lt;-</span> <span class="fu">length</span>(post_period)</span>
+<span id="cb122-38"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-38" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_post) {</span>
+<span id="cb122-39"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-39" tabindex="-1"></a>  <span class="co"># Effect builds over time and plateaus (exponential decay form)</span></span>
+<span id="cb122-40"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-40" tabindex="-1"></a>  reduction <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">8</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.15</span> <span class="sc">*</span> i)) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="fl">0.5</span>)</span>
+<span id="cb122-41"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-41" tabindex="-1"></a>  true_effect[intervention_month <span class="sc">+</span> i] <span class="ot">&lt;-</span> reduction</span>
+<span id="cb122-42"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-42" tabindex="-1"></a>}</span>
+<span id="cb122-43"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-43" tabindex="-1"></a></span>
+<span id="cb122-44"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-44" tabindex="-1"></a><span class="co"># Generate the observed outcome by combining components</span></span>
+<span id="cb122-45"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-45" tabindex="-1"></a>baseline_admissions <span class="ot">&lt;-</span> baseline_trend <span class="sc">+</span> seasonal_respiratory <span class="sc">+</span> seasonal_stress <span class="sc">+</span></span>
+<span id="cb122-46"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-46" tabindex="-1"></a>                      unemployment_rate <span class="sc">*</span> <span class="fl">0.8</span> <span class="sc">+</span> </span>
+<span id="cb122-47"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-47" tabindex="-1"></a>                      population_65plus <span class="sc">*</span> <span class="fl">0.6</span> <span class="sc">+</span></span>
+<span id="cb122-48"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-48" tabindex="-1"></a>                      neighboring_state_admissions <span class="sc">*</span> <span class="fl">0.4</span> <span class="sc">+</span></span>
+<span id="cb122-49"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-49" tabindex="-1"></a>                      <span class="fu">rnorm</span>(n_months, <span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb122-50"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-50" tabindex="-1"></a>observed_admissions <span class="ot">&lt;-</span> baseline_admissions <span class="sc">+</span> true_effect</span>
+<span id="cb122-51"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-51" tabindex="-1"></a></span>
+<span id="cb122-52"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-52" tabindex="-1"></a><span class="co"># Create a combined data frame for analysis</span></span>
+<span id="cb122-53"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-53" tabindex="-1"></a>full_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb122-54"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-54" tabindex="-1"></a>  <span class="at">admissions =</span> observed_admissions,</span>
+<span id="cb122-55"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-55" tabindex="-1"></a>  <span class="fu">as.data.frame</span>(X)</span>
+<span id="cb122-56"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-56" tabindex="-1"></a>)</span>
+<span id="cb122-57"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-57" tabindex="-1"></a></span>
+<span id="cb122-58"><a href="bayesian-structural-time-series-for-causal-inference.html#cb122-58" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Healthcare intervention analysis setup complete</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Healthcare intervention analysis setup complete</code></pre>
+<div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb124-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Pre-intervention mean admissions:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(observed_admissions[pre_period]), <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Pre-intervention mean admissions: 84.22</code></pre>
+<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb126-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Post-intervention mean admissions:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(observed_admissions[post_period]), <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Post-intervention mean admissions: 89.09</code></pre>
+<div class="sourceCode" id="cb128"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb128-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb128-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;True average treatment effect:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(true_effect[post_period]), <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## True average treatment effect: -5.89</code></pre>
+<div class="sourceCode" id="cb130"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb130-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-1" tabindex="-1"></a><span class="co"># -- 2. Fit the BSTS Model --</span></span>
+<span id="cb130-2"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-2" tabindex="-1"></a></span>
+<span id="cb130-3"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-3" tabindex="-1"></a><span class="co"># ✅ FIX: Define pre_period_data BEFORE using it in state specification</span></span>
+<span id="cb130-4"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-4" tabindex="-1"></a>pre_period_data <span class="ot">&lt;-</span> full_data[pre_period, ]</span>
+<span id="cb130-5"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-5" tabindex="-1"></a></span>
+<span id="cb130-6"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-6" tabindex="-1"></a><span class="co"># Define the model structure (state specification)</span></span>
+<span id="cb130-7"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-7" tabindex="-1"></a>ss <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb130-8"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-8" tabindex="-1"></a><span class="co"># ✅ Now safe to use pre_period_data$admissions</span></span>
+<span id="cb130-9"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-9" tabindex="-1"></a>ss <span class="ot">&lt;-</span> <span class="fu">AddLocalLinearTrend</span>(ss, <span class="at">y =</span> pre_period_data<span class="sc">$</span>admissions)</span>
+<span id="cb130-10"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-10" tabindex="-1"></a>ss <span class="ot">&lt;-</span> <span class="fu">AddSeasonal</span>(ss, <span class="at">y =</span> pre_period_data<span class="sc">$</span>admissions, <span class="at">nseasons =</span> <span class="dv">12</span>)</span>
+<span id="cb130-11"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-11" tabindex="-1"></a></span>
+<span id="cb130-12"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-12" tabindex="-1"></a><span class="co"># Fit the BSTS model using spike-and-slab for variable selection</span></span>
+<span id="cb130-13"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-13" tabindex="-1"></a>bsts_model <span class="ot">&lt;-</span> <span class="fu">bsts</span>(admissions <span class="sc">~</span> .,</span>
+<span id="cb130-14"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-14" tabindex="-1"></a>                   <span class="at">state.specification =</span> ss,</span>
+<span id="cb130-15"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-15" tabindex="-1"></a>                   <span class="at">data =</span> pre_period_data,</span>
+<span id="cb130-16"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-16" tabindex="-1"></a>                   <span class="at">niter =</span> <span class="dv">3000</span>,</span>
+<span id="cb130-17"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-17" tabindex="-1"></a>                   <span class="at">ping =</span> <span class="dv">0</span>, <span class="co"># Suppress progress bar</span></span>
+<span id="cb130-18"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-18" tabindex="-1"></a>                   <span class="at">seed =</span> <span class="dv">123</span>)</span>
+<span id="cb130-19"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-19" tabindex="-1"></a></span>
+<span id="cb130-20"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-20" tabindex="-1"></a><span class="co"># -- 3. Predict the Counterfactual and Estimate the Effect --</span></span>
+<span id="cb130-21"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-21" tabindex="-1"></a></span>
+<span id="cb130-22"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-22" tabindex="-1"></a><span class="co"># Use the fitted model to predict outcomes in the post-intervention period</span></span>
+<span id="cb130-23"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-23" tabindex="-1"></a>post_period_covariates <span class="ot">&lt;-</span> full_data[post_period, <span class="sc">-</span><span class="dv">1</span>] <span class="co"># Exclude outcome variable</span></span>
+<span id="cb130-24"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-24" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">predict</span>(bsts_model, </span>
+<span id="cb130-25"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-25" tabindex="-1"></a>                       <span class="at">newdata =</span> post_period_covariates,</span>
+<span id="cb130-26"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-26" tabindex="-1"></a>                       <span class="at">horizon =</span> <span class="fu">length</span>(post_period),</span>
+<span id="cb130-27"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-27" tabindex="-1"></a>                       <span class="at">burn =</span> <span class="dv">500</span>) <span class="co"># Discard initial MCMC samples</span></span>
+<span id="cb130-28"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-28" tabindex="-1"></a></span>
+<span id="cb130-29"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-29" tabindex="-1"></a><span class="co"># Extract predicted counterfactual mean and credible intervals</span></span>
+<span id="cb130-30"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-30" tabindex="-1"></a>pred_mean <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(predictions<span class="sc">$</span>distribution)</span>
+<span id="cb130-31"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-31" tabindex="-1"></a>pred_lower <span class="ot">&lt;-</span> <span class="fu">apply</span>(predictions<span class="sc">$</span>distribution, <span class="dv">2</span>, quantile, <span class="fl">0.025</span>)</span>
+<span id="cb130-32"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-32" tabindex="-1"></a>pred_upper <span class="ot">&lt;-</span> <span class="fu">apply</span>(predictions<span class="sc">$</span>distribution, <span class="dv">2</span>, quantile, <span class="fl">0.975</span>)</span>
+<span id="cb130-33"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-33" tabindex="-1"></a></span>
+<span id="cb130-34"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-34" tabindex="-1"></a><span class="co"># Calculate the causal effect (Observed - Predicted)</span></span>
+<span id="cb130-35"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-35" tabindex="-1"></a>observed_post <span class="ot">&lt;-</span> observed_admissions[post_period]</span>
+<span id="cb130-36"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-36" tabindex="-1"></a>causal_effect <span class="ot">&lt;-</span> observed_post <span class="sc">-</span> pred_mean</span>
+<span id="cb130-37"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-37" tabindex="-1"></a>effect_lower <span class="ot">&lt;-</span> observed_post <span class="sc">-</span> pred_upper <span class="co"># Lower effect = Observed - Upper Prediction</span></span>
+<span id="cb130-38"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-38" tabindex="-1"></a>effect_upper <span class="ot">&lt;-</span> observed_post <span class="sc">-</span> pred_lower <span class="co"># Upper effect = Observed - Lower Prediction</span></span>
+<span id="cb130-39"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-39" tabindex="-1"></a></span>
+<span id="cb130-40"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-40" tabindex="-1"></a><span class="co"># -- 4. Summarize and Visualize Results --</span></span>
+<span id="cb130-41"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-41" tabindex="-1"></a></span>
+<span id="cb130-42"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-42" tabindex="-1"></a><span class="co"># Results summary</span></span>
+<span id="cb130-43"><a href="bayesian-structural-time-series-for-causal-inference.html#cb130-43" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Tobacco Tax Policy Impact Results:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+## Tobacco Tax Policy Impact Results:</code></pre>
+<div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb132-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb132-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;True average effect:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(true_effect[post_period]), <span class="dv">2</span>), <span class="st">&quot;admissions per 100k</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## True average effect: -5.89 admissions per 100k</code></pre>
+<div class="sourceCode" id="cb134"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb134-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb134-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Estimated average effect:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(causal_effect), <span class="dv">2</span>), <span class="st">&quot;admissions per 100k</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Estimated average effect: -6.8 admissions per 100k</code></pre>
+<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb136-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb136-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Cumulative effect 95% credible interval: [&quot;</span>, <span class="fu">round</span>(<span class="fu">sum</span>(effect_lower), <span class="dv">2</span>), <span class="st">&quot;,&quot;</span>, </span>
+<span id="cb136-2"><a href="bayesian-structural-time-series-for-causal-inference.html#cb136-2" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">sum</span>(effect_upper), <span class="dv">2</span>), <span class="st">&quot;]</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Cumulative effect 95% credible interval: [ -778.33 , 306.37 ]</code></pre>
+<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb138-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb138-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Posterior probability of a negative effect:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(predictions<span class="sc">$</span>distribution <span class="sc">&gt;</span> observed_post), <span class="dv">3</span>) <span class="sc">*</span> <span class="dv">100</span>, <span class="st">&quot;%</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Posterior probability of a negative effect: 73.6 %</code></pre>
+<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb140-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-1" tabindex="-1"></a><span class="co"># Visualization</span></span>
+<span id="cb140-2"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-2" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb140-3"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-3" tabindex="-1"></a>  <span class="at">time =</span> time_idx,</span>
+<span id="cb140-4"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-4" tabindex="-1"></a>  <span class="at">observed =</span> observed_admissions</span>
+<span id="cb140-5"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-5" tabindex="-1"></a>)</span>
+<span id="cb140-6"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-6" tabindex="-1"></a><span class="co"># Add counterfactual predictions for the post-period</span></span>
+<span id="cb140-7"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-7" tabindex="-1"></a>plot_data<span class="sc">$</span>predicted_mean <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb140-8"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-8" tabindex="-1"></a>plot_data<span class="sc">$</span>predicted_lower <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb140-9"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-9" tabindex="-1"></a>plot_data<span class="sc">$</span>predicted_upper <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb140-10"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-10" tabindex="-1"></a>plot_data<span class="sc">$</span>predicted_mean[post_period] <span class="ot">&lt;-</span> pred_mean</span>
+<span id="cb140-11"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-11" tabindex="-1"></a>plot_data<span class="sc">$</span>predicted_lower[post_period] <span class="ot">&lt;-</span> pred_lower</span>
+<span id="cb140-12"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-12" tabindex="-1"></a>plot_data<span class="sc">$</span>predicted_upper[post_period] <span class="ot">&lt;-</span> pred_upper</span>
+<span id="cb140-13"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-13" tabindex="-1"></a></span>
+<span id="cb140-14"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-14" tabindex="-1"></a><span class="co"># Plot the results</span></span>
+<span id="cb140-15"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-15" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(plot_data, <span class="fu">aes</span>(<span class="at">x =</span> time)) <span class="sc">+</span></span>
+<span id="cb140-16"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-16" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> observed, <span class="at">color =</span> <span class="st">&quot;Observed&quot;</span>), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb140-17"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-17" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> predicted_mean, <span class="at">color =</span> <span class="st">&quot;Predicted Counterfactual&quot;</span>), <span class="at">size =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="sc">+</span></span>
+<span id="cb140-18"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-18" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> predicted_lower, <span class="at">ymax =</span> predicted_upper), <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">fill =</span> <span class="st">&quot;steelblue&quot;</span>) <span class="sc">+</span></span>
+<span id="cb140-19"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-19" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> intervention_month, <span class="at">linetype =</span> <span class="st">&quot;dotted&quot;</span>, <span class="at">color =</span> <span class="st">&quot;red&quot;</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb140-20"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-20" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="at">x =</span> intervention_month <span class="sc">-</span> <span class="dv">2</span>, <span class="at">y =</span> <span class="fu">max</span>(plot_data<span class="sc">$</span>observed, <span class="at">na.rm=</span><span class="cn">TRUE</span>),</span>
+<span id="cb140-21"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-21" tabindex="-1"></a>           <span class="at">label =</span> <span class="st">&quot;Tax Increase&quot;</span>, <span class="at">color =</span> <span class="st">&quot;red&quot;</span>, <span class="at">hjust =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb140-22"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-22" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb140-23"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-23" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;BSTS Causal Impact of Tobacco Tax on Hospital Admissions&quot;</span>,</span>
+<span id="cb140-24"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-24" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Month&quot;</span>,</span>
+<span id="cb140-25"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-25" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Admissions per 100k&quot;</span>,</span>
+<span id="cb140-26"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-26" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">&quot;Series&quot;</span></span>
+<span id="cb140-27"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-27" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb140-28"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-28" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb140-29"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-29" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;Observed&quot;</span> <span class="ot">=</span> <span class="st">&quot;black&quot;</span>, <span class="st">&quot;Predicted Counterfactual&quot;</span> <span class="ot">=</span> <span class="st">&quot;steelblue&quot;</span>))</span>
+<span id="cb140-30"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-30" tabindex="-1"></a></span>
+<span id="cb140-31"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-31" tabindex="-1"></a><span class="fu">print</span>(p1)</span></code></pre></div>
+<pre><code>## Warning: Removed 36 rows containing missing values or values outside the scale range (`geom_line()`).</code></pre>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<div id="clinical-interpretation" class="section level4 hasAnchor" number="8.1.5.1">
+<h4><span class="header-section-number">8.1.5.1</span> Clinical Interpretation<a href="bayesian-structural-time-series-for-causal-inference.html#clinical-interpretation" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>The analysis indicates a significant reduction in smoking-related hospital admissions following the tax increase. The model’s variable selection automatically identified <code>neighboring_state_admissions</code> and <code>population_65plus</code> as strong predictors for the outcome, while correctly assigning low importance to the noisy <code>economic_index</code>.</p>
+<p>The estimated effect becomes more pronounced over time, reflecting the realistic timeline of behavior change; smoking cessation and its health benefits are not instantaneous. The 95% credible interval for the causal effect provides a range of plausible impacts, properly accounting for uncertainty from seasonal patterns, confounding variables, and model parameters. This probabilistic output allows policymakers to assess the intervention’s value with a quantified level of confidence, moving beyond simple point estimates.</p>
+</div>
+</div>
+<div id="example-2-mental-health-intervention-evaluation" class="section level3 hasAnchor" number="8.1.6">
+<h3><span class="header-section-number">8.1.6</span> Example 2: Mental Health Intervention Evaluation<a href="bayesian-structural-time-series-for-causal-inference.html#example-2-mental-health-intervention-evaluation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="teletherapy-program-assessment" class="section level4 hasAnchor" number="8.1.6.1">
+<h4><span class="header-section-number">8.1.6.1</span> Teletherapy Program Assessment<a href="bayesian-structural-time-series-for-causal-inference.html#teletherapy-program-assessment" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Consider evaluating a state-wide teletherapy program launched during the COVID-19 pandemic, a time when access to traditional therapy was limited. BSTS can help assess the program’s impact on mental health-related emergency department (ED) visits while controlling for the confounding effects of the pandemic, seasonal mental health patterns (e.g., winter depression), and economic disruption.</p>
+<p>The code below simulates data for this more complex scenario.</p>
+<div class="sourceCode" id="cb142"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb142-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-1" tabindex="-1"></a><span class="co"># Mental health intervention simulation setup</span></span>
+<span id="cb142-2"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">456</span>)</span>
+<span id="cb142-3"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-3" tabindex="-1"></a>n_weeks <span class="ot">&lt;-</span> <span class="dv">104</span>  <span class="co"># 2 years of weekly data</span></span>
+<span id="cb142-4"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-4" tabindex="-1"></a>intervention_week <span class="ot">&lt;-</span> <span class="dv">52</span>  <span class="co"># Program starts after 1 year</span></span>
+<span id="cb142-5"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-5" tabindex="-1"></a></span>
+<span id="cb142-6"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-6" tabindex="-1"></a><span class="co"># Generate mental health ED visit patterns</span></span>
+<span id="cb142-7"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-7" tabindex="-1"></a><span class="co"># Strong annual seasonal pattern (winter peaks)</span></span>
+<span id="cb142-8"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-8" tabindex="-1"></a>seasonal_mental <span class="ot">&lt;-</span> <span class="dv">10</span> <span class="sc">*</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> (<span class="dv">1</span><span class="sc">:</span>n_weeks) <span class="sc">/</span> <span class="dv">52</span> <span class="sc">-</span> pi<span class="sc">/</span><span class="dv">4</span>)</span>
+<span id="cb142-9"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-9" tabindex="-1"></a><span class="co"># Weekly pattern (e.g., Monday peaks) - Corrected formula</span></span>
+<span id="cb142-10"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-10" tabindex="-1"></a>weekly_mental <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> (<span class="dv">1</span><span class="sc">:</span>n_weeks) <span class="sc">/</span> <span class="dv">7</span>)</span>
+<span id="cb142-11"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-11" tabindex="-1"></a></span>
+<span id="cb142-12"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-12" tabindex="-1"></a><span class="co"># COVID-19 impact (sudden shock starting week 13, then fades)</span></span>
+<span id="cb142-13"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-13" tabindex="-1"></a>covid_impact <span class="ot">&lt;-</span> <span class="fu">ifelse</span>((<span class="dv">1</span><span class="sc">:</span>n_weeks) <span class="sc">&gt;=</span> <span class="dv">13</span>, </span>
+<span id="cb142-14"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-14" tabindex="-1"></a>                      <span class="dv">15</span> <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.02</span> <span class="sc">*</span> <span class="fu">pmax</span>(<span class="dv">0</span>, (<span class="dv">1</span><span class="sc">:</span>n_weeks) <span class="sc">-</span> <span class="dv">13</span>)), <span class="dv">0</span>)</span>
+<span id="cb142-15"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-15" tabindex="-1"></a></span>
+<span id="cb142-16"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-16" tabindex="-1"></a><span class="co"># Baseline trend</span></span>
+<span id="cb142-17"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-17" tabindex="-1"></a>mental_baseline <span class="ot">&lt;-</span> <span class="dv">40</span> <span class="sc">+</span> <span class="fu">cumsum</span>(<span class="fu">rnorm</span>(n_weeks, <span class="dv">0</span>, <span class="fl">0.2</span>))</span>
+<span id="cb142-18"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-18" tabindex="-1"></a></span>
+<span id="cb142-19"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-19" tabindex="-1"></a><span class="co"># Control variables</span></span>
+<span id="cb142-20"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-20" tabindex="-1"></a>unemployment_weekly <span class="ot">&lt;-</span> <span class="dv">8</span> <span class="sc">+</span> covid_impact <span class="sc">*</span> <span class="fl">0.3</span> <span class="sc">+</span> <span class="fu">rnorm</span>(n_weeks, <span class="dv">0</span>, <span class="fl">0.5</span>)</span>
+<span id="cb142-21"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-21" tabindex="-1"></a>hospital_capacity <span class="ot">&lt;-</span> <span class="dv">85</span> <span class="sc">-</span> covid_impact <span class="sc">*</span> <span class="fl">0.5</span> <span class="sc">+</span> <span class="fu">rnorm</span>(n_weeks, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb142-22"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-22" tabindex="-1"></a>control_region_ed <span class="ot">&lt;-</span> mental_baseline <span class="sc">*</span> <span class="fl">0.9</span> <span class="sc">+</span> seasonal_mental <span class="sc">*</span> <span class="fl">0.8</span> <span class="sc">+</span> </span>
+<span id="cb142-23"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-23" tabindex="-1"></a>                     covid_impact <span class="sc">*</span> <span class="fl">0.7</span> <span class="sc">+</span> <span class="fu">rnorm</span>(n_weeks, <span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb142-24"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-24" tabindex="-1"></a></span>
+<span id="cb142-25"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-25" tabindex="-1"></a><span class="co"># True teletherapy effect (gradual reduction in ED visits)</span></span>
+<span id="cb142-26"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-26" tabindex="-1"></a>teletherapy_effect <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, n_weeks)</span>
+<span id="cb142-27"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-27" tabindex="-1"></a>post_weeks <span class="ot">&lt;-</span> (intervention_week <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>n_weeks</span>
+<span id="cb142-28"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-28" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(post_weeks)) {</span>
+<span id="cb142-29"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-29" tabindex="-1"></a>  teletherapy_effect[intervention_week <span class="sc">+</span> i] <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">6</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.1</span> <span class="sc">*</span> i)) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="fl">0.3</span>)</span>
+<span id="cb142-30"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-30" tabindex="-1"></a>}</span>
+<span id="cb142-31"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-31" tabindex="-1"></a></span>
+<span id="cb142-32"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-32" tabindex="-1"></a><span class="co"># Generate observed outcome</span></span>
+<span id="cb142-33"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-33" tabindex="-1"></a>mental_ed_visits <span class="ot">&lt;-</span> mental_baseline <span class="sc">+</span> seasonal_mental <span class="sc">+</span> weekly_mental <span class="sc">+</span> </span>
+<span id="cb142-34"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-34" tabindex="-1"></a>                   covid_impact <span class="sc">+</span> unemployment_weekly <span class="sc">*</span> <span class="fl">0.5</span> <span class="sc">+</span></span>
+<span id="cb142-35"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-35" tabindex="-1"></a>                   teletherapy_effect <span class="sc">+</span> <span class="fu">rnorm</span>(n_weeks, <span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb142-36"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-36" tabindex="-1"></a></span>
+<span id="cb142-37"><a href="bayesian-structural-time-series-for-causal-inference.html#cb142-37" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Simulation ready for teletherapy program evaluation.</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+## Simulation ready for teletherapy program evaluation.</code></pre>
+<div class="sourceCode" id="cb144"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb144-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb144-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;The true average effect of the program is a reduction of&quot;</span>,</span>
+<span id="cb144-2"><a href="bayesian-structural-time-series-for-causal-inference.html#cb144-2" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">abs</span>(<span class="fu">mean</span>(teletherapy_effect[post_weeks])), <span class="dv">1</span>), <span class="st">&quot;ED visits per week.</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## The true average effect of the program is a reduction of 4.8 ED visits per week.</code></pre>
+</div>
+</div>
+<div id="implementation-guidelines-for-healthcare-applications" class="section level3 hasAnchor" number="8.1.7">
+<h3><span class="header-section-number">8.1.7</span> Implementation Guidelines for Healthcare Applications<a href="bayesian-structural-time-series-for-causal-inference.html#implementation-guidelines-for-healthcare-applications" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Successful implementation of BSTS in healthcare hinges on careful preparation of the data and model. A sufficiently long <strong>pre-intervention period</strong> is essential for the model to accurately learn the underlying patterns of the time series before the change occurred. For monthly data, a baseline of at least 24 to 36 months is typically recommended to fully capture annual seasonality, while for weekly data, 100 or more observations provide a robust foundation.</p>
+<p>The selection of high-quality <strong>control variables</strong> is equally critical. The core principle is to choose predictors that are related to the healthcare outcome but remain unaffected by the intervention itself. Strong candidates often include demographic indicators (like age distribution and insurance coverage), healthcare access metrics (such as provider density), economic factors (like local unemployment rates), and outcomes from similar comparison regions that did not receive the intervention.</p>
+<p>Finally, the <strong>model structure</strong> must be specified to reflect the complexity of healthcare data. This often involves accounting for multiple layers of seasonality, such as annual patterns driven by flu seasons or holidays, alongside weekly cycles that capture day-of-the-week effects in hospital visits. These seasonal components, combined with a flexible local linear trend to model gradual changes in population health, allow the model to construct a precise and realistic counterfactual for estimating the intervention’s true effect.</p>
+</div>
+<div id="limitations-and-considerations-1" class="section level3 hasAnchor" number="8.1.8">
+<h3><span class="header-section-number">8.1.8</span> Limitations and Considerations<a href="bayesian-structural-time-series-for-causal-inference.html#limitations-and-considerations-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>While powerful, the validity of a BSTS analysis rests on several key assumptions that require careful consideration. Foremost among these is the <strong>no interference assumption</strong>, which posits that the intervention does not affect the control variables. This can be a challenging condition in public health, where spillover effects—such as people in a control region traveling to a treated region for a service—can contaminate the analysis. Furthermore, the model’s conclusions can be sensitive to its internal <strong>specification</strong>; the choice of trend and seasonal components influences the resulting counterfactual, making it good practice to test the robustness of the findings across different plausible model structures. Finally, BSTS assumes that the relationship between the control variables and the outcome remains <strong>stable</strong> over time. A major concurrent event, like the pandemic in our second example, could violate this assumption, though such shocks can often be accounted for by explicitly including them as control variables in the model.</p>
+</div>
+<div id="comparison-with-alternative-methods" class="section level3 hasAnchor" number="8.1.9">
+<h3><span class="header-section-number">8.1.9</span> Comparison with Alternative Methods<a href="bayesian-structural-time-series-for-causal-inference.html#comparison-with-alternative-methods" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>BSTS offers significant advantages over several traditional quasi-experimental methods. Compared to <strong>Difference-in-Differences (DiD)</strong>, it does not require the strict parallel trends assumption, as it can flexibly model complex seasonality and non-linear trends. Instead of relying on a single, pre-specified control group, BSTS automatically learns the optimal weighted combination of multiple control series. It also improves upon classical <strong>Interrupted Time Series (ITS)</strong> analysis by moving beyond simple linear trends and immediate, permanent effects, allowing it to model impacts that emerge gradually and evolve over time. Finally, BSTS can be understood as a Bayesian, probabilistic extension of the <strong>Synthetic Control Method (SCM)</strong>. It provides a more rigorous approach to uncertainty quantification by generating full posterior credible intervals and employs a more stable method for automatic control variable selection through the use of spike-and-slab priors.</p>
+</div>
+<div id="conclusion-5" class="section level3 hasAnchor" number="8.1.10">
+<h3><span class="header-section-number">8.1.10</span> Conclusion<a href="bayesian-structural-time-series-for-causal-inference.html#conclusion-5" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Bayesian Structural Time Series provides a robust and flexible framework for causal inference with observational time series data. Its ability to model complex real-world patterns, perform automatic predictor selection, and provide principled uncertainty quantification makes it an essential tool for evidence-based evaluation in healthcare and public policy. Successful application requires careful thought about data quality, control variable selection, and model specification, but the payoff is a more nuanced and reliable estimate of an intervention’s true impact.</p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/edit/main/08-BSTS.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/blob/main/08-BSTS.Rmd",
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

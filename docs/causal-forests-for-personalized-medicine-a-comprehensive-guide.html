@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 7 Causal Forests for Personalized Medicine: A Comprehensive Guide | Causal Inference in R</title>
+  <meta name="description" content="Chapter 7 Causal Forests for Personalized Medicine: A Comprehensive Guide | Causal Inference in R" />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 7 Causal Forests for Personalized Medicine: A Comprehensive Guide | Causal Inference in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 7 Causal Forests for Personalized Medicine: A Comprehensive Guide | Causal Inference in R" />
+  
+  
+  
+
+<meta name="author" content="Kamran Afzali" />
+
+
+<meta name="date" content="2025-09-14" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="causal-inference-in-practice-v-regression-discontinuity-design.html"/>
+<link rel="next" href="bayesian-structural-time-series-for-causal-inference.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Causality analysis in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Foundations of Causal Statistical Analysis</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#summary-table-techniques-for-causal-statistical-analysis"><i class="fa fa-check"></i><b>1.2</b> Summary Table: Techniques for Causal Statistical Analysis</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#methodological-deep-dive-with-practical-guidance"><i class="fa fa-check"></i><b>1.3</b> Methodological Deep Dive with Practical Guidance</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#discussion"><i class="fa fa-check"></i><b>1.4</b> Discussion</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><i class="fa fa-check"></i><b>2</b> Causal Inference in Practice I: Randomized Controlled Trials and Regression Adjustment</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#randomized-controlled-trials-design-and-analysis"><i class="fa fa-check"></i><b>2.2</b> 1. Randomized Controlled Trials: Design and Analysis</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#theoretical-foundations"><i class="fa fa-check"></i><b>2.2.1</b> Theoretical Foundations</a></li>
+<li class="chapter" data-level="2.2.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation"><i class="fa fa-check"></i><b>2.2.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.2.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#model-based-inference"><i class="fa fa-check"></i><b>2.2.3</b> Model-Based Inference</a></li>
+<li class="chapter" data-level="2.2.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#diagnostics-and-integrity"><i class="fa fa-check"></i><b>2.2.4</b> Diagnostics and Integrity</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#regression-adjustment-a-model-based-approach-to-causal-inference"><i class="fa fa-check"></i><b>2.3</b> 2. Regression Adjustment: A Model-Based Approach to Causal Inference</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conceptual-overview"><i class="fa fa-check"></i><b>2.3.1</b> Conceptual Overview</a></li>
+<li class="chapter" data-level="2.3.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation-1"><i class="fa fa-check"></i><b>2.3.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.3.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#limitations-and-diagnostics"><i class="fa fa-check"></i><b>2.3.3</b> Limitations and Diagnostics</a></li>
+<li class="chapter" data-level="2.3.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#causal-interpretation"><i class="fa fa-check"></i><b>2.3.4</b> Causal Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#toward-integrated-reasoning"><i class="fa fa-check"></i><b>2.4</b> Toward Integrated Reasoning</a></li>
+<li class="chapter" data-level="2.5" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conclusion"><i class="fa fa-check"></i><b>2.5</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><i class="fa fa-check"></i><b>3</b> Causal Inference in Practice II: Propensity Scores, Doubly Robust Estimators, and Inverse Probability Weighting</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#propensity-score-methods"><i class="fa fa-check"></i><b>3.1</b> Propensity Score Methods</a></li>
+<li class="chapter" data-level="3.2" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#inverse-probability-weighting-ipw"><i class="fa fa-check"></i><b>3.2</b> Inverse Probability Weighting (IPW)</a></li>
+<li class="chapter" data-level="3.3" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#doubly-robust-estimators"><i class="fa fa-check"></i><b>3.3</b> Doubly Robust Estimators</a></li>
+<li class="chapter" data-level="3.4" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#integrative-interpretation"><i class="fa fa-check"></i><b>3.4</b> Integrative Interpretation</a></li>
+<li class="chapter" data-level="3.5" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#summary-table"><i class="fa fa-check"></i><b>3.5</b> Summary Table</a></li>
+<li class="chapter" data-level="3.6" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#conclusion-1"><i class="fa fa-check"></i><b>3.6</b> Conclusion</a></li>
+<li class="chapter" data-level="3.7" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#references-1"><i class="fa fa-check"></i><b>3.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><i class="fa fa-check"></i><b>4</b> Causal Inference in Practice III: Difference-in-Differences with a Healthcare Application</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#introduction-2"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
+<li class="chapter" data-level="4.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#difference-in-differences-theoretical-framework"><i class="fa fa-check"></i><b>4.2</b> Difference-in-Differences: Theoretical Framework</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#core-concept"><i class="fa fa-check"></i><b>4.2.1</b> Core Concept</a></li>
+<li class="chapter" data-level="4.2.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#mathematical-formalism"><i class="fa fa-check"></i><b>4.2.2</b> Mathematical Formalism</a></li>
+<li class="chapter" data-level="4.2.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#key-assumption-parallel-trends"><i class="fa fa-check"></i><b>4.2.3</b> Key Assumption: Parallel Trends</a></li>
+<li class="chapter" data-level="4.2.4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#practical-considerations"><i class="fa fa-check"></i><b>4.2.4</b> Practical Considerations</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#application-evaluating-a-telemedicine-program-in-healthcare"><i class="fa fa-check"></i><b>4.3</b> Application: Evaluating a Telemedicine Program in Healthcare</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#scenario"><i class="fa fa-check"></i><b>4.3.1</b> Scenario</a></li>
+<li class="chapter" data-level="4.3.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#simulated-data"><i class="fa fa-check"></i><b>4.3.2</b> Simulated Data</a></li>
+<li class="chapter" data-level="4.3.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#r-implementation-2"><i class="fa fa-check"></i><b>4.3.3</b> R Implementation</a></li>
+<li class="chapter" data-level="4.3.4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#interpretation"><i class="fa fa-check"></i><b>4.3.4</b> Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#limitations-and-extensions"><i class="fa fa-check"></i><b>4.4</b> Limitations and Extensions</a></li>
+<li class="chapter" data-level="4.5" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#conclusion-2"><i class="fa fa-check"></i><b>4.5</b> Conclusion</a></li>
+<li class="chapter" data-level="4.6" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#references-2"><i class="fa fa-check"></i><b>4.6</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html"><i class="fa fa-check"></i><b>5</b> Causal Inference in Practice IV: Instrumental Variables</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#introduction-3"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#healthcare-case-study-hospital-quality-and-recovery-time"><i class="fa fa-check"></i><b>5.2</b> Healthcare Case Study: Hospital Quality and Recovery Time</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#r-implementation-3"><i class="fa fa-check"></i><b>5.2.1</b> R Implementation</a></li>
+<li class="chapter" data-level="5.2.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#interpreting-the-results"><i class="fa fa-check"></i><b>5.2.2</b> Interpreting the Results</a></li>
+<li class="chapter" data-level="5.2.3" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#robustness-checks"><i class="fa fa-check"></i><b>5.2.3</b> Robustness Checks</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#practical-considerations-and-extensions"><i class="fa fa-check"></i><b>5.3</b> Practical Considerations and Extensions</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#when-to-use-iv"><i class="fa fa-check"></i><b>5.3.1</b> When to Use IV</a></li>
+<li class="chapter" data-level="5.3.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#advanced-topics"><i class="fa fa-check"></i><b>5.3.2</b> Advanced Topics</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#conclusion-3"><i class="fa fa-check"></i><b>5.4</b> Conclusion</a></li>
+<li class="chapter" data-level="5.5" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#further-reading"><i class="fa fa-check"></i><b>5.5</b> Further Reading</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html"><i class="fa fa-check"></i><b>6</b> Causal Inference in Practice V: Regression Discontinuity Design</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#introduction-4"><i class="fa fa-check"></i><b>6.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#comparison-with-other-methods"><i class="fa fa-check"></i><b>6.1.1</b> Comparison with Other Methods</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#healthcare-application-icu-admission-and-mortality"><i class="fa fa-check"></i><b>6.2</b> Healthcare Application: ICU Admission and Mortality</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#scenario-1"><i class="fa fa-check"></i><b>6.2.1</b> Scenario</a></li>
+<li class="chapter" data-level="6.2.2" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#assumptions-and-validity"><i class="fa fa-check"></i><b>6.2.2</b> Assumptions and Validity</a></li>
+<li class="chapter" data-level="6.2.3" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#r-implementation-4"><i class="fa fa-check"></i><b>6.2.3</b> R Implementation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#interpretation-and-diagnostics"><i class="fa fa-check"></i><b>6.3</b> Interpretation and Diagnostics</a></li>
+<li class="chapter" data-level="6.4" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#extensions-and-robustness"><i class="fa fa-check"></i><b>6.4</b> Extensions and Robustness</a></li>
+<li class="chapter" data-level="6.5" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#limitations-and-considerations"><i class="fa fa-check"></i><b>6.5</b> Limitations and Considerations</a></li>
+<li class="chapter" data-level="6.6" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#conclusion-4"><i class="fa fa-check"></i><b>6.6</b> Conclusion</a></li>
+<li class="chapter" data-level="6.7" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#references-3"><i class="fa fa-check"></i><b>6.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><i class="fa fa-check"></i><b>7</b> Causal Forests for Personalized Medicine: A Comprehensive Guide</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#introduction-5"><i class="fa fa-check"></i><b>7.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#why-traditional-approaches-fall-short"><i class="fa fa-check"></i><b>7.1.1</b> Why Traditional Approaches Fall Short</a></li>
+<li class="chapter" data-level="7.1.2" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#the-causal-forest-solution"><i class="fa fa-check"></i><b>7.1.2</b> The Causal Forest Solution</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#theoretical-foundation-how-causal-forests-work"><i class="fa fa-check"></i><b>7.2</b> Theoretical Foundation: How Causal Forests Work</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#from-random-forests-to-causal-discovery"><i class="fa fa-check"></i><b>7.2.1</b> From Random Forests to Causal Discovery</a></li>
+<li class="chapter" data-level="7.2.2" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#the-potential-outcomes-framework"><i class="fa fa-check"></i><b>7.2.2</b> The Potential Outcomes Framework</a></li>
+<li class="chapter" data-level="7.2.3" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#key-identifying-assumptions"><i class="fa fa-check"></i><b>7.2.3</b> Key Identifying Assumptions</a></li>
+<li class="chapter" data-level="7.2.4" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#the-splitting-innovation"><i class="fa fa-check"></i><b>7.2.4</b> The Splitting Innovation</a></li>
+<li class="chapter" data-level="7.2.5" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#the-honesty-principle"><i class="fa fa-check"></i><b>7.2.5</b> The Honesty Principle</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#making-predictions-from-trees-to-treatment-recommendations"><i class="fa fa-check"></i><b>7.3</b> Making Predictions: From Trees to Treatment Recommendations</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#adaptive-weighting-for-individual-predictions"><i class="fa fa-check"></i><b>7.3.1</b> Adaptive Weighting for Individual Predictions</a></li>
+<li class="chapter" data-level="7.3.2" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#honest-confidence-intervals"><i class="fa fa-check"></i><b>7.3.2</b> Honest Confidence Intervals</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#precision-medicine-case-study-personalized-diabetes-treatment"><i class="fa fa-check"></i><b>7.4</b> Precision Medicine Case Study: Personalized Diabetes Treatment</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#clinical-scenario"><i class="fa fa-check"></i><b>7.4.1</b> Clinical Scenario</a></li>
+<li class="chapter" data-level="7.4.2" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#data-generation-and-setup"><i class="fa fa-check"></i><b>7.4.2</b> Data Generation and Setup</a></li>
+<li class="chapter" data-level="7.4.3" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#fitting-the-causal-forest"><i class="fa fa-check"></i><b>7.4.3</b> Fitting the Causal Forest</a></li>
+<li class="chapter" data-level="7.4.4" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#variable-importance-analysis"><i class="fa fa-check"></i><b>7.4.4</b> Variable Importance Analysis</a></li>
+<li class="chapter" data-level="7.4.5" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#statistical-testing-for-heterogeneity"><i class="fa fa-check"></i><b>7.4.5</b> Statistical Testing for Heterogeneity</a></li>
+<li class="chapter" data-level="7.4.6" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#visualization-and-pattern-discovery"><i class="fa fa-check"></i><b>7.4.6</b> Visualization and Pattern Discovery</a></li>
+<li class="chapter" data-level="7.4.7" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#personalized-treatment-strategy-development"><i class="fa fa-check"></i><b>7.4.7</b> Personalized Treatment Strategy Development</a></li>
+<li class="chapter" data-level="7.4.8" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#partial-dependence-analysis"><i class="fa fa-check"></i><b>7.4.8</b> Partial Dependence Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#clinical-insights-and-implementation"><i class="fa fa-check"></i><b>7.5</b> Clinical Insights and Implementation</a></li>
+<li class="chapter" data-level="7.6" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#understanding-limitations-and-model-robustness"><i class="fa fa-check"></i><b>7.6</b> Understanding Limitations and Model Robustness</a></li>
+<li class="chapter" data-level="7.7" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#future-directions-and-extensions"><i class="fa fa-check"></i><b>7.7</b> Future Directions and Extensions</a></li>
+<li class="chapter" data-level="7.8" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#conclusion-transforming-precision-medicine"><i class="fa fa-check"></i><b>7.8</b> Conclusion: Transforming Precision Medicine</a></li>
+<li class="chapter" data-level="7.9" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#references-4"><i class="fa fa-check"></i><b>7.9</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html"><i class="fa fa-check"></i><b>8</b> Bayesian Structural Time Series for Causal Inference</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#introduction-6"><i class="fa fa-check"></i><b>8.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="8.1.1" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#theoretical-framework"><i class="fa fa-check"></i><b>8.1.1</b> Theoretical Framework</a></li>
+<li class="chapter" data-level="8.1.2" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#control-variable-selection"><i class="fa fa-check"></i><b>8.1.2</b> Control Variable Selection</a></li>
+<li class="chapter" data-level="8.1.3" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#healthcare-policy-evaluation-tobacco-tax-impact-analysis"><i class="fa fa-check"></i><b>8.1.3</b> Healthcare Policy Evaluation: Tobacco Tax Impact Analysis</a></li>
+<li class="chapter" data-level="8.1.4" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#scenario-description"><i class="fa fa-check"></i><b>8.1.4</b> Scenario Description</a></li>
+<li class="chapter" data-level="8.1.5" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#implementation-and-analysis"><i class="fa fa-check"></i><b>8.1.5</b> Implementation and Analysis</a></li>
+<li class="chapter" data-level="8.1.6" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#example-2-mental-health-intervention-evaluation"><i class="fa fa-check"></i><b>8.1.6</b> Example 2: Mental Health Intervention Evaluation</a></li>
+<li class="chapter" data-level="8.1.7" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#implementation-guidelines-for-healthcare-applications"><i class="fa fa-check"></i><b>8.1.7</b> Implementation Guidelines for Healthcare Applications</a></li>
+<li class="chapter" data-level="8.1.8" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#limitations-and-considerations-1"><i class="fa fa-check"></i><b>8.1.8</b> Limitations and Considerations</a></li>
+<li class="chapter" data-level="8.1.9" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#comparison-with-alternative-methods"><i class="fa fa-check"></i><b>8.1.9</b> Comparison with Alternative Methods</a></li>
+<li class="chapter" data-level="8.1.10" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#conclusion-5"><i class="fa fa-check"></i><b>8.1.10</b> Conclusion</a></li>
+</ul></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Causal Inference in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="causal-forests-for-personalized-medicine-a-comprehensive-guide" class="section level1 hasAnchor" number="7">
+<h1><span class="header-section-number">Chapter 7</span> Causal Forests for Personalized Medicine: A Comprehensive Guide<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#causal-forests-for-personalized-medicine-a-comprehensive-guide" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction-5" class="section level2 hasAnchor" number="7.1">
+<h2><span class="header-section-number">7.1</span> Introduction<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#introduction-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Imagine you’re a physician prescribing a promising new diabetes medication. Clinical trials show an average improvement of 0.8 percentage points in HbA1c levels, but you know that averages can be misleading. Some patients might experience dramatic improvements exceeding 2 percentage points, while others show minimal response. The critical question isn’t whether the treatment works on average, but which specific patients will benefit most.</p>
+<p>This is the fundamental challenge of treatment effect heterogeneity—understanding how treatment benefits vary across individuals based on their unique characteristics. Traditional clinical trials provide population-level answers, but modern precision medicine demands individual-level predictions.</p>
+<p>Causal forests represent a breakthrough solution that combines machine learning’s pattern-recognition capabilities with causal inference’s statistical rigor. Unlike conventional approaches that estimate single average effects or require researchers to prespecify which patient characteristics matter, causal forests automatically discover complex patterns of treatment variation while providing statistically valid confidence intervals for individual predictions.</p>
+<div id="why-traditional-approaches-fall-short" class="section level3 hasAnchor" number="7.1.1">
+<h3><span class="header-section-number">7.1.1</span> Why Traditional Approaches Fall Short<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#why-traditional-approaches-fall-short" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Traditional regression models make restrictive assumptions about treatment effects. They assume treatment works identically for everyone, require researchers to guess which characteristics modify treatment effects, and assume effects vary smoothly and predictably across patient characteristics. These assumptions severely limit our ability to capture the complex, nonlinear patterns that characterize real-world treatment responses. A diabetes medication might work exceptionally well for younger patients with poor glycemic control while providing minimal benefit to older patients with better baseline management—a pattern invisible to standard linear models unless specifically hypothesized in advance.</p>
+</div>
+<div id="the-causal-forest-solution" class="section level3 hasAnchor" number="7.1.2">
+<h3><span class="header-section-number">7.1.2</span> The Causal Forest Solution<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#the-causal-forest-solution" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Causal forests overcome these limitations through three key innovations. They automatically identify treatment effect patterns without requiring researchers to specify them beforehand, provide nonparametric flexibility that allows complex, nonlinear relationships to emerge naturally from the data, and ensure honest statistical inference with valid confidence intervals that account for both sampling uncertainty and model selection uncertainty.</p>
+<p>This methodology transforms precision medicine by enabling truly personalized treatment recommendations grounded in rigorous statistical evidence rather than clinical intuition alone.</p>
+</div>
+</div>
+<div id="theoretical-foundation-how-causal-forests-work" class="section level2 hasAnchor" number="7.2">
+<h2><span class="header-section-number">7.2</span> Theoretical Foundation: How Causal Forests Work<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#theoretical-foundation-how-causal-forests-work" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="from-random-forests-to-causal-discovery" class="section level3 hasAnchor" number="7.2.1">
+<h3><span class="header-section-number">7.2.1</span> From Random Forests to Causal Discovery<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#from-random-forests-to-causal-discovery" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Causal forests extend the beloved random forest algorithm from prediction to causal inference, but with a crucial modification in objective function. While traditional random forests split tree nodes to maximize predictive accuracy, causal forests split nodes to maximize treatment effect heterogeneity.</p>
+<p>Consider our clinical dataset with <span class="math inline">\(n\)</span> patients, where each patient <span class="math inline">\(i\)</span> has observable characteristics <span class="math inline">\(X_i\)</span> (age, BMI, medical history), treatment assignment <span class="math inline">\(W_i\)</span> (new drug vs. standard care), and observed outcome <span class="math inline">\(Y_i\)</span> (change in HbA1c levels).</p>
+</div>
+<div id="the-potential-outcomes-framework" class="section level3 hasAnchor" number="7.2.2">
+<h3><span class="header-section-number">7.2.2</span> The Potential Outcomes Framework<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#the-potential-outcomes-framework" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Under the potential outcomes framework, each patient has two potential outcomes: <span class="math inline">\(Y_i(0)\)</span> representing the outcome under standard care and <span class="math inline">\(Y_i(1)\)</span> representing the outcome under new treatment. The individual treatment effect is <span class="math inline">\(\tau_i = Y_i(1) - Y_i(0)\)</span>, but we face the fundamental problem of causal inference—we never observe both potential outcomes for the same individual.</p>
+<p>Causal forests estimate the conditional average treatment effect function <span class="math inline">\(\tau(x) = \mathbb{E}[Y_i(1) - Y_i(0) | X_i = x]\)</span>. This function represents the expected treatment benefit for patients with characteristics <span class="math inline">\(x\)</span>, enabling personalized predictions for new patients.</p>
+</div>
+<div id="key-identifying-assumptions" class="section level3 hasAnchor" number="7.2.3">
+<h3><span class="header-section-number">7.2.3</span> Key Identifying Assumptions<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#key-identifying-assumptions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Three assumptions enable causal identification. Unconfoundedness requires that treatment assignment is effectively random conditional on observed characteristics, expressed as <span class="math inline">\(\{Y_i(0), Y_i(1)\} \perp W_i | X_i\)</span>. This rules out hidden factors that influence both treatment decisions and outcomes. The overlap assumption ensures that patients with similar characteristics have positive probability of receiving either treatment: <span class="math inline">\(0 &lt; \mathbb{P}(W_i = 1 | X_i = x) &lt; 1\)</span> for all <span class="math inline">\(x\)</span>. This guarantees we observe both treated and control patients across the covariate space. Finally, the Stable Unit Treatment Value Assumption (SUTVA) requires that each patient’s potential outcomes depend only on their own treatment, ruling out interference effects where one patient’s treatment affects another’s outcomes.</p>
+</div>
+<div id="the-splitting-innovation" class="section level3 hasAnchor" number="7.2.4">
+<h3><span class="header-section-number">7.2.4</span> The Splitting Innovation<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#the-splitting-innovation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The algorithmic breakthrough lies in the splitting criterion that guides tree construction. For a candidate split partitioning observations into sets <span class="math inline">\(S_L\)</span> and <span class="math inline">\(S_R\)</span>, the algorithm evaluates <span class="math inline">\(\Delta(S, S_L, S_R) = |S_L| \cdot (\hat{\tau}(S_L) - \hat{\tau}(S))^2 + |S_R| \cdot (\hat{\tau}(S_R) - \hat{\tau}(S))^2\)</span>. This criterion prefers splits that create child nodes with treatment effects substantially different from the parent node, thereby maximizing treatment effect heterogeneity rather than outcome predictability.</p>
+</div>
+<div id="the-honesty-principle" class="section level3 hasAnchor" number="7.2.5">
+<h3><span class="header-section-number">7.2.5</span> The Honesty Principle<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#the-honesty-principle" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Honesty ensures valid statistical inference through strict sample splitting. The algorithm uses one subsample to determine tree structure (which variables to split on and where) and a completely separate subsample to estimate treatment effects within each leaf. This separation prevents overfitting that would invalidate confidence intervals and hypothesis tests, ensuring the algorithm’s adaptivity doesn’t compromise statistical rigor.</p>
+</div>
+</div>
+<div id="making-predictions-from-trees-to-treatment-recommendations" class="section level2 hasAnchor" number="7.3">
+<h2><span class="header-section-number">7.3</span> Making Predictions: From Trees to Treatment Recommendations<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#making-predictions-from-trees-to-treatment-recommendations" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="adaptive-weighting-for-individual-predictions" class="section level3 hasAnchor" number="7.3.1">
+<h3><span class="header-section-number">7.3.1</span> Adaptive Weighting for Individual Predictions<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#adaptive-weighting-for-individual-predictions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>When predicting treatment effects for a new patient with characteristics <span class="math inline">\(x\)</span>, causal forests use sophisticated weighting that adapts to local data density. The weight assigned to training patient <span class="math inline">\(i\)</span> when making predictions for the new patient is calculated as <span class="math inline">\(\alpha_i(x) = \frac{1}{B} \sum_{b=1}^{B} \frac{\mathbf{1}(X_i \in L_b(x))}{|L_b(x)|}\)</span>, where <span class="math inline">\(B\)</span> represents the number of trees, <span class="math inline">\(L_b(x)\)</span> is the leaf containing <span class="math inline">\(x\)</span> in tree <span class="math inline">\(b\)</span>, and <span class="math inline">\(|L_b(x)|\)</span> is the number of training patients in that leaf.</p>
+<p>This weighting gives more influence to patients similar to the prediction target across multiple trees, naturally adapting to local data density. The final treatment effect estimate becomes <span class="math inline">\(\hat{\tau}(x) = \sum_{i=1}^{n} \alpha_i(x) \cdot W_i \cdot Y_i - \sum_{i=1}^{n} \alpha_i(x) \cdot (1-W_i) \cdot Y_i\)</span>, which represents a locally-weighted difference in means between treated and control patients similar to the prediction target.</p>
+</div>
+<div id="honest-confidence-intervals" class="section level3 hasAnchor" number="7.3.2">
+<h3><span class="header-section-number">7.3.2</span> Honest Confidence Intervals<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#honest-confidence-intervals" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The theoretical guarantee of asymptotic normality enables construction of honest confidence intervals. The asymptotic variance <span class="math inline">\(\text{Var}(\hat{\tau}(x)) = \sigma^2(x) \cdot V(x)\)</span> depends on both the conditional variance of outcomes <span class="math inline">\(\sigma^2(x)\)</span> and the effective sample size <span class="math inline">\(V(x)\)</span> accounting for forest weighting. These honest confidence intervals represent a major advance over naive machine learning approaches by explicitly accounting for model selection uncertainty.</p>
+</div>
+</div>
+<div id="precision-medicine-case-study-personalized-diabetes-treatment" class="section level2 hasAnchor" number="7.4">
+<h2><span class="header-section-number">7.4</span> Precision Medicine Case Study: Personalized Diabetes Treatment<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#precision-medicine-case-study-personalized-diabetes-treatment" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="clinical-scenario" class="section level3 hasAnchor" number="7.4.1">
+<h3><span class="header-section-number">7.4.1</span> Clinical Scenario<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#clinical-scenario" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We’ll explore causal forests through a realistic scenario involving a new diabetes medication with heterogeneous effects. Our analysis aims to develop personalized treatment recommendations by estimating conditional treatment effects as functions of age, BMI, baseline HbA1c levels, and comorbidity indicators including hypertension, cardiovascular disease, and kidney disease. The outcome is change in HbA1c levels after six months, where more negative values indicate better glycemic control.</p>
+</div>
+<div id="data-generation-and-setup" class="section level3 hasAnchor" number="7.4.2">
+<h3><span class="header-section-number">7.4.2</span> Data Generation and Setup<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#data-generation-and-setup" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-1" tabindex="-1"></a><span class="co"># Load required libraries</span></span>
+<span id="cb99-2"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-2" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;grf&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;grf&quot;</span>)</span>
+<span id="cb99-3"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-3" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;ggplot2&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;ggplot2&quot;</span>)</span>
+<span id="cb99-4"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-4" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;dplyr&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;dplyr&quot;</span>)</span>
+<span id="cb99-5"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-5" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;reshape2&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;reshape2&quot;</span>)</span>
+<span id="cb99-6"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-6" tabindex="-1"></a></span>
+<span id="cb99-7"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-7" tabindex="-1"></a><span class="fu">library</span>(grf)</span>
+<span id="cb99-8"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-8" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb99-9"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-9" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb99-10"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-10" tabindex="-1"></a><span class="fu">library</span>(reshape2)</span>
+<span id="cb99-11"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-11" tabindex="-1"></a></span>
+<span id="cb99-12"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-12" tabindex="-1"></a><span class="co"># Set seed for reproducible results</span></span>
+<span id="cb99-13"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-13" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">789</span>)</span>
+<span id="cb99-14"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-14" tabindex="-1"></a></span>
+<span id="cb99-15"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-15" tabindex="-1"></a><span class="co"># Simulate realistic patient population</span></span>
+<span id="cb99-16"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-16" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
+<span id="cb99-17"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-17" tabindex="-1"></a></span>
+<span id="cb99-18"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-18" tabindex="-1"></a><span class="co"># Generate patient characteristics with realistic distributions</span></span>
+<span id="cb99-19"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-19" tabindex="-1"></a>age <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">25</span>, <span class="fu">pmin</span>(<span class="dv">85</span>, <span class="fu">rnorm</span>(n, <span class="dv">60</span>, <span class="dv">12</span>)))  <span class="co"># Age 25-85, mean 60</span></span>
+<span id="cb99-20"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-20" tabindex="-1"></a>bmi <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">20</span>, <span class="fu">pmin</span>(<span class="dv">50</span>, <span class="fu">rnorm</span>(n, <span class="dv">30</span>, <span class="dv">6</span>)))   <span class="co"># BMI 20-50, mean 30</span></span>
+<span id="cb99-21"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-21" tabindex="-1"></a>baseline_hba1c <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="fl">6.0</span>, <span class="fu">pmin</span>(<span class="fl">12.0</span>, <span class="fu">rnorm</span>(n, <span class="fl">8.5</span>, <span class="fl">1.2</span>)))  <span class="co"># HbA1c 6-12%, mean 8.5%</span></span>
+<span id="cb99-22"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-22" tabindex="-1"></a></span>
+<span id="cb99-23"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-23" tabindex="-1"></a><span class="co"># Binary comorbidity indicators</span></span>
+<span id="cb99-24"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-24" tabindex="-1"></a>hypertension <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.6</span>)     <span class="co"># 60% prevalence</span></span>
+<span id="cb99-25"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-25" tabindex="-1"></a>cvd <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.3</span>)              <span class="co"># 30% prevalence  </span></span>
+<span id="cb99-26"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-26" tabindex="-1"></a>kidney_disease <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.25</span>)  <span class="co"># 25% prevalence</span></span>
+<span id="cb99-27"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-27" tabindex="-1"></a></span>
+<span id="cb99-28"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-28" tabindex="-1"></a><span class="co"># Combine covariates into matrix</span></span>
+<span id="cb99-29"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-29" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">cbind</span>(age, bmi, baseline_hba1c, hypertension, cvd, kidney_disease)</span>
+<span id="cb99-30"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-30" tabindex="-1"></a><span class="fu">colnames</span>(X) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;bmi&quot;</span>, <span class="st">&quot;baseline_hba1c&quot;</span>, <span class="st">&quot;hypertension&quot;</span>, <span class="st">&quot;cvd&quot;</span>, <span class="st">&quot;kidney_disease&quot;</span>)</span>
+<span id="cb99-31"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-31" tabindex="-1"></a></span>
+<span id="cb99-32"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-32" tabindex="-1"></a><span class="co"># Randomized treatment assignment</span></span>
+<span id="cb99-33"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-33" tabindex="-1"></a>W <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)</span>
+<span id="cb99-34"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-34" tabindex="-1"></a></span>
+<span id="cb99-35"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-35" tabindex="-1"></a><span class="co"># Generate heterogeneous treatment effects</span></span>
+<span id="cb99-36"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-36" tabindex="-1"></a><span class="co"># Younger patients and those with worse baseline control benefit more</span></span>
+<span id="cb99-37"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-37" tabindex="-1"></a>true_tau <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.5</span> <span class="sc">-</span> <span class="fl">0.02</span> <span class="sc">*</span> (age <span class="sc">-</span> <span class="dv">60</span>) <span class="sc">-</span> <span class="fl">0.3</span> <span class="sc">*</span> (baseline_hba1c <span class="sc">-</span> <span class="fl">8.5</span>)</span>
+<span id="cb99-38"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-38" tabindex="-1"></a>true_tau <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="sc">-</span><span class="fl">2.5</span>, <span class="fu">pmin</span>(<span class="dv">0</span>, true_tau))  <span class="co"># Constrain to realistic range</span></span>
+<span id="cb99-39"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-39" tabindex="-1"></a></span>
+<span id="cb99-40"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-40" tabindex="-1"></a><span class="co"># Generate outcomes under potential outcomes framework</span></span>
+<span id="cb99-41"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-41" tabindex="-1"></a>Y0 <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.3</span> <span class="sc">+</span> <span class="fl">0.01</span> <span class="sc">*</span> age <span class="sc">+</span> <span class="fl">0.02</span> <span class="sc">*</span> bmi <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> baseline_hba1c <span class="sc">+</span> </span>
+<span id="cb99-42"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-42" tabindex="-1"></a>      <span class="fl">0.2</span> <span class="sc">*</span> hypertension <span class="sc">+</span> <span class="fl">0.15</span> <span class="sc">*</span> cvd <span class="sc">+</span> <span class="fl">0.25</span> <span class="sc">*</span> kidney_disease <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">0.8</span>)</span>
+<span id="cb99-43"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-43" tabindex="-1"></a></span>
+<span id="cb99-44"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-44" tabindex="-1"></a>Y1 <span class="ot">&lt;-</span> Y0 <span class="sc">+</span> true_tau <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">0.3</span>)</span>
+<span id="cb99-45"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-45" tabindex="-1"></a></span>
+<span id="cb99-46"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-46" tabindex="-1"></a><span class="co"># Observed outcomes</span></span>
+<span id="cb99-47"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-47" tabindex="-1"></a>Y <span class="ot">&lt;-</span> W <span class="sc">*</span> Y1 <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> W) <span class="sc">*</span> Y0</span>
+<span id="cb99-48"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-48" tabindex="-1"></a></span>
+<span id="cb99-49"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-49" tabindex="-1"></a><span class="co"># Create dataset</span></span>
+<span id="cb99-50"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-50" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(X, <span class="at">W =</span> W, <span class="at">Y =</span> Y, <span class="at">true_tau =</span> true_tau)</span>
+<span id="cb99-51"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-51" tabindex="-1"></a></span>
+<span id="cb99-52"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-52" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Dataset Summary:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb99-53"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-53" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Total patients:&quot;</span>, n, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb99-54"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-54" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Control group:&quot;</span>, <span class="fu">sum</span>(W <span class="sc">==</span> <span class="dv">0</span>), <span class="st">&quot;patients</span><span class="sc">\n</span><span class="st">&quot;</span>) </span>
+<span id="cb99-55"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-55" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Treatment group:&quot;</span>, <span class="fu">sum</span>(W <span class="sc">==</span> <span class="dv">1</span>), <span class="st">&quot;patients</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb99-56"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-56" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Mean outcome - Control:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(Y[W <span class="sc">==</span> <span class="dv">0</span>]), <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb99-57"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-57" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Mean outcome - Treatment:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(Y[W <span class="sc">==</span> <span class="dv">1</span>]), <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb99-58"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb99-58" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Naive ATE estimate:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(Y[W <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(Y[W <span class="sc">==</span> <span class="dv">0</span>]), <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+</div>
+<div id="fitting-the-causal-forest" class="section level3 hasAnchor" number="7.4.3">
+<h3><span class="header-section-number">7.4.3</span> Fitting the Causal Forest<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#fitting-the-causal-forest" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-1" tabindex="-1"></a><span class="co"># Fit causal forest with optimal hyperparameters</span></span>
+<span id="cb100-2"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-2" tabindex="-1"></a>cf <span class="ot">&lt;-</span> <span class="fu">causal_forest</span>(X, Y, W,</span>
+<span id="cb100-3"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-3" tabindex="-1"></a>                    <span class="at">num.trees =</span> <span class="dv">2000</span>,        <span class="co"># Sufficient for stable estimates</span></span>
+<span id="cb100-4"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-4" tabindex="-1"></a>                    <span class="at">honesty =</span> <span class="cn">TRUE</span>,          <span class="co"># Enable honest inference</span></span>
+<span id="cb100-5"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-5" tabindex="-1"></a>                    <span class="at">honesty.fraction =</span> <span class="fl">0.5</span>,  <span class="co"># Split sample equally</span></span>
+<span id="cb100-6"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-6" tabindex="-1"></a>                    <span class="at">ci.group.size =</span> <span class="dv">1</span>)       <span class="co"># Individual confidence intervals</span></span>
+<span id="cb100-7"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-7" tabindex="-1"></a></span>
+<span id="cb100-8"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-8" tabindex="-1"></a><span class="co"># Generate predictions and uncertainty estimates</span></span>
+<span id="cb100-9"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-9" tabindex="-1"></a>tau_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(cf)<span class="sc">$</span>predictions</span>
+<span id="cb100-10"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-10" tabindex="-1"></a>tau_se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">predict</span>(cf, <span class="at">estimate.variance =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>variance.estimates)</span>
+<span id="cb100-11"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-11" tabindex="-1"></a></span>
+<span id="cb100-12"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-12" tabindex="-1"></a><span class="co"># Construct confidence intervals</span></span>
+<span id="cb100-13"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-13" tabindex="-1"></a>tau_lower <span class="ot">&lt;-</span> tau_hat <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> tau_se</span>
+<span id="cb100-14"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-14" tabindex="-1"></a>tau_upper <span class="ot">&lt;-</span> tau_hat <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> tau_se</span>
+<span id="cb100-15"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-15" tabindex="-1"></a></span>
+<span id="cb100-16"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-16" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Causal Forest Performance:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb100-17"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-17" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Mean predicted effect:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(tau_hat), <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb100-18"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-18" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;SD of predicted effects:&quot;</span>, <span class="fu">round</span>(<span class="fu">sd</span>(tau_hat), <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb100-19"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-19" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Mean true effect:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(true_tau), <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb100-20"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-20" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Prediction correlation:&quot;</span>, <span class="fu">round</span>(<span class="fu">cor</span>(true_tau, tau_hat), <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb100-21"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb100-21" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Mean confidence interval width:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(tau_upper <span class="sc">-</span> tau_lower), <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<p>The causal forest achieves excellent performance, with strong correlation between predicted and true treatment effects demonstrating the algorithm’s ability to recover heterogeneous patterns. The 2000 trees provide stable estimates while the honest inference procedure ensures valid confidence intervals.</p>
+</div>
+<div id="variable-importance-analysis" class="section level3 hasAnchor" number="7.4.4">
+<h3><span class="header-section-number">7.4.4</span> Variable Importance Analysis<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#variable-importance-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-1" tabindex="-1"></a><span class="co"># Analyze what drives treatment effect heterogeneity</span></span>
+<span id="cb101-2"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-2" tabindex="-1"></a>var_importance <span class="ot">&lt;-</span> <span class="fu">variable_importance</span>(cf)</span>
+<span id="cb101-3"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-3" tabindex="-1"></a>importance_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb101-4"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-4" tabindex="-1"></a>  <span class="at">Variable =</span> <span class="fu">colnames</span>(X),</span>
+<span id="cb101-5"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-5" tabindex="-1"></a>  <span class="at">Importance =</span> var_importance</span>
+<span id="cb101-6"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-6" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb101-7"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-7" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Importance))</span>
+<span id="cb101-8"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-8" tabindex="-1"></a></span>
+<span id="cb101-9"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-9" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Variable Importance Rankings:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb101-10"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-10" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(importance_df)) {</span>
+<span id="cb101-11"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-11" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;%d. %s: %.3f</span><span class="sc">\n</span><span class="st">&quot;</span>, i, importance_df<span class="sc">$</span>Variable[i], importance_df<span class="sc">$</span>Importance[i]))</span>
+<span id="cb101-12"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-12" tabindex="-1"></a>}</span>
+<span id="cb101-13"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-13" tabindex="-1"></a></span>
+<span id="cb101-14"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-14" tabindex="-1"></a><span class="co"># Visualize importance</span></span>
+<span id="cb101-15"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-15" tabindex="-1"></a>p_importance <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(importance_df, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(Variable, Importance), <span class="at">y =</span> Importance)) <span class="sc">+</span></span>
+<span id="cb101-16"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-16" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">&quot;steelblue&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb101-17"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-17" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb101-18"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-18" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Variable Importance for Treatment Effect Heterogeneity&quot;</span>,</span>
+<span id="cb101-19"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-19" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">&quot;Which patient characteristics drive treatment variation?&quot;</span>,</span>
+<span id="cb101-20"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-20" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Patient Characteristics&quot;</span>, </span>
+<span id="cb101-21"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-21" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Importance Score&quot;</span>) <span class="sc">+</span></span>
+<span id="cb101-22"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-22" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb101-23"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-23" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>))</span>
+<span id="cb101-24"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-24" tabindex="-1"></a></span>
+<span id="cb101-25"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb101-25" tabindex="-1"></a><span class="fu">print</span>(p_importance)</span></code></pre></div>
+<p>Variable importance analysis reveals which patient characteristics drive treatment effect heterogeneity most strongly. As expected from our simulation design, baseline HbA1c and age emerge as the most important predictors, reflecting the clinical reality that patients with worse initial glycemic control and younger age tend to respond better to new diabetes medications.</p>
+</div>
+<div id="statistical-testing-for-heterogeneity" class="section level3 hasAnchor" number="7.4.5">
+<h3><span class="header-section-number">7.4.5</span> Statistical Testing for Heterogeneity<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#statistical-testing-for-heterogeneity" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-1" tabindex="-1"></a><span class="co"># Test average treatment effect</span></span>
+<span id="cb102-2"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-2" tabindex="-1"></a>ate <span class="ot">&lt;-</span> <span class="fu">average_treatment_effect</span>(cf)</span>
+<span id="cb102-3"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Average Treatment Effect Analysis:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb102-4"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-4" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;ATE estimate:&quot;</span>, <span class="fu">round</span>(ate[<span class="st">&quot;estimate&quot;</span>], <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb102-5"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-5" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Standard error:&quot;</span>, <span class="fu">round</span>(ate[<span class="st">&quot;std.err&quot;</span>], <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb102-6"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-6" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;95% CI: [&quot;</span>, <span class="fu">round</span>(ate[<span class="st">&quot;estimate&quot;</span>] <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> ate[<span class="st">&quot;std.err&quot;</span>], <span class="dv">3</span>),</span>
+<span id="cb102-7"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-7" tabindex="-1"></a>    <span class="st">&quot;,&quot;</span>, <span class="fu">round</span>(ate[<span class="st">&quot;estimate&quot;</span>] <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> ate[<span class="st">&quot;std.err&quot;</span>], <span class="dv">3</span>), <span class="st">&quot;]</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb102-8"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-8" tabindex="-1"></a></span>
+<span id="cb102-9"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-9" tabindex="-1"></a><span class="co"># Test for significant heterogeneity</span></span>
+<span id="cb102-10"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-10" tabindex="-1"></a>het_test <span class="ot">&lt;-</span> <span class="fu">test_calibration</span>(cf)</span>
+<span id="cb102-11"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-11" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Heterogeneity Test Results:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb102-12"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-12" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Test statistic:&quot;</span>, <span class="fu">round</span>(het_test[<span class="st">&quot;estimate&quot;</span>], <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb102-13"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-13" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;P-value:&quot;</span>, <span class="fu">round</span>(het_test[<span class="st">&quot;pval&quot;</span>], <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb102-14"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-14" tabindex="-1"></a></span>
+<span id="cb102-15"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-15" tabindex="-1"></a><span class="cf">if</span> (het_test[<span class="st">&quot;pval&quot;</span>] <span class="sc">&lt;</span> <span class="fl">0.05</span>) {</span>
+<span id="cb102-16"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-16" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Result: Significant heterogeneity detected</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb102-17"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-17" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Interpretation: Personalized treatment rules recommended</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb102-18"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-18" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb102-19"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-19" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Result: No significant heterogeneity detected</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb102-20"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-20" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Interpretation: One-size-fits-all treatment may be appropriate</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb102-21"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb102-21" tabindex="-1"></a>}</span></code></pre></div>
+<p>The average treatment effect estimate provides the population-level summary that traditional clinical trials report, while the heterogeneity test formally evaluates whether personalized treatment rules offer advantages over treating all patients identically. A significant test result provides statistical evidence that the observed variation in treatment effects represents true heterogeneity rather than random noise.</p>
+</div>
+<div id="visualization-and-pattern-discovery" class="section level3 hasAnchor" number="7.4.6">
+<h3><span class="header-section-number">7.4.6</span> Visualization and Pattern Discovery<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#visualization-and-pattern-discovery" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-1" tabindex="-1"></a><span class="co"># Prepare data for visualization</span></span>
+<span id="cb103-2"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-2" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb103-3"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-3" tabindex="-1"></a>  <span class="at">age =</span> data<span class="sc">$</span>age,</span>
+<span id="cb103-4"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-4" tabindex="-1"></a>  <span class="at">baseline_hba1c =</span> data<span class="sc">$</span>baseline_hba1c,</span>
+<span id="cb103-5"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-5" tabindex="-1"></a>  <span class="at">bmi =</span> data<span class="sc">$</span>bmi,</span>
+<span id="cb103-6"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-6" tabindex="-1"></a>  <span class="at">predicted_effect =</span> tau_hat,</span>
+<span id="cb103-7"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-7" tabindex="-1"></a>  <span class="at">true_effect =</span> true_tau,</span>
+<span id="cb103-8"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-8" tabindex="-1"></a>  <span class="at">prediction_se =</span> tau_se,</span>
+<span id="cb103-9"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-9" tabindex="-1"></a>  <span class="at">treatment =</span> <span class="fu">factor</span>(W, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;Treatment&quot;</span>))</span>
+<span id="cb103-10"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-10" tabindex="-1"></a>)</span>
+<span id="cb103-11"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-11" tabindex="-1"></a></span>
+<span id="cb103-12"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-12" tabindex="-1"></a><span class="co"># Validate predictions against truth</span></span>
+<span id="cb103-13"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-13" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(plot_data, <span class="fu">aes</span>(<span class="at">x =</span> true_effect, <span class="at">y =</span> predicted_effect)) <span class="sc">+</span></span>
+<span id="cb103-14"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-14" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">color =</span> <span class="st">&quot;darkblue&quot;</span>, <span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb103-15"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-15" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;red&quot;</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb103-16"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-16" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> <span class="st">&quot;orange&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb103-17"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-17" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Causal Forest Prediction Accuracy&quot;</span>,</span>
+<span id="cb103-18"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-18" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">&quot;Correlation:&quot;</span>, <span class="fu">round</span>(<span class="fu">cor</span>(true_tau, tau_hat), <span class="dv">3</span>)),</span>
+<span id="cb103-19"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-19" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;True Treatment Effect&quot;</span>, </span>
+<span id="cb103-20"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-20" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Predicted Treatment Effect&quot;</span>) <span class="sc">+</span></span>
+<span id="cb103-21"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-21" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb103-22"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-22" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>))</span>
+<span id="cb103-23"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-23" tabindex="-1"></a></span>
+<span id="cb103-24"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-24" tabindex="-1"></a><span class="fu">print</span>(p1)</span>
+<span id="cb103-25"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-25" tabindex="-1"></a></span>
+<span id="cb103-26"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-26" tabindex="-1"></a><span class="co"># Create treatment effect heatmap</span></span>
+<span id="cb103-27"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-27" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(plot_data, <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> baseline_hba1c)) <span class="sc">+</span></span>
+<span id="cb103-28"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-28" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">fill =</span> predicted_effect), <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb103-29"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-29" tabindex="-1"></a>  <span class="fu">scale_fill_gradient2</span>(<span class="at">low =</span> <span class="st">&quot;darkgreen&quot;</span>, <span class="at">mid =</span> <span class="st">&quot;white&quot;</span>, <span class="at">high =</span> <span class="st">&quot;darkred&quot;</span>,</span>
+<span id="cb103-30"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-30" tabindex="-1"></a>                       <span class="at">midpoint =</span> <span class="sc">-</span><span class="fl">0.75</span>,</span>
+<span id="cb103-31"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-31" tabindex="-1"></a>                       <span class="at">name =</span> <span class="st">&quot;Predicted</span><span class="sc">\n</span><span class="st">Effect&quot;</span>,</span>
+<span id="cb103-32"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-32" tabindex="-1"></a>                       <span class="at">labels =</span> <span class="cf">function</span>(x) <span class="fu">paste0</span>(x, <span class="st">&quot;%&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb103-33"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-33" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Treatment Effect Heterogeneity Map&quot;</span>,</span>
+<span id="cb103-34"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-34" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">&quot;Green = larger benefits, Red = smaller benefits&quot;</span>,</span>
+<span id="cb103-35"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-35" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Age (years)&quot;</span>, </span>
+<span id="cb103-36"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-36" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Baseline HbA1c (%)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb103-37"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-37" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb103-38"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-38" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>))</span>
+<span id="cb103-39"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-39" tabindex="-1"></a></span>
+<span id="cb103-40"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb103-40" tabindex="-1"></a><span class="fu">print</span>(p2)</span></code></pre></div>
+<p>These visualizations demonstrate the causal forest’s ability to recover complex treatment effect patterns. The prediction accuracy plot shows strong agreement between true and predicted effects, validating the algorithm’s performance. The heterogeneity map reveals clinically interpretable patterns where younger patients with higher baseline HbA1c (shown in green) experience the largest treatment benefits, while older patients with better initial control (shown in red) show minimal response.</p>
+</div>
+<div id="personalized-treatment-strategy-development" class="section level3 hasAnchor" number="7.4.7">
+<h3><span class="header-section-number">7.4.7</span> Personalized Treatment Strategy Development<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#personalized-treatment-strategy-development" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-1" tabindex="-1"></a><span class="co"># Identify high-benefit patients</span></span>
+<span id="cb104-2"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-2" tabindex="-1"></a>high_benefit_threshold <span class="ot">&lt;-</span> <span class="fu">quantile</span>(tau_hat, <span class="fl">0.25</span>)  <span class="co"># Bottom quartile (most negative)</span></span>
+<span id="cb104-3"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-3" tabindex="-1"></a>high_benefit_patients <span class="ot">&lt;-</span> tau_hat <span class="sc">&lt;=</span> high_benefit_threshold</span>
+<span id="cb104-4"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-4" tabindex="-1"></a></span>
+<span id="cb104-5"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-5" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Personalized Treatment Strategy:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb104-6"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-6" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;High-benefit threshold:&quot;</span>, <span class="fu">round</span>(high_benefit_threshold, <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb104-7"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;High-benefit patients:&quot;</span>, <span class="fu">sum</span>(high_benefit_patients), </span>
+<span id="cb104-8"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-8" tabindex="-1"></a>    <span class="st">&quot;(&quot;</span>, <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(high_benefit_patients), <span class="dv">1</span>), <span class="st">&quot;% of population)</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb104-9"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-9" tabindex="-1"></a></span>
+<span id="cb104-10"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-10" tabindex="-1"></a><span class="co"># Compare patient characteristics</span></span>
+<span id="cb104-11"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-11" tabindex="-1"></a>high_benefit_chars <span class="ot">&lt;-</span> data[high_benefit_patients, ]</span>
+<span id="cb104-12"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-12" tabindex="-1"></a>regular_chars <span class="ot">&lt;-</span> data[<span class="sc">!</span>high_benefit_patients, ]</span>
+<span id="cb104-13"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-13" tabindex="-1"></a></span>
+<span id="cb104-14"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-14" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">High-Benefit Patient Profile:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb104-15"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-15" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;  Mean age:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(high_benefit_chars<span class="sc">$</span>age), <span class="dv">1</span>), <span class="st">&quot;years</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb104-16"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-16" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;  Mean baseline HbA1c:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(high_benefit_chars<span class="sc">$</span>baseline_hba1c), <span class="dv">2</span>), <span class="st">&quot;%</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb104-17"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-17" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;  Mean BMI:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(high_benefit_chars<span class="sc">$</span>bmi), <span class="dv">1</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb104-18"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-18" tabindex="-1"></a></span>
+<span id="cb104-19"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-19" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Regular Patient Profile:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb104-20"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-20" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;  Mean age:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(regular_chars<span class="sc">$</span>age), <span class="dv">1</span>), <span class="st">&quot;years</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb104-21"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-21" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;  Mean baseline HbA1c:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(regular_chars<span class="sc">$</span>baseline_hba1c), <span class="dv">2</span>), <span class="st">&quot;%</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb104-22"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-22" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;  Mean BMI:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(regular_chars<span class="sc">$</span>bmi), <span class="dv">1</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb104-23"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-23" tabindex="-1"></a></span>
+<span id="cb104-24"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-24" tabindex="-1"></a><span class="co"># Evaluate treatment strategies</span></span>
+<span id="cb104-25"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-25" tabindex="-1"></a>control_outcome <span class="ot">&lt;-</span> <span class="fu">mean</span>(Y[W <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb104-26"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-26" tabindex="-1"></a>treat_all_outcome <span class="ot">&lt;-</span> control_outcome <span class="sc">+</span> <span class="fu">mean</span>(tau_hat)</span>
+<span id="cb104-27"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-27" tabindex="-1"></a>selective_outcome <span class="ot">&lt;-</span> control_outcome <span class="sc">+</span> <span class="fu">mean</span>(tau_hat[high_benefit_patients]) <span class="sc">*</span> <span class="fu">mean</span>(high_benefit_patients)</span>
+<span id="cb104-28"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-28" tabindex="-1"></a></span>
+<span id="cb104-29"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-29" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Treatment Strategy Comparison:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb104-30"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-30" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;No treatment:&quot;</span>, <span class="fu">round</span>(control_outcome, <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb104-31"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-31" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Treat everyone:&quot;</span>, <span class="fu">round</span>(treat_all_outcome, <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb104-32"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-32" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Selective treatment:&quot;</span>, <span class="fu">round</span>(selective_outcome, <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb104-33"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb104-33" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Selective strategy benefit:&quot;</span>, <span class="fu">round</span>(selective_outcome <span class="sc">-</span> control_outcome, <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<p>The personalized treatment analysis identifies patients most likely to benefit from the new medication, enabling targeted therapy that maximizes clinical benefit while minimizing unnecessary exposure. High-benefit patients are characterized by younger age and poorer baseline glycemic control, providing clear clinical criteria for treatment decisions.</p>
+</div>
+<div id="partial-dependence-analysis" class="section level3 hasAnchor" number="7.4.8">
+<h3><span class="header-section-number">7.4.8</span> Partial Dependence Analysis<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#partial-dependence-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-1" tabindex="-1"></a><span class="co"># Generate partial dependence plots for interpretation</span></span>
+<span id="cb105-2"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-2" tabindex="-1"></a>age_sequence <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">30</span>, <span class="dv">80</span>, <span class="at">by =</span> <span class="dv">5</span>)</span>
+<span id="cb105-3"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-3" tabindex="-1"></a>age_effects <span class="ot">&lt;-</span> <span class="fu">sapply</span>(age_sequence, <span class="cf">function</span>(target_age) {</span>
+<span id="cb105-4"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-4" tabindex="-1"></a>  X_modified <span class="ot">&lt;-</span> X</span>
+<span id="cb105-5"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-5" tabindex="-1"></a>  X_modified[, <span class="st">&quot;age&quot;</span>] <span class="ot">&lt;-</span> target_age</span>
+<span id="cb105-6"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-6" tabindex="-1"></a>  <span class="fu">mean</span>(<span class="fu">predict</span>(cf, X_modified)<span class="sc">$</span>predictions)</span>
+<span id="cb105-7"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-7" tabindex="-1"></a>})</span>
+<span id="cb105-8"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-8" tabindex="-1"></a></span>
+<span id="cb105-9"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-9" tabindex="-1"></a>hba1c_sequence <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">7</span>, <span class="dv">11</span>, <span class="at">by =</span> <span class="fl">0.5</span>)</span>
+<span id="cb105-10"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-10" tabindex="-1"></a>hba1c_effects <span class="ot">&lt;-</span> <span class="fu">sapply</span>(hba1c_sequence, <span class="cf">function</span>(target_hba1c) {</span>
+<span id="cb105-11"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-11" tabindex="-1"></a>  X_modified <span class="ot">&lt;-</span> X</span>
+<span id="cb105-12"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-12" tabindex="-1"></a>  X_modified[, <span class="st">&quot;baseline_hba1c&quot;</span>] <span class="ot">&lt;-</span> target_hba1c</span>
+<span id="cb105-13"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-13" tabindex="-1"></a>  <span class="fu">mean</span>(<span class="fu">predict</span>(cf, X_modified)<span class="sc">$</span>predictions)</span>
+<span id="cb105-14"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-14" tabindex="-1"></a>})</span>
+<span id="cb105-15"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-15" tabindex="-1"></a></span>
+<span id="cb105-16"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-16" tabindex="-1"></a><span class="co"># Visualize partial dependence</span></span>
+<span id="cb105-17"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-17" tabindex="-1"></a>age_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">age =</span> age_sequence, <span class="at">effect =</span> age_effects)</span>
+<span id="cb105-18"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-18" tabindex="-1"></a>hba1c_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">hba1c =</span> hba1c_sequence, <span class="at">effect =</span> hba1c_effects)</span>
+<span id="cb105-19"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-19" tabindex="-1"></a></span>
+<span id="cb105-20"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-20" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(age_df, <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> effect)) <span class="sc">+</span></span>
+<span id="cb105-21"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-21" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb105-22"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-22" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb105-23"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-23" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb105-24"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-24" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Treatment Effect by Age&quot;</span>,</span>
+<span id="cb105-25"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-25" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">&quot;Average effect holding other characteristics constant&quot;</span>,</span>
+<span id="cb105-26"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-26" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Age (years)&quot;</span>, </span>
+<span id="cb105-27"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-27" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Average Treatment Effect&quot;</span>) <span class="sc">+</span></span>
+<span id="cb105-28"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-28" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb105-29"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-29" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>))</span>
+<span id="cb105-30"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-30" tabindex="-1"></a></span>
+<span id="cb105-31"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-31" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(hba1c_df, <span class="fu">aes</span>(<span class="at">x =</span> hba1c, <span class="at">y =</span> effect)) <span class="sc">+</span></span>
+<span id="cb105-32"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-32" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&quot;darkgreen&quot;</span>, <span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb105-33"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-33" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;darkgreen&quot;</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb105-34"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-34" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb105-35"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-35" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Treatment Effect by Baseline HbA1c&quot;</span>,</span>
+<span id="cb105-36"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-36" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">&quot;Average effect holding other characteristics constant&quot;</span>,</span>
+<span id="cb105-37"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-37" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Baseline HbA1c (%)&quot;</span>, </span>
+<span id="cb105-38"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-38" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Average Treatment Effect&quot;</span>) <span class="sc">+</span></span>
+<span id="cb105-39"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-39" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb105-40"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-40" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>))</span>
+<span id="cb105-41"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-41" tabindex="-1"></a></span>
+<span id="cb105-42"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-42" tabindex="-1"></a><span class="fu">print</span>(p3)</span>
+<span id="cb105-43"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#cb105-43" tabindex="-1"></a><span class="fu">print</span>(p4)</span></code></pre></div>
+<p>Partial dependence plots provide intuitive visualization of how treatment effects vary along key patient dimensions while holding other characteristics constant. The age effect shows declining benefits with advancing age, possibly reflecting reduced physiological responsiveness or competing health priorities in older patients. The baseline HbA1c effect demonstrates the “room for improvement” principle where patients with worse initial control have greater potential for benefit.</p>
+</div>
+</div>
+<div id="clinical-insights-and-implementation" class="section level2 hasAnchor" number="7.5">
+<h2><span class="header-section-number">7.5</span> Clinical Insights and Implementation<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#clinical-insights-and-implementation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The causal forest analysis reveals clinically meaningful patterns of treatment heterogeneity that support personalized diabetes care. The algorithm successfully identifies that younger patients with poor baseline glycemic control represent optimal candidates for the new medication, achieving HbA1c reductions exceeding 2 percentage points compared to minimal benefits for older patients with better initial control. This pattern aligns with clinical understanding of diabetes pathophysiology where patients with greater metabolic dysfunction often show more dramatic responses to effective interventions.</p>
+<p>Treatment benefits decrease approximately 0.02 percentage points per year of age, reflecting reduced physiological responsiveness or competing health priorities in older patients. Each 1% increase in baseline HbA1c associates with greater treatment benefits, demonstrating the “room for improvement” principle where patients with worse initial control have greater potential for benefit. These insights translate directly into clinical decision rules that physicians can apply in practice.</p>
+<p>Implementation in clinical practice would involve integrating the causal forest model into electronic health record systems where patient characteristics automatically generate personalized treatment effect predictions. The partial dependence plots provide interpretable summaries that help physicians understand and trust the algorithm’s recommendations, while the variable importance measures guide data collection priorities for optimal model performance.</p>
+<p>The confidence intervals around individual predictions reflect appropriate uncertainty about treatment effects, with wider intervals in regions of the covariate space where fewer patients provide evidence. This honest uncertainty quantification helps clinicians understand when predictions are most reliable and when additional caution or monitoring might be warranted.</p>
+</div>
+<div id="understanding-limitations-and-model-robustness" class="section level2 hasAnchor" number="7.6">
+<h2><span class="header-section-number">7.6</span> Understanding Limitations and Model Robustness<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#understanding-limitations-and-model-robustness" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Causal forests inherit important limitations from both machine learning and causal inference methodologies that practitioners must understand for successful implementation. The method requires substantial sample sizes for reliable estimation, particularly in high-dimensional settings where the curse of dimensionality affects local estimation procedures. Clinical datasets with fewer than several thousand patients may lack sufficient power for stable treatment effect estimation, especially when investigating numerous patient characteristics simultaneously.</p>
+<p>The honesty requirement, while theoretically essential for valid inference, reduces effective sample sizes by requiring strict separation between structure learning and effect estimation. This creates practical tradeoffs between statistical rigor and estimation precision that may favor alternative approaches in moderate-sized datasets. Model interpretability represents another consideration, as causal forests provide less transparent decision rules compared to parametric approaches. Understanding why specific patients receive particular treatment effect predictions requires additional analysis through partial dependence plots, variable importance measures, or other post-hoc explanation methods.</p>
+<p>The method assumes that treatment effect heterogeneity follows patterns amenable to tree-based discovery, potentially missing complex interactions or highly nonlinear relationships that don’t align with recursive partitioning logic. Alternative approaches using kernel methods, neural networks, or other flexible machine learning techniques might capture different types of heterogeneity patterns.</p>
+<p>Sensitivity to unmeasured confounding remains a fundamental challenge, as causal forests cannot overcome violations of the unconfoundedness assumption. While randomized trial data eliminates this concern by design, observational applications require careful consideration of potential hidden confounders that might bias treatment effect estimates.</p>
+</div>
+<div id="future-directions-and-extensions" class="section level2 hasAnchor" number="7.7">
+<h2><span class="header-section-number">7.7</span> Future Directions and Extensions<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#future-directions-and-extensions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Recent methodological developments extend causal forests to increasingly complex settings that expand their practical applicability. Researchers have developed instrumental variable versions that maintain the flexibility of forest-based estimation while addressing identification challenges in observational studies where unmeasured confounding threatens validity. These extensions enable personalized treatment effect estimation even when randomized assignment is impossible or unethical.</p>
+<p>Integration with adaptive experimental designs represents another promising direction where treatment assignments update based on accumulating evidence about individual responses. This enables real-time personalization in clinical trials or digital health interventions while maintaining statistical rigor through principled sequential decision-making. Such designs could dramatically accelerate the development of personalized treatment protocols by efficiently exploring treatment effect heterogeneity during the trial itself.</p>
+<p>Fairness considerations become increasingly important as personalized algorithms influence clinical decisions that may affect different population groups differently. When some patient subgroups benefit more than others from new treatments, personalized algorithms might exacerbate existing health disparities if not carefully designed. Researchers are developing methods to incorporate equity constraints into causal forest algorithms, ensuring that personalized treatments promote rather than undermine health equity goals.</p>
+<p>Multi-outcome extensions allow simultaneous modeling of treatment effects on multiple endpoints, capturing tradeoffs between efficacy and safety outcomes that characterize real-world treatment decisions. For diabetes care, this might involve jointly modeling HbA1c reduction, weight changes, and hypoglycemia risk to develop treatment recommendations that optimize overall patient benefit rather than single-outcome effects.</p>
+</div>
+<div id="conclusion-transforming-precision-medicine" class="section level2 hasAnchor" number="7.8">
+<h2><span class="header-section-number">7.8</span> Conclusion: Transforming Precision Medicine<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#conclusion-transforming-precision-medicine" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Causal forests represent a transformative advance in our ability to understand and exploit treatment effect heterogeneity for personalized medicine and targeted interventions. By combining the pattern-recognition capabilities of machine learning with the statistical rigor of causal inference theory, the method enables automatic discovery of complex treatment effect patterns while providing honest uncertainty quantification that supports clinical decision-making.</p>
+<p>Our precision medicine application demonstrates the method’s practical value for developing personalized diabetes treatment protocols based on patient characteristics. The algorithm successfully identifies clinically meaningful subgroups with different treatment responses, providing interpretable insights about which patients benefit most from new interventions. Variable importance measures and partial dependence plots translate complex algorithmic outputs into actionable clinical guidance that physicians can understand and apply.</p>
+<p>The theoretical guarantees regarding asymptotic normality and confidence interval coverage represent crucial advances over ad-hoc machine learning approaches to causal inference that ignore model selection uncertainty. These honest inference procedures ensure that the adaptive nature of tree-based methods doesn’t compromise statistical validity, providing reliable foundations for high-stakes clinical decisions.</p>
+<p>Successful implementation requires careful attention to sample size requirements, assumption verification, and validation strategies. The method works best as part of comprehensive analytical approaches that combine algorithmic insights with domain expertise, clinical judgment, and careful consideration of implementation challenges. Future research continues expanding the framework to handle unmeasured confounding, multiple outcomes, and fairness constraints while developing computational improvements that enable application to massive healthcare datasets.</p>
+<p>When applied appropriately with adequate sample sizes and valid identifying assumptions, causal forests provide powerful tools for precision medicine, targeted policy interventions, and any domain where treatment effects vary meaningfully across individuals. The method’s combination of statistical rigor, computational efficiency, and practical interpretability establishes it as an essential component of the modern causal inference toolkit for researchers and practitioners seeking to understand and exploit treatment effect heterogeneity.</p>
+<p>The diabetes treatment application illustrates how causal forests can transform clinical practice by moving beyond one-size-fits-all approaches toward truly personalized medicine. By automatically discovering that younger patients with poor glycemic control benefit most from new treatments while older patients with better initial control show minimal response, the algorithm provides actionable insights that directly inform treatment decisions. This represents a fundamental shift from traditional clinical decision-making based on average effects toward precision medicine grounded in individual patient characteristics.</p>
+<p>The ultimate promise of causal forests extends beyond technical innovation to clinical impact—enabling physicians to make treatment decisions based on rigorous statistical evidence about individual patient benefit rather than population averages that may not apply to the specific patient sitting in their office. This represents not just methodological progress but a fundamental advancement toward more effective, efficient, and equitable healthcare delivery that maximizes benefit for each individual patient while optimizing resource allocation across entire populations.</p>
+</div>
+<div id="references-4" class="section level2 hasAnchor" number="7.9">
+<h2><span class="header-section-number">7.9</span> References<a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#references-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li>Wager, S., &amp; Athey, S. (2018). Estimation and inference of heterogeneous treatment effects using random forests. <em>Journal of the American Statistical Association</em>, 113(523), 1228-1242.</li>
+<li>Athey, S., Tibshirani, J., &amp; Wager, S. (2019). Generalized random forests. <em>The Annals of Statistics</em>, 47(2), 1148-1178.</li>
+<li>Chernozhukov, V., Chetverikov, D., Demirer, M., Duflo, E., Hansen, C., Newey, W., &amp; Robins, J. (2018). Double/debiased machine learning for treatment and structural parameters. <em>The Econometrics Journal</em>, 21(1), C1-C68.</li>
+<li>Künzel, S. R., Sekhon, J. S., Bickel, P. J., &amp; Yu, B. (2019). Metalearners for estimating heterogeneous treatment effects using machine learning. <em>Proceedings of the National Academy of Sciences</em>, 116(10), 4156-4165.</li>
+<li>Tibshirani, J., Athey, S., Friedberg, R., Hadad, V., Hirshberg, D., Miner, L., … &amp; Wager, S. (2020). grf: Generalized Random Forests. <em>R package version</em>, 1.</li>
+</ul>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="causal-inference-in-practice-v-regression-discontinuity-design.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="bayesian-structural-time-series-for-causal-inference.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/edit/main/07-CSLFRST.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/blob/main/07-CSLFRST.Rmd",
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
