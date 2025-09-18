@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 9 Meta-Learners for Heterogeneous Treatment Effects | Causal Inference in R</title>
+  <meta name="description" content="Chapter 9 Meta-Learners for Heterogeneous Treatment Effects | Causal Inference in R" />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 9 Meta-Learners for Heterogeneous Treatment Effects | Causal Inference in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 9 Meta-Learners for Heterogeneous Treatment Effects | Causal Inference in R" />
+  
+  
+  
+
+<meta name="author" content="Kamran Afzali" />
+
+
+<meta name="date" content="2025-09-18" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="bayesian-structural-time-series-for-causal-inference.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Causality analysis in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Foundations of Causal Statistical Analysis</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#summary-table-techniques-for-causal-statistical-analysis"><i class="fa fa-check"></i><b>1.2</b> Summary Table: Techniques for Causal Statistical Analysis</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#methodological-deep-dive-with-practical-guidance"><i class="fa fa-check"></i><b>1.3</b> Methodological Deep Dive with Practical Guidance</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#discussion"><i class="fa fa-check"></i><b>1.4</b> Discussion</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><i class="fa fa-check"></i><b>2</b> Causal Inference in Practice I: Randomized Controlled Trials and Regression Adjustment</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#randomized-controlled-trials-design-and-analysis"><i class="fa fa-check"></i><b>2.2</b> 1. Randomized Controlled Trials: Design and Analysis</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#theoretical-foundations"><i class="fa fa-check"></i><b>2.2.1</b> Theoretical Foundations</a></li>
+<li class="chapter" data-level="2.2.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation"><i class="fa fa-check"></i><b>2.2.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.2.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#model-based-inference"><i class="fa fa-check"></i><b>2.2.3</b> Model-Based Inference</a></li>
+<li class="chapter" data-level="2.2.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#diagnostics-and-integrity"><i class="fa fa-check"></i><b>2.2.4</b> Diagnostics and Integrity</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#regression-adjustment-a-model-based-approach-to-causal-inference"><i class="fa fa-check"></i><b>2.3</b> 2. Regression Adjustment: A Model-Based Approach to Causal Inference</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conceptual-overview"><i class="fa fa-check"></i><b>2.3.1</b> Conceptual Overview</a></li>
+<li class="chapter" data-level="2.3.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation-1"><i class="fa fa-check"></i><b>2.3.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.3.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#limitations-and-diagnostics"><i class="fa fa-check"></i><b>2.3.3</b> Limitations and Diagnostics</a></li>
+<li class="chapter" data-level="2.3.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#causal-interpretation"><i class="fa fa-check"></i><b>2.3.4</b> Causal Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#toward-integrated-reasoning"><i class="fa fa-check"></i><b>2.4</b> Toward Integrated Reasoning</a></li>
+<li class="chapter" data-level="2.5" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conclusion"><i class="fa fa-check"></i><b>2.5</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><i class="fa fa-check"></i><b>3</b> Causal Inference in Practice II: Propensity Scores, Doubly Robust Estimators, and Inverse Probability Weighting</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#propensity-score-methods"><i class="fa fa-check"></i><b>3.1</b> Propensity Score Methods</a></li>
+<li class="chapter" data-level="3.2" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#inverse-probability-weighting-ipw"><i class="fa fa-check"></i><b>3.2</b> Inverse Probability Weighting (IPW)</a></li>
+<li class="chapter" data-level="3.3" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#doubly-robust-estimators"><i class="fa fa-check"></i><b>3.3</b> Doubly Robust Estimators</a></li>
+<li class="chapter" data-level="3.4" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#integrative-interpretation"><i class="fa fa-check"></i><b>3.4</b> Integrative Interpretation</a></li>
+<li class="chapter" data-level="3.5" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#summary-table"><i class="fa fa-check"></i><b>3.5</b> Summary Table</a></li>
+<li class="chapter" data-level="3.6" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#conclusion-1"><i class="fa fa-check"></i><b>3.6</b> Conclusion</a></li>
+<li class="chapter" data-level="3.7" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#references-1"><i class="fa fa-check"></i><b>3.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><i class="fa fa-check"></i><b>4</b> Causal Inference in Practice III: Difference-in-Differences with a Healthcare Application</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#introduction-2"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
+<li class="chapter" data-level="4.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#difference-in-differences-theoretical-framework"><i class="fa fa-check"></i><b>4.2</b> Difference-in-Differences: Theoretical Framework</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#core-concept"><i class="fa fa-check"></i><b>4.2.1</b> Core Concept</a></li>
+<li class="chapter" data-level="4.2.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#mathematical-formalism"><i class="fa fa-check"></i><b>4.2.2</b> Mathematical Formalism</a></li>
+<li class="chapter" data-level="4.2.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#key-assumption-parallel-trends"><i class="fa fa-check"></i><b>4.2.3</b> Key Assumption: Parallel Trends</a></li>
+<li class="chapter" data-level="4.2.4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#practical-considerations"><i class="fa fa-check"></i><b>4.2.4</b> Practical Considerations</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#application-evaluating-a-telemedicine-program-in-healthcare"><i class="fa fa-check"></i><b>4.3</b> Application: Evaluating a Telemedicine Program in Healthcare</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#scenario"><i class="fa fa-check"></i><b>4.3.1</b> Scenario</a></li>
+<li class="chapter" data-level="4.3.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#simulated-data"><i class="fa fa-check"></i><b>4.3.2</b> Simulated Data</a></li>
+<li class="chapter" data-level="4.3.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#r-implementation-2"><i class="fa fa-check"></i><b>4.3.3</b> R Implementation</a></li>
+<li class="chapter" data-level="4.3.4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#interpretation"><i class="fa fa-check"></i><b>4.3.4</b> Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#limitations-and-extensions"><i class="fa fa-check"></i><b>4.4</b> Limitations and Extensions</a></li>
+<li class="chapter" data-level="4.5" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#conclusion-2"><i class="fa fa-check"></i><b>4.5</b> Conclusion</a></li>
+<li class="chapter" data-level="4.6" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#references-2"><i class="fa fa-check"></i><b>4.6</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html"><i class="fa fa-check"></i><b>5</b> Causal Inference in Practice IV: Instrumental Variables</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#introduction-3"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#healthcare-case-study-hospital-quality-and-recovery-time"><i class="fa fa-check"></i><b>5.2</b> Healthcare Case Study: Hospital Quality and Recovery Time</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#r-implementation-3"><i class="fa fa-check"></i><b>5.2.1</b> R Implementation</a></li>
+<li class="chapter" data-level="5.2.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#interpreting-the-results"><i class="fa fa-check"></i><b>5.2.2</b> Interpreting the Results</a></li>
+<li class="chapter" data-level="5.2.3" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#robustness-checks"><i class="fa fa-check"></i><b>5.2.3</b> Robustness Checks</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#practical-considerations-and-extensions"><i class="fa fa-check"></i><b>5.3</b> Practical Considerations and Extensions</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#when-to-use-iv"><i class="fa fa-check"></i><b>5.3.1</b> When to Use IV</a></li>
+<li class="chapter" data-level="5.3.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#advanced-topics"><i class="fa fa-check"></i><b>5.3.2</b> Advanced Topics</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#conclusion-3"><i class="fa fa-check"></i><b>5.4</b> Conclusion</a></li>
+<li class="chapter" data-level="5.5" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#further-reading"><i class="fa fa-check"></i><b>5.5</b> Further Reading</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html"><i class="fa fa-check"></i><b>6</b> Causal Inference in Practice V: Regression Discontinuity Design</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#introduction-4"><i class="fa fa-check"></i><b>6.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#comparison-with-other-methods"><i class="fa fa-check"></i><b>6.1.1</b> Comparison with Other Methods</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#healthcare-application-icu-admission-and-mortality"><i class="fa fa-check"></i><b>6.2</b> Healthcare Application: ICU Admission and Mortality</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#scenario-1"><i class="fa fa-check"></i><b>6.2.1</b> Scenario</a></li>
+<li class="chapter" data-level="6.2.2" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#assumptions-and-validity"><i class="fa fa-check"></i><b>6.2.2</b> Assumptions and Validity</a></li>
+<li class="chapter" data-level="6.2.3" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#r-implementation-4"><i class="fa fa-check"></i><b>6.2.3</b> R Implementation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#interpretation-and-diagnostics"><i class="fa fa-check"></i><b>6.3</b> Interpretation and Diagnostics</a></li>
+<li class="chapter" data-level="6.4" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#extensions-and-robustness"><i class="fa fa-check"></i><b>6.4</b> Extensions and Robustness</a></li>
+<li class="chapter" data-level="6.5" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#limitations-and-considerations"><i class="fa fa-check"></i><b>6.5</b> Limitations and Considerations</a></li>
+<li class="chapter" data-level="6.6" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#conclusion-4"><i class="fa fa-check"></i><b>6.6</b> Conclusion</a></li>
+<li class="chapter" data-level="6.7" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#references-3"><i class="fa fa-check"></i><b>6.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><i class="fa fa-check"></i><b>7</b> Causal Forests for Personalized Medicine: A Comprehensive Guide</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#introduction-5"><i class="fa fa-check"></i><b>7.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#why-traditional-approaches-fall-short"><i class="fa fa-check"></i><b>7.1.1</b> Why Traditional Approaches Fall Short</a></li>
+<li class="chapter" data-level="7.1.2" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#the-causal-forest-solution"><i class="fa fa-check"></i><b>7.1.2</b> The Causal Forest Solution</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#theoretical-foundation-how-causal-forests-work"><i class="fa fa-check"></i><b>7.2</b> Theoretical Foundation: How Causal Forests Work</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#from-random-forests-to-causal-discovery"><i class="fa fa-check"></i><b>7.2.1</b> From Random Forests to Causal Discovery</a></li>
+<li class="chapter" data-level="7.2.2" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#the-potential-outcomes-framework"><i class="fa fa-check"></i><b>7.2.2</b> The Potential Outcomes Framework</a></li>
+<li class="chapter" data-level="7.2.3" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#key-identifying-assumptions"><i class="fa fa-check"></i><b>7.2.3</b> Key Identifying Assumptions</a></li>
+<li class="chapter" data-level="7.2.4" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#the-splitting-innovation"><i class="fa fa-check"></i><b>7.2.4</b> The Splitting Innovation</a></li>
+<li class="chapter" data-level="7.2.5" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#the-honesty-principle"><i class="fa fa-check"></i><b>7.2.5</b> The Honesty Principle</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#making-predictions-from-trees-to-treatment-recommendations"><i class="fa fa-check"></i><b>7.3</b> Making Predictions: From Trees to Treatment Recommendations</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#adaptive-weighting-for-individual-predictions"><i class="fa fa-check"></i><b>7.3.1</b> Adaptive Weighting for Individual Predictions</a></li>
+<li class="chapter" data-level="7.3.2" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#honest-confidence-intervals"><i class="fa fa-check"></i><b>7.3.2</b> Honest Confidence Intervals</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#precision-medicine-case-study-personalized-diabetes-treatment"><i class="fa fa-check"></i><b>7.4</b> Precision Medicine Case Study: Personalized Diabetes Treatment</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#clinical-scenario"><i class="fa fa-check"></i><b>7.4.1</b> Clinical Scenario</a></li>
+<li class="chapter" data-level="7.4.2" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#data-generation-and-setup"><i class="fa fa-check"></i><b>7.4.2</b> Data Generation and Setup</a></li>
+<li class="chapter" data-level="7.4.3" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#fitting-the-causal-forest"><i class="fa fa-check"></i><b>7.4.3</b> Fitting the Causal Forest</a></li>
+<li class="chapter" data-level="7.4.4" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#variable-importance-analysis"><i class="fa fa-check"></i><b>7.4.4</b> Variable Importance Analysis</a></li>
+<li class="chapter" data-level="7.4.5" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#statistical-testing-for-heterogeneity"><i class="fa fa-check"></i><b>7.4.5</b> Statistical Testing for Heterogeneity</a></li>
+<li class="chapter" data-level="7.4.6" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#visualization-and-pattern-discovery"><i class="fa fa-check"></i><b>7.4.6</b> Visualization and Pattern Discovery</a></li>
+<li class="chapter" data-level="7.4.7" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#personalized-treatment-strategy-development"><i class="fa fa-check"></i><b>7.4.7</b> Personalized Treatment Strategy Development</a></li>
+<li class="chapter" data-level="7.4.8" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#partial-dependence-analysis"><i class="fa fa-check"></i><b>7.4.8</b> Partial Dependence Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#clinical-insights-and-implementation"><i class="fa fa-check"></i><b>7.5</b> Clinical Insights and Implementation</a></li>
+<li class="chapter" data-level="7.6" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#understanding-limitations-and-model-robustness"><i class="fa fa-check"></i><b>7.6</b> Understanding Limitations and Model Robustness</a></li>
+<li class="chapter" data-level="7.7" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#future-directions-and-extensions"><i class="fa fa-check"></i><b>7.7</b> Future Directions and Extensions</a></li>
+<li class="chapter" data-level="7.8" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#conclusion-transforming-precision-medicine"><i class="fa fa-check"></i><b>7.8</b> Conclusion: Transforming Precision Medicine</a></li>
+<li class="chapter" data-level="7.9" data-path="causal-forests-for-personalized-medicine-a-comprehensive-guide.html"><a href="causal-forests-for-personalized-medicine-a-comprehensive-guide.html#references-4"><i class="fa fa-check"></i><b>7.9</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html"><i class="fa fa-check"></i><b>8</b> Bayesian Structural Time Series for Causal Inference</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#introduction-6"><i class="fa fa-check"></i><b>8.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="8.1.1" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#theoretical-framework"><i class="fa fa-check"></i><b>8.1.1</b> Theoretical Framework</a></li>
+<li class="chapter" data-level="8.1.2" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#control-variable-selection"><i class="fa fa-check"></i><b>8.1.2</b> Control Variable Selection</a></li>
+<li class="chapter" data-level="8.1.3" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#healthcare-policy-evaluation-tobacco-tax-impact-analysis"><i class="fa fa-check"></i><b>8.1.3</b> Healthcare Policy Evaluation: Tobacco Tax Impact Analysis</a></li>
+<li class="chapter" data-level="8.1.4" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#scenario-description"><i class="fa fa-check"></i><b>8.1.4</b> Scenario Description</a></li>
+<li class="chapter" data-level="8.1.5" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#implementation-and-analysis"><i class="fa fa-check"></i><b>8.1.5</b> Implementation and Analysis</a></li>
+<li class="chapter" data-level="8.1.6" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#example-2-mental-health-intervention-evaluation"><i class="fa fa-check"></i><b>8.1.6</b> Example 2: Mental Health Intervention Evaluation</a></li>
+<li class="chapter" data-level="8.1.7" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#implementation-guidelines-for-healthcare-applications"><i class="fa fa-check"></i><b>8.1.7</b> Implementation Guidelines for Healthcare Applications</a></li>
+<li class="chapter" data-level="8.1.8" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#limitations-and-considerations-1"><i class="fa fa-check"></i><b>8.1.8</b> Limitations and Considerations</a></li>
+<li class="chapter" data-level="8.1.9" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#comparison-with-alternative-methods"><i class="fa fa-check"></i><b>8.1.9</b> Comparison with Alternative Methods</a></li>
+<li class="chapter" data-level="8.1.10" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#conclusion-5"><i class="fa fa-check"></i><b>8.1.10</b> Conclusion</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html"><i class="fa fa-check"></i><b>9</b> Meta-Learners for Heterogeneous Treatment Effects</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#introduction-the-promise-and-peril-of-machine-learning-for-causal-inference"><i class="fa fa-check"></i><b>9.1</b> Introduction: The Promise and Peril of Machine Learning for Causal Inference</a></li>
+<li class="chapter" data-level="9.2" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#theoretical-foundation-from-prediction-to-causal-inference"><i class="fa fa-check"></i><b>9.2</b> Theoretical Foundation: From Prediction to Causal Inference</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#the-s-learner-simplicity-with-hidden-complexity"><i class="fa fa-check"></i><b>9.2.1</b> The S-Learner: Simplicity with Hidden Complexity</a></li>
+<li class="chapter" data-level="9.2.2" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#the-t-learner-divide-and-conquer"><i class="fa fa-check"></i><b>9.2.2</b> The T-Learner: Divide and Conquer</a></li>
+<li class="chapter" data-level="9.2.3" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#the-x-learner-sophisticated-synthesis"><i class="fa fa-check"></i><b>9.2.3</b> The X-Learner: Sophisticated Synthesis</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#practical-implementation-hypertension-treatment-optimization"><i class="fa fa-check"></i><b>9.3</b> Practical Implementation: Hypertension Treatment Optimization</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementing-the-s-learner"><i class="fa fa-check"></i><b>9.3.1</b> Implementing the S-Learner</a></li>
+<li class="chapter" data-level="9.3.2" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementing-the-t-learner"><i class="fa fa-check"></i><b>9.3.2</b> Implementing the T-Learner</a></li>
+<li class="chapter" data-level="9.3.3" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementing-the-x-learner"><i class="fa fa-check"></i><b>9.3.3</b> Implementing the X-Learner</a></li>
+<li class="chapter" data-level="9.3.4" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#comparative-analysis-and-model-selection"><i class="fa fa-check"></i><b>9.3.4</b> Comparative Analysis and Model Selection</a></li>
+<li class="chapter" data-level="9.3.5" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#clinical-pattern-discovery-and-interpretation"><i class="fa fa-check"></i><b>9.3.5</b> Clinical Pattern Discovery and Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementation-considerations-and-best-practices"><i class="fa fa-check"></i><b>9.4</b> Implementation Considerations and Best Practices</a></li>
+<li class="chapter" data-level="9.5" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#conclusion-democratizing-causal-machine-learning"><i class="fa fa-check"></i><b>9.5</b> Conclusion: Democratizing Causal Machine Learning</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Causal Inference in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="meta-learners-for-heterogeneous-treatment-effects" class="section level1 hasAnchor" number="9">
+<h1><span class="header-section-number">Chapter 9</span> Meta-Learners for Heterogeneous Treatment Effects<a href="meta-learners-for-heterogeneous-treatment-effects.html#meta-learners-for-heterogeneous-treatment-effects" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction-the-promise-and-peril-of-machine-learning-for-causal-inference" class="section level2 hasAnchor" number="9.1">
+<h2><span class="header-section-number">9.1</span> Introduction: The Promise and Peril of Machine Learning for Causal Inference<a href="meta-learners-for-heterogeneous-treatment-effects.html#introduction-the-promise-and-peril-of-machine-learning-for-causal-inference" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Consider a cardiologist deciding whether to prescribe a new blood pressure medication. Clinical trials demonstrate an average systolic blood pressure reduction of 8 mmHg, but this population average masks crucial individual variation. Some patients might experience dramatic 20 mmHg reductions while others show minimal response or even adverse effects. The fundamental challenge lies in adapting the pattern-recognition power of machine learning to estimate these individualized treatment effects while preserving the statistical rigor required for causal inference.</p>
+<p>Meta-learners represent an elegant solution that transforms any supervised learning algorithm into a tool for estimating conditional average treatment effects (CATEs). Rather than developing entirely new causal inference methods, meta-learners leverage the extensive ecosystem of machine learning algorithms—from random forests to neural networks—by carefully restructuring how we frame the prediction problem. This approach democratizes heterogeneous treatment effect estimation by making it accessible to practitioners familiar with standard supervised learning techniques.</p>
+<p>The meta-learner framework encompasses three primary approaches, each with distinct advantages and limitations that practitioners must understand for successful implementation. The S-learner takes the most direct approach by including treatment as a feature in a single outcome model, but may struggle to capture treatment effect heterogeneity when treatment effects are small relative to outcome variation. The T-learner fits separate models for treatment and control groups, providing natural flexibility for heterogeneous effects but potentially suffering from inefficiency when treatment groups are imbalanced. The X-learner attempts to combine the best aspects of both approaches through a more sophisticated two-stage procedure that can achieve superior performance under realistic conditions.</p>
+</div>
+<div id="theoretical-foundation-from-prediction-to-causal-inference" class="section level2 hasAnchor" number="9.2">
+<h2><span class="header-section-number">9.2</span> Theoretical Foundation: From Prediction to Causal Inference<a href="meta-learners-for-heterogeneous-treatment-effects.html#theoretical-foundation-from-prediction-to-causal-inference" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The meta-learner framework operates within the potential outcomes framework that underlies modern causal inference. Each individual <span class="math inline">\(i\)</span> possesses two potential outcomes: <span class="math inline">\(Y_i(0)\)</span> representing the outcome under control conditions and <span class="math inline">\(Y_i(1)\)</span> representing the outcome under treatment. The individual treatment effect equals <span class="math inline">\(\tau_i = Y_i(1) - Y_i(0)\)</span>, but the fundamental problem of causal inference ensures we never observe both potential outcomes simultaneously for any individual.</p>
+<p>Our goal involves estimating the conditional average treatment effect function <span class="math inline">\(\tau(x) = \mathbb{E}[Y_i(1) - Y_i(0) | X_i = x]\)</span>, which represents the expected treatment benefit for individuals with characteristics <span class="math inline">\(x\)</span>. This function enables personalized treatment recommendations by predicting how patients with specific profiles will respond to intervention.</p>
+<p>Causal identification requires three key assumptions that enable us to move from observed data to causal conclusions. The unconfoundedness assumption requires that treatment assignment is effectively random conditional on observed covariates, formally expressed as <span class="math inline">\(\{Y_i(0), Y_i(1)\} \perp W_i | X_i\)</span>. This rules out unmeasured confounders that simultaneously influence treatment decisions and outcomes. The overlap assumption ensures sufficient representation across the covariate space by requiring <span class="math inline">\(0 &lt; e(x) &lt; 1\)</span> for all <span class="math inline">\(x\)</span> in the support of the covariate distribution, where <span class="math inline">\(e(x) = \mathbb{P}(W_i = 1 | X_i = x)\)</span> represents the propensity score. Finally, the Stable Unit Treatment Value Assumption (SUTVA) requires that each individual’s potential outcomes depend only on their own treatment assignment, ruling out interference effects where one person’s treatment affects another’s outcomes.</p>
+<p>Under these assumptions, we can express the conditional average treatment effect as <span class="math inline">\(\tau(x) = \mathbb{E}[Y_i | X_i = x, W_i = 1] - \mathbb{E}[Y_i | X_i = x, W_i = 0] = \mu_1(x) - \mu_0(x)\)</span>, where <span class="math inline">\(\mu_w(x) = \mathbb{E}[Y_i | X_i = x, W_i = w]\)</span> represents the conditional mean function for treatment group <span class="math inline">\(w\)</span>. This decomposition reveals that estimating heterogeneous treatment effects reduces to the problem of estimating conditional mean functions, which falls squarely within the domain of supervised machine learning.</p>
+<div id="the-s-learner-simplicity-with-hidden-complexity" class="section level3 hasAnchor" number="9.2.1">
+<h3><span class="header-section-number">9.2.1</span> The S-Learner: Simplicity with Hidden Complexity<a href="meta-learners-for-heterogeneous-treatment-effects.html#the-s-learner-simplicity-with-hidden-complexity" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The S-learner represents the most straightforward adaptation of supervised learning for causal inference. This approach fits a single model <span class="math inline">\(\mu(x, w)\)</span> that predicts outcomes using both covariates <span class="math inline">\(x\)</span> and treatment assignment <span class="math inline">\(w\)</span> as features. Treatment effect estimation then proceeds by computing <span class="math inline">\(\hat{\tau}(x) = \hat{\mu}(x, 1) - \hat{\mu}(x, 0)\)</span>, essentially comparing predicted outcomes under treatment and control conditions for individuals with identical covariate profiles.</p>
+<p>The appealing simplicity of this approach masks subtle but important limitations. When treatment effects are small relative to the overall outcome variation, machine learning algorithms may focus on predicting the main effects of covariates while paying insufficient attention to treatment-covariate interactions that drive heterogeneous treatment effects. Consider a scenario where patient age strongly predicts blood pressure levels but treatment effectiveness varies modestly across age groups. Standard algorithms optimizing prediction accuracy will naturally emphasize the strong age-outcome relationship while potentially overlooking the weaker but clinically crucial age-treatment interactions.</p>
+<p>The S-learner performs best when treatment effects are large relative to noise, when the treatment variable receives adequate representation in the feature space, and when the underlying machine learning algorithm can effectively capture interaction effects. Tree-based methods like random forests often excel in this setting because they naturally model interactions through recursive partitioning, while linear models require explicit specification of interaction terms.</p>
+</div>
+<div id="the-t-learner-divide-and-conquer" class="section level3 hasAnchor" number="9.2.2">
+<h3><span class="header-section-number">9.2.2</span> The T-Learner: Divide and Conquer<a href="meta-learners-for-heterogeneous-treatment-effects.html#the-t-learner-divide-and-conquer" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The T-learner takes a fundamentally different approach by fitting separate models for treatment and control groups. This method estimates <span class="math inline">\(\hat{\mu}_0(x)\)</span> using only control observations and <span class="math inline">\(\hat{\mu}_1(x)\)</span> using only treatment observations, then computes treatment effects as <span class="math inline">\(\hat{\tau}(x) = \hat{\mu}_1(x) - \hat{\mu}_0(x)\)</span>. This separation ensures that each model can adapt specifically to its respective treatment group without interference from the other.</p>
+<p>The T-learner naturally accommodates different functional forms across treatment groups, making it particularly suitable when treatment fundamentally alters the relationship between covariates and outcomes. If a blood pressure medication works primarily through mechanisms that depend on baseline cardiovascular risk, the covariate-outcome relationships may differ substantially between treated and untreated patients in ways that benefit from separate modeling.</p>
+<p>However, the T-learner’s strength becomes a weakness under treatment imbalance. When one treatment group contains significantly fewer observations than the other, the corresponding model suffers from reduced sample size and potentially higher variance. In randomized trials with balanced allocation, this concern diminishes, but observational studies often exhibit substantial imbalance that can severely impact T-learner performance. Additionally, the T-learner makes inefficient use of information by ignoring control observations when fitting the treatment model and vice versa, potentially discarding valuable information about covariate-outcome relationships that generalize across treatment groups.</p>
+</div>
+<div id="the-x-learner-sophisticated-synthesis" class="section level3 hasAnchor" number="9.2.3">
+<h3><span class="header-section-number">9.2.3</span> The X-Learner: Sophisticated Synthesis<a href="meta-learners-for-heterogeneous-treatment-effects.html#the-x-learner-sophisticated-synthesis" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The X-learner attempts to combine the strengths of both preceding approaches through a more sophisticated two-stage procedure. The first stage mirrors the T-learner by fitting separate models <span class="math inline">\(\hat{\mu}_0(x)\)</span> and <span class="math inline">\(\hat{\mu}_1(x)\)</span> for control and treatment groups respectively. The innovation comes in the second stage, which constructs imputed treatment effects for all observations.</p>
+<p>For treated individuals, the X-learner computes <span class="math inline">\(\tilde{\tau}_1^{(i)} = Y_i - \hat{\mu}_0(X_i)\)</span>, representing the difference between the observed outcome and the predicted control outcome. This quantity estimates the treatment effect by comparing what actually happened under treatment to what would have happened under control according to the fitted control model. Similarly, for control individuals, it computes <span class="math inline">\(\tilde{\tau}_0^{(i)} = \hat{\mu}_1(X_i) - Y_i\)</span>, comparing the predicted treatment outcome to the observed control outcome.</p>
+<p>The final stage fits two separate models to predict these imputed treatment effects: <span class="math inline">\(\hat{\tau}_0(x)\)</span> using the control observations and <span class="math inline">\(\hat{\tau}_1(x)\)</span> using the treatment observations. The ultimate treatment effect estimate combines these models through a weighted average <span class="math inline">\(\hat{\tau}(x) = g(x) \cdot \hat{\tau}_0(x) + (1 - g(x)) \cdot \hat{\tau}_1(x)\)</span>, where the weight function <span class="math inline">\(g(x)\)</span> typically equals the propensity score <span class="math inline">\(\hat{e}(x)\)</span>.</p>
+<p>This weighting scheme exhibits elegant theoretical properties. When the propensity score approaches 1 (treatment is very likely), the estimate relies primarily on <span class="math inline">\(\hat{\tau}_1(x)\)</span>, which uses treatment observations to predict treatment effects. Conversely, when the propensity score approaches 0 (control is very likely), the estimate relies on <span class="math inline">\(\hat{\tau}_0(x)\)</span>, which uses control observations. This adaptive weighting helps address the T-learner’s inefficiency under imbalance while maintaining the flexibility to capture different functional forms across treatment groups.</p>
+</div>
+</div>
+<div id="practical-implementation-hypertension-treatment-optimization" class="section level2 hasAnchor" number="9.3">
+<h2><span class="header-section-number">9.3</span> Practical Implementation: Hypertension Treatment Optimization<a href="meta-learners-for-heterogeneous-treatment-effects.html#practical-implementation-hypertension-treatment-optimization" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>We’ll explore these concepts through a realistic clinical scenario involving personalized hypertension management. Our analysis aims to identify which patients benefit most from a new antihypertensive medication based on age, baseline blood pressure, BMI, and comorbidity status. The outcome represents change in systolic blood pressure after three months, where more negative values indicate better blood pressure control.</p>
+<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-1" tabindex="-1"></a><span class="co"># Load required libraries</span></span>
+<span id="cb146-2"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-2" tabindex="-1"></a><span class="fu">library</span>(randomForest)</span>
+<span id="cb146-3"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-3" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
+<span id="cb146-4"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-4" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb146-5"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-5" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb146-6"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-6" tabindex="-1"></a><span class="fu">library</span>(gridExtra)</span>
+<span id="cb146-7"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-7" tabindex="-1"></a></span>
+<span id="cb146-8"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-8" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">456</span>)</span>
+<span id="cb146-9"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-9" tabindex="-1"></a></span>
+<span id="cb146-10"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-10" tabindex="-1"></a><span class="co"># Generate realistic patient population</span></span>
+<span id="cb146-11"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-11" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">3000</span></span>
+<span id="cb146-12"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-12" tabindex="-1"></a></span>
+<span id="cb146-13"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-13" tabindex="-1"></a><span class="co"># Patient characteristics with realistic clinical distributions</span></span>
+<span id="cb146-14"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-14" tabindex="-1"></a>age <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">30</span>, <span class="fu">pmin</span>(<span class="dv">85</span>, <span class="fu">rnorm</span>(n, <span class="dv">58</span>, <span class="dv">14</span>)))</span>
+<span id="cb146-15"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-15" tabindex="-1"></a>baseline_sbp <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">140</span>, <span class="fu">pmin</span>(<span class="dv">200</span>, <span class="fu">rnorm</span>(n, <span class="dv">165</span>, <span class="dv">18</span>)))</span>
+<span id="cb146-16"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-16" tabindex="-1"></a>bmi <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">18</span>, <span class="fu">pmin</span>(<span class="dv">45</span>, <span class="fu">rnorm</span>(n, <span class="fl">28.5</span>, <span class="fl">5.2</span>)))</span>
+<span id="cb146-17"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-17" tabindex="-1"></a>diabetes <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.35</span>)</span>
+<span id="cb146-18"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-18" tabindex="-1"></a>ckd <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.22</span>)</span>
+<span id="cb146-19"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-19" tabindex="-1"></a>cvd_history <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.28</span>)</span>
+<span id="cb146-20"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-20" tabindex="-1"></a></span>
+<span id="cb146-21"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-21" tabindex="-1"></a><span class="co"># Combine covariates</span></span>
+<span id="cb146-22"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-22" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(age, baseline_sbp, bmi, diabetes, ckd, cvd_history)</span>
+<span id="cb146-23"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-23" tabindex="-1"></a></span>
+<span id="cb146-24"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-24" tabindex="-1"></a><span class="co"># Treatment assignment with slight imbalance (observational study)</span></span>
+<span id="cb146-25"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-25" tabindex="-1"></a>propensity_logits <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.2</span> <span class="sc">+</span> <span class="fl">0.01</span><span class="sc">*</span>age <span class="sc">+</span> <span class="fl">0.003</span><span class="sc">*</span>baseline_sbp <span class="sc">-</span> <span class="fl">0.02</span><span class="sc">*</span>bmi <span class="sc">+</span> </span>
+<span id="cb146-26"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-26" tabindex="-1"></a>                     <span class="fl">0.3</span><span class="sc">*</span>diabetes <span class="sc">+</span> <span class="fl">0.15</span><span class="sc">*</span>ckd <span class="sc">+</span> <span class="fl">0.25</span><span class="sc">*</span>cvd_history</span>
+<span id="cb146-27"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-27" tabindex="-1"></a>propensity_scores <span class="ot">&lt;-</span> <span class="fu">plogis</span>(propensity_logits)</span>
+<span id="cb146-28"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-28" tabindex="-1"></a>W <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, propensity_scores)</span>
+<span id="cb146-29"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-29" tabindex="-1"></a></span>
+<span id="cb146-30"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-30" tabindex="-1"></a><span class="co"># Generate heterogeneous treatment effects</span></span>
+<span id="cb146-31"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-31" tabindex="-1"></a><span class="co"># Larger benefits for higher baseline BP and younger age</span></span>
+<span id="cb146-32"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-32" tabindex="-1"></a>true_tau <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">5</span> <span class="sc">-</span> <span class="fl">0.08</span><span class="sc">*</span>(baseline_sbp <span class="sc">-</span> <span class="dv">165</span>) <span class="sc">-</span> <span class="fl">0.05</span><span class="sc">*</span>(age <span class="sc">-</span> <span class="dv">58</span>) <span class="sc">+</span> </span>
+<span id="cb146-33"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-33" tabindex="-1"></a>            <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb146-34"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-34" tabindex="-1"></a>true_tau <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="sc">-</span><span class="dv">25</span>, <span class="fu">pmin</span>(<span class="dv">2</span>, true_tau))</span>
+<span id="cb146-35"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-35" tabindex="-1"></a></span>
+<span id="cb146-36"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-36" tabindex="-1"></a><span class="co"># Generate potential outcomes</span></span>
+<span id="cb146-37"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-37" tabindex="-1"></a>Y0 <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">+</span> <span class="fl">0.05</span><span class="sc">*</span>age <span class="sc">+</span> <span class="fl">0.03</span><span class="sc">*</span>(baseline_sbp <span class="sc">-</span> <span class="dv">165</span>) <span class="sc">+</span> <span class="fl">0.2</span><span class="sc">*</span>bmi <span class="sc">+</span> </span>
+<span id="cb146-38"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-38" tabindex="-1"></a>      <span class="dv">3</span><span class="sc">*</span>diabetes <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>ckd <span class="sc">+</span> <span class="fl">2.5</span><span class="sc">*</span>cvd_history <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">6</span>)</span>
+<span id="cb146-39"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-39" tabindex="-1"></a></span>
+<span id="cb146-40"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-40" tabindex="-1"></a>Y1 <span class="ot">&lt;-</span> Y0 <span class="sc">+</span> true_tau <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">3</span>)</span>
+<span id="cb146-41"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-41" tabindex="-1"></a></span>
+<span id="cb146-42"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-42" tabindex="-1"></a><span class="co"># Observed outcomes</span></span>
+<span id="cb146-43"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-43" tabindex="-1"></a>Y <span class="ot">&lt;-</span> W <span class="sc">*</span> Y1 <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> W) <span class="sc">*</span> Y0</span>
+<span id="cb146-44"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-44" tabindex="-1"></a></span>
+<span id="cb146-45"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-45" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Clinical Trial Summary:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb146-46"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-46" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Total patients:&quot;</span>, n, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb146-47"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-47" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Control group:&quot;</span>, <span class="fu">sum</span>(W <span class="sc">==</span> <span class="dv">0</span>), <span class="st">&quot;patients</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb146-48"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-48" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Treatment group:&quot;</span>, <span class="fu">sum</span>(W <span class="sc">==</span> <span class="dv">1</span>), <span class="st">&quot;patients</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb146-49"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-49" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Treatment prevalence:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(W), <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb146-50"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-50" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Mean age:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(age), <span class="dv">1</span>), <span class="st">&quot;years</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb146-51"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-51" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Mean baseline SBP:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(baseline_sbp), <span class="dv">1</span>), <span class="st">&quot;mmHg</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb146-52"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb146-52" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Naive ATE:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(Y[W<span class="sc">==</span><span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(Y[W<span class="sc">==</span><span class="dv">0</span>]), <span class="dv">2</span>), <span class="st">&quot;mmHg</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<div id="implementing-the-s-learner" class="section level3 hasAnchor" number="9.3.1">
+<h3><span class="header-section-number">9.3.1</span> Implementing the S-Learner<a href="meta-learners-for-heterogeneous-treatment-effects.html#implementing-the-s-learner" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The S-learner implementation requires careful consideration of how treatment enters the model. Simply including treatment as another predictor may not provide sufficient signal for machine learning algorithms to detect treatment effect heterogeneity, particularly when using methods that don’t naturally model interactions.</p>
+<div class="sourceCode" id="cb147"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb147-1"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-1" tabindex="-1"></a><span class="co"># S-Learner implementation</span></span>
+<span id="cb147-2"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-2" tabindex="-1"></a>s_learner_rf <span class="ot">&lt;-</span> <span class="cf">function</span>(X, Y, W, <span class="at">X_test =</span> <span class="cn">NULL</span>) {</span>
+<span id="cb147-3"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-3" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(X_test)) X_test <span class="ot">&lt;-</span> X</span>
+<span id="cb147-4"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-4" tabindex="-1"></a>  </span>
+<span id="cb147-5"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-5" tabindex="-1"></a>  <span class="co"># Combine treatment with covariates</span></span>
+<span id="cb147-6"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-6" tabindex="-1"></a>  X_with_treatment <span class="ot">&lt;-</span> <span class="fu">cbind</span>(X, <span class="at">treatment =</span> W)</span>
+<span id="cb147-7"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-7" tabindex="-1"></a>  </span>
+<span id="cb147-8"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-8" tabindex="-1"></a>  <span class="co"># Fit single model on all data</span></span>
+<span id="cb147-9"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-9" tabindex="-1"></a>  model <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(X_with_treatment, Y, <span class="at">ntree =</span> <span class="dv">500</span>, </span>
+<span id="cb147-10"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-10" tabindex="-1"></a>                       <span class="at">mtry =</span> <span class="fu">floor</span>(<span class="fu">sqrt</span>(<span class="fu">ncol</span>(X_with_treatment))))</span>
+<span id="cb147-11"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-11" tabindex="-1"></a>  </span>
+<span id="cb147-12"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-12" tabindex="-1"></a>  <span class="co"># Predict under both treatment conditions</span></span>
+<span id="cb147-13"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-13" tabindex="-1"></a>  X_test_treated <span class="ot">&lt;-</span> <span class="fu">cbind</span>(X_test, <span class="at">treatment =</span> <span class="dv">1</span>)</span>
+<span id="cb147-14"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-14" tabindex="-1"></a>  X_test_control <span class="ot">&lt;-</span> <span class="fu">cbind</span>(X_test, <span class="at">treatment =</span> <span class="dv">0</span>)</span>
+<span id="cb147-15"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-15" tabindex="-1"></a>  </span>
+<span id="cb147-16"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-16" tabindex="-1"></a>  pred_1 <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, X_test_treated)</span>
+<span id="cb147-17"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-17" tabindex="-1"></a>  pred_0 <span class="ot">&lt;-</span> <span class="fu">predict</span>(model, X_test_control)</span>
+<span id="cb147-18"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-18" tabindex="-1"></a>  </span>
+<span id="cb147-19"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-19" tabindex="-1"></a>  tau_hat <span class="ot">&lt;-</span> pred_1 <span class="sc">-</span> pred_0</span>
+<span id="cb147-20"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-20" tabindex="-1"></a>  </span>
+<span id="cb147-21"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-21" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">tau_hat =</span> tau_hat, </span>
+<span id="cb147-22"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-22" tabindex="-1"></a>       <span class="at">mu_0 =</span> pred_0, </span>
+<span id="cb147-23"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-23" tabindex="-1"></a>       <span class="at">mu_1 =</span> pred_1,</span>
+<span id="cb147-24"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-24" tabindex="-1"></a>       <span class="at">model =</span> model)</span>
+<span id="cb147-25"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-25" tabindex="-1"></a>}</span>
+<span id="cb147-26"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-26" tabindex="-1"></a></span>
+<span id="cb147-27"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-27" tabindex="-1"></a><span class="co"># Fit S-learner</span></span>
+<span id="cb147-28"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-28" tabindex="-1"></a>s_results <span class="ot">&lt;-</span> <span class="fu">s_learner_rf</span>(X, Y, W)</span>
+<span id="cb147-29"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-29" tabindex="-1"></a></span>
+<span id="cb147-30"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-30" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;S-Learner Performance:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb147-31"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-31" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Mean predicted effect:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(s_results<span class="sc">$</span>tau_hat), <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb147-32"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-32" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;SD of predictions:&quot;</span>, <span class="fu">round</span>(<span class="fu">sd</span>(s_results<span class="sc">$</span>tau_hat), <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb147-33"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb147-33" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Correlation with truth:&quot;</span>, <span class="fu">round</span>(<span class="fu">cor</span>(true_tau, s_results<span class="sc">$</span>tau_hat), <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<p>The S-learner achieves reasonable performance by leveraging random forest’s natural ability to model interactions, but the correlation with true treatment effects reveals limitations in capturing the full heterogeneity pattern. The algorithm focuses primarily on main effects while struggling to detect the more subtle treatment-covariate interactions.</p>
+</div>
+<div id="implementing-the-t-learner" class="section level3 hasAnchor" number="9.3.2">
+<h3><span class="header-section-number">9.3.2</span> Implementing the T-Learner<a href="meta-learners-for-heterogeneous-treatment-effects.html#implementing-the-t-learner" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The T-learner’s separate modeling approach provides greater flexibility but requires careful handling of sample size differences between treatment groups.</p>
+<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-1" tabindex="-1"></a><span class="co"># T-Learner implementation</span></span>
+<span id="cb148-2"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-2" tabindex="-1"></a>t_learner_rf <span class="ot">&lt;-</span> <span class="cf">function</span>(X, Y, W, <span class="at">X_test =</span> <span class="cn">NULL</span>) {</span>
+<span id="cb148-3"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-3" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(X_test)) X_test <span class="ot">&lt;-</span> X</span>
+<span id="cb148-4"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-4" tabindex="-1"></a>  </span>
+<span id="cb148-5"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-5" tabindex="-1"></a>  <span class="co"># Separate data by treatment group</span></span>
+<span id="cb148-6"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-6" tabindex="-1"></a>  X_control <span class="ot">&lt;-</span> X[W <span class="sc">==</span> <span class="dv">0</span>, ]</span>
+<span id="cb148-7"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-7" tabindex="-1"></a>  Y_control <span class="ot">&lt;-</span> Y[W <span class="sc">==</span> <span class="dv">0</span>]</span>
+<span id="cb148-8"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-8" tabindex="-1"></a>  X_treated <span class="ot">&lt;-</span> X[W <span class="sc">==</span> <span class="dv">1</span>, ]</span>
+<span id="cb148-9"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-9" tabindex="-1"></a>  Y_treated <span class="ot">&lt;-</span> Y[W <span class="sc">==</span> <span class="dv">1</span>]</span>
+<span id="cb148-10"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-10" tabindex="-1"></a>  </span>
+<span id="cb148-11"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-11" tabindex="-1"></a>  <span class="co"># Fit separate models</span></span>
+<span id="cb148-12"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-12" tabindex="-1"></a>  model_0 <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(X_control, Y_control, <span class="at">ntree =</span> <span class="dv">500</span>)</span>
+<span id="cb148-13"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-13" tabindex="-1"></a>  model_1 <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(X_treated, Y_treated, <span class="at">ntree =</span> <span class="dv">500</span>)</span>
+<span id="cb148-14"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-14" tabindex="-1"></a>  </span>
+<span id="cb148-15"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-15" tabindex="-1"></a>  <span class="co"># Generate predictions</span></span>
+<span id="cb148-16"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-16" tabindex="-1"></a>  pred_0 <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_0, X_test)</span>
+<span id="cb148-17"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-17" tabindex="-1"></a>  pred_1 <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_1, X_test)</span>
+<span id="cb148-18"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-18" tabindex="-1"></a>  </span>
+<span id="cb148-19"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-19" tabindex="-1"></a>  tau_hat <span class="ot">&lt;-</span> pred_1 <span class="sc">-</span> pred_0</span>
+<span id="cb148-20"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-20" tabindex="-1"></a>  </span>
+<span id="cb148-21"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-21" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">tau_hat =</span> tau_hat,</span>
+<span id="cb148-22"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-22" tabindex="-1"></a>       <span class="at">mu_0 =</span> pred_0,</span>
+<span id="cb148-23"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-23" tabindex="-1"></a>       <span class="at">mu_1 =</span> pred_1,</span>
+<span id="cb148-24"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-24" tabindex="-1"></a>       <span class="at">model_0 =</span> model_0,</span>
+<span id="cb148-25"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-25" tabindex="-1"></a>       <span class="at">model_1 =</span> model_1)</span>
+<span id="cb148-26"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-26" tabindex="-1"></a>}</span>
+<span id="cb148-27"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-27" tabindex="-1"></a></span>
+<span id="cb148-28"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-28" tabindex="-1"></a><span class="co"># Fit T-learner</span></span>
+<span id="cb148-29"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-29" tabindex="-1"></a>t_results <span class="ot">&lt;-</span> <span class="fu">t_learner_rf</span>(X, Y, W)</span>
+<span id="cb148-30"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-30" tabindex="-1"></a></span>
+<span id="cb148-31"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-31" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;T-Learner Performance:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb148-32"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-32" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Mean predicted effect:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(t_results<span class="sc">$</span>tau_hat), <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb148-33"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-33" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;SD of predictions:&quot;</span>, <span class="fu">round</span>(<span class="fu">sd</span>(t_results<span class="sc">$</span>tau_hat), <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb148-34"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb148-34" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Correlation with truth:&quot;</span>, <span class="fu">round</span>(<span class="fu">cor</span>(true_tau, t_results<span class="sc">$</span>tau_hat), <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<p>The T-learner typically shows improved correlation with true treatment effects compared to the S-learner because each model can specialize for its respective treatment group. However, performance may suffer when treatment groups are highly imbalanced, as the model for the minority group has less data for training.</p>
+</div>
+<div id="implementing-the-x-learner" class="section level3 hasAnchor" number="9.3.3">
+<h3><span class="header-section-number">9.3.3</span> Implementing the X-Learner<a href="meta-learners-for-heterogeneous-treatment-effects.html#implementing-the-x-learner" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The X-learner’s two-stage approach requires more sophisticated implementation but often achieves superior performance by efficiently combining information across treatment groups.</p>
+<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb149-1"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-1" tabindex="-1"></a><span class="co"># X-Learner implementation  </span></span>
+<span id="cb149-2"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-2" tabindex="-1"></a>x_learner_rf <span class="ot">&lt;-</span> <span class="cf">function</span>(X, Y, W, <span class="at">X_test =</span> <span class="cn">NULL</span>) {</span>
+<span id="cb149-3"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-3" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.null</span>(X_test)) X_test <span class="ot">&lt;-</span> X</span>
+<span id="cb149-4"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-4" tabindex="-1"></a>  </span>
+<span id="cb149-5"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-5" tabindex="-1"></a>  <span class="co"># Stage 1: Fit separate models like T-learner</span></span>
+<span id="cb149-6"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-6" tabindex="-1"></a>  X_control <span class="ot">&lt;-</span> X[W <span class="sc">==</span> <span class="dv">0</span>, ]</span>
+<span id="cb149-7"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-7" tabindex="-1"></a>  Y_control <span class="ot">&lt;-</span> Y[W <span class="sc">==</span> <span class="dv">0</span>]</span>
+<span id="cb149-8"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-8" tabindex="-1"></a>  X_treated <span class="ot">&lt;-</span> X[W <span class="sc">==</span> <span class="dv">1</span>, ]</span>
+<span id="cb149-9"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-9" tabindex="-1"></a>  Y_treated <span class="ot">&lt;-</span> Y[W <span class="sc">==</span> <span class="dv">1</span>]</span>
+<span id="cb149-10"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-10" tabindex="-1"></a>  </span>
+<span id="cb149-11"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-11" tabindex="-1"></a>  model_0 <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(X_control, Y_control, <span class="at">ntree =</span> <span class="dv">500</span>)</span>
+<span id="cb149-12"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-12" tabindex="-1"></a>  model_1 <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(X_treated, Y_treated, <span class="at">ntree =</span> <span class="dv">500</span>)</span>
+<span id="cb149-13"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-13" tabindex="-1"></a>  </span>
+<span id="cb149-14"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-14" tabindex="-1"></a>  <span class="co"># Stage 2: Compute imputed treatment effects</span></span>
+<span id="cb149-15"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-15" tabindex="-1"></a>  <span class="co"># For treated units: observed - predicted control</span></span>
+<span id="cb149-16"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-16" tabindex="-1"></a>  pred_control_for_treated <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_0, X_treated)</span>
+<span id="cb149-17"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-17" tabindex="-1"></a>  tau_1 <span class="ot">&lt;-</span> Y_treated <span class="sc">-</span> pred_control_for_treated</span>
+<span id="cb149-18"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-18" tabindex="-1"></a>  </span>
+<span id="cb149-19"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-19" tabindex="-1"></a>  <span class="co"># For control units: predicted treatment - observed  </span></span>
+<span id="cb149-20"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-20" tabindex="-1"></a>  pred_treated_for_control <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_1, X_control)</span>
+<span id="cb149-21"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-21" tabindex="-1"></a>  tau_0 <span class="ot">&lt;-</span> pred_treated_for_control <span class="sc">-</span> Y_control</span>
+<span id="cb149-22"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-22" tabindex="-1"></a>  </span>
+<span id="cb149-23"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-23" tabindex="-1"></a>  <span class="co"># Stage 3: Fit models for imputed treatment effects</span></span>
+<span id="cb149-24"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-24" tabindex="-1"></a>  tau_model_0 <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(X_control, tau_0, <span class="at">ntree =</span> <span class="dv">500</span>)</span>
+<span id="cb149-25"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-25" tabindex="-1"></a>  tau_model_1 <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(X_treated, tau_1, <span class="at">ntree =</span> <span class="dv">500</span>)</span>
+<span id="cb149-26"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-26" tabindex="-1"></a>  </span>
+<span id="cb149-27"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-27" tabindex="-1"></a>  <span class="co"># Estimate propensity scores for weighting</span></span>
+<span id="cb149-28"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-28" tabindex="-1"></a>  propensity_model <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(X, <span class="fu">as.factor</span>(W), <span class="at">ntree =</span> <span class="dv">500</span>)</span>
+<span id="cb149-29"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-29" tabindex="-1"></a>  e_hat <span class="ot">&lt;-</span> <span class="fu">predict</span>(propensity_model, X_test, <span class="at">type =</span> <span class="st">&quot;prob&quot;</span>)[, <span class="dv">2</span>]</span>
+<span id="cb149-30"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-30" tabindex="-1"></a>  </span>
+<span id="cb149-31"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-31" tabindex="-1"></a>  <span class="co"># Generate final predictions using weighted combination</span></span>
+<span id="cb149-32"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-32" tabindex="-1"></a>  tau_hat_0 <span class="ot">&lt;-</span> <span class="fu">predict</span>(tau_model_0, X_test)</span>
+<span id="cb149-33"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-33" tabindex="-1"></a>  tau_hat_1 <span class="ot">&lt;-</span> <span class="fu">predict</span>(tau_model_1, X_test)</span>
+<span id="cb149-34"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-34" tabindex="-1"></a>  </span>
+<span id="cb149-35"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-35" tabindex="-1"></a>  tau_hat <span class="ot">&lt;-</span> e_hat <span class="sc">*</span> tau_hat_0 <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> e_hat) <span class="sc">*</span> tau_hat_1</span>
+<span id="cb149-36"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-36" tabindex="-1"></a>  </span>
+<span id="cb149-37"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-37" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">tau_hat =</span> tau_hat,</span>
+<span id="cb149-38"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-38" tabindex="-1"></a>       <span class="at">tau_hat_0 =</span> tau_hat_0,</span>
+<span id="cb149-39"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-39" tabindex="-1"></a>       <span class="at">tau_hat_1 =</span> tau_hat_1,</span>
+<span id="cb149-40"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-40" tabindex="-1"></a>       <span class="at">e_hat =</span> e_hat,</span>
+<span id="cb149-41"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-41" tabindex="-1"></a>       <span class="at">stage1_models =</span> <span class="fu">list</span>(<span class="at">model_0 =</span> model_0, <span class="at">model_1 =</span> model_1),</span>
+<span id="cb149-42"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-42" tabindex="-1"></a>       <span class="at">stage2_models =</span> <span class="fu">list</span>(<span class="at">tau_model_0 =</span> tau_model_0, <span class="at">tau_model_1 =</span> tau_model_1))</span>
+<span id="cb149-43"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-43" tabindex="-1"></a>}</span>
+<span id="cb149-44"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-44" tabindex="-1"></a></span>
+<span id="cb149-45"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-45" tabindex="-1"></a><span class="co"># Fit X-learner</span></span>
+<span id="cb149-46"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-46" tabindex="-1"></a>x_results <span class="ot">&lt;-</span> <span class="fu">x_learner_rf</span>(X, Y, W)</span>
+<span id="cb149-47"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-47" tabindex="-1"></a></span>
+<span id="cb149-48"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-48" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;X-Learner Performance:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb149-49"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-49" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Mean predicted effect:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(x_results<span class="sc">$</span>tau_hat), <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)  </span>
+<span id="cb149-50"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-50" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;SD of predictions:&quot;</span>, <span class="fu">round</span>(<span class="fu">sd</span>(x_results<span class="sc">$</span>tau_hat), <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb149-51"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb149-51" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Correlation with truth:&quot;</span>, <span class="fu">round</span>(<span class="fu">cor</span>(true_tau, x_results<span class="sc">$</span>tau_hat), <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<p>The X-learner often achieves the highest correlation with true treatment effects by efficiently using all available data while adapting to treatment group imbalance through propensity score weighting.</p>
+</div>
+<div id="comparative-analysis-and-model-selection" class="section level3 hasAnchor" number="9.3.4">
+<h3><span class="header-section-number">9.3.4</span> Comparative Analysis and Model Selection<a href="meta-learners-for-heterogeneous-treatment-effects.html#comparative-analysis-and-model-selection" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Comparing meta-learner performance reveals important patterns that guide method selection in practice. The visualization below demonstrates how different approaches capture treatment effect heterogeneity with varying degrees of success.</p>
+<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-1" tabindex="-1"></a><span class="co"># Create comprehensive comparison</span></span>
+<span id="cb150-2"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-2" tabindex="-1"></a>results_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb150-3"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-3" tabindex="-1"></a>  <span class="at">age =</span> age,</span>
+<span id="cb150-4"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-4" tabindex="-1"></a>  <span class="at">baseline_sbp =</span> baseline_sbp,</span>
+<span id="cb150-5"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-5" tabindex="-1"></a>  <span class="at">bmi =</span> bmi,</span>
+<span id="cb150-6"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-6" tabindex="-1"></a>  <span class="at">treatment =</span> W,</span>
+<span id="cb150-7"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-7" tabindex="-1"></a>  <span class="at">true_effect =</span> true_tau,</span>
+<span id="cb150-8"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-8" tabindex="-1"></a>  <span class="at">s_learner =</span> s_results<span class="sc">$</span>tau_hat,</span>
+<span id="cb150-9"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-9" tabindex="-1"></a>  <span class="at">t_learner =</span> t_results<span class="sc">$</span>tau_hat,</span>
+<span id="cb150-10"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-10" tabindex="-1"></a>  <span class="at">x_learner =</span> x_results<span class="sc">$</span>tau_hat</span>
+<span id="cb150-11"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-11" tabindex="-1"></a>)</span>
+<span id="cb150-12"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-12" tabindex="-1"></a></span>
+<span id="cb150-13"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-13" tabindex="-1"></a><span class="co"># Performance metrics</span></span>
+<span id="cb150-14"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-14" tabindex="-1"></a>methods <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;s_learner&quot;</span>, <span class="st">&quot;t_learner&quot;</span>, <span class="st">&quot;x_learner&quot;</span>)</span>
+<span id="cb150-15"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-15" tabindex="-1"></a>correlations <span class="ot">&lt;-</span> <span class="fu">sapply</span>(methods, <span class="cf">function</span>(m) <span class="fu">cor</span>(true_tau, results_df[[m]]))</span>
+<span id="cb150-16"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-16" tabindex="-1"></a>mse <span class="ot">&lt;-</span> <span class="fu">sapply</span>(methods, <span class="cf">function</span>(m) <span class="fu">mean</span>((true_tau <span class="sc">-</span> results_df[[m]])<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb150-17"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-17" tabindex="-1"></a>bias <span class="ot">&lt;-</span> <span class="fu">sapply</span>(methods, <span class="cf">function</span>(m) <span class="fu">mean</span>(results_df[[m]] <span class="sc">-</span> true_tau))</span>
+<span id="cb150-18"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-18" tabindex="-1"></a></span>
+<span id="cb150-19"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-19" tabindex="-1"></a>performance_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb150-20"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-20" tabindex="-1"></a>  <span class="at">Method =</span> <span class="fu">c</span>(<span class="st">&quot;S-Learner&quot;</span>, <span class="st">&quot;T-Learner&quot;</span>, <span class="st">&quot;X-Learner&quot;</span>),</span>
+<span id="cb150-21"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-21" tabindex="-1"></a>  <span class="at">Correlation =</span> <span class="fu">round</span>(correlations, <span class="dv">3</span>),</span>
+<span id="cb150-22"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-22" tabindex="-1"></a>  <span class="at">MSE =</span> <span class="fu">round</span>(mse, <span class="dv">2</span>),</span>
+<span id="cb150-23"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-23" tabindex="-1"></a>  <span class="at">Bias =</span> <span class="fu">round</span>(bias, <span class="dv">2</span>)</span>
+<span id="cb150-24"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-24" tabindex="-1"></a>)</span>
+<span id="cb150-25"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-25" tabindex="-1"></a></span>
+<span id="cb150-26"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-26" tabindex="-1"></a><span class="fu">print</span>(performance_table)</span>
+<span id="cb150-27"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-27" tabindex="-1"></a></span>
+<span id="cb150-28"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-28" tabindex="-1"></a><span class="co"># Visualize prediction accuracy</span></span>
+<span id="cb150-29"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-29" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(results_df, <span class="fu">aes</span>(<span class="at">x =</span> true_effect, <span class="at">y =</span> s_learner)) <span class="sc">+</span></span>
+<span id="cb150-30"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-30" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>) <span class="sc">+</span></span>
+<span id="cb150-31"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-31" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">&quot;red&quot;</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="sc">+</span></span>
+<span id="cb150-32"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-32" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;S-Learner vs Truth&quot;</span>, <span class="at">x =</span> <span class="st">&quot;True Effect&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Predicted Effect&quot;</span>) <span class="sc">+</span></span>
+<span id="cb150-33"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-33" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb150-34"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-34" tabindex="-1"></a></span>
+<span id="cb150-35"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-35" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(results_df, <span class="fu">aes</span>(<span class="at">x =</span> true_effect, <span class="at">y =</span> t_learner)) <span class="sc">+</span></span>
+<span id="cb150-36"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-36" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">&quot;green&quot;</span>) <span class="sc">+</span></span>
+<span id="cb150-37"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-37" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">&quot;red&quot;</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="sc">+</span></span>
+<span id="cb150-38"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-38" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;T-Learner vs Truth&quot;</span>, <span class="at">x =</span> <span class="st">&quot;True Effect&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Predicted Effect&quot;</span>) <span class="sc">+</span></span>
+<span id="cb150-39"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-39" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb150-40"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-40" tabindex="-1"></a></span>
+<span id="cb150-41"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-41" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(results_df, <span class="fu">aes</span>(<span class="at">x =</span> true_effect, <span class="at">y =</span> x_learner)) <span class="sc">+</span></span>
+<span id="cb150-42"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-42" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">&quot;purple&quot;</span>) <span class="sc">+</span></span>
+<span id="cb150-43"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-43" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">&quot;red&quot;</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="sc">+</span></span>
+<span id="cb150-44"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-44" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;X-Learner vs Truth&quot;</span>, <span class="at">x =</span> <span class="st">&quot;True Effect&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Predicted Effect&quot;</span>) <span class="sc">+</span></span>
+<span id="cb150-45"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-45" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb150-46"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-46" tabindex="-1"></a></span>
+<span id="cb150-47"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb150-47" tabindex="-1"></a><span class="fu">grid.arrange</span>(p1, p2, p3, <span class="at">ncol =</span> <span class="dv">3</span>)</span></code></pre></div>
+<p>The comparative analysis reveals that the X-learner typically achieves superior performance across multiple metrics, particularly in realistic scenarios with treatment imbalance. The T-learner shows strong correlation but may exhibit higher variance due to reduced effective sample sizes for each model. The S-learner provides reasonable baseline performance but struggles to capture the full extent of treatment effect heterogeneity.</p>
+</div>
+<div id="clinical-pattern-discovery-and-interpretation" class="section level3 hasAnchor" number="9.3.5">
+<h3><span class="header-section-number">9.3.5</span> Clinical Pattern Discovery and Interpretation<a href="meta-learners-for-heterogeneous-treatment-effects.html#clinical-pattern-discovery-and-interpretation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Understanding how treatment effects vary across patient characteristics provides crucial insights for clinical decision-making. We can explore these patterns by examining treatment effect predictions across key clinical variables.</p>
+<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb151-1"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-1" tabindex="-1"></a><span class="co"># Analyze treatment effect patterns</span></span>
+<span id="cb151-2"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-2" tabindex="-1"></a><span class="co"># Create patient profiles for interpretation</span></span>
+<span id="cb151-3"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-3" tabindex="-1"></a>age_seq <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">35</span>, <span class="dv">80</span>, <span class="at">by =</span> <span class="dv">5</span>)</span>
+<span id="cb151-4"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-4" tabindex="-1"></a>sbp_seq <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">145</span>, <span class="dv">190</span>, <span class="at">by =</span> <span class="dv">5</span>)</span>
+<span id="cb151-5"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-5" tabindex="-1"></a></span>
+<span id="cb151-6"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-6" tabindex="-1"></a>interpretation_data <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(</span>
+<span id="cb151-7"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-7" tabindex="-1"></a>  <span class="at">age =</span> age_seq,</span>
+<span id="cb151-8"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-8" tabindex="-1"></a>  <span class="at">baseline_sbp =</span> <span class="dv">165</span>,  <span class="co"># Fix at mean</span></span>
+<span id="cb151-9"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-9" tabindex="-1"></a>  <span class="at">bmi =</span> <span class="fl">28.5</span>,          <span class="co"># Fix at mean</span></span>
+<span id="cb151-10"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-10" tabindex="-1"></a>  <span class="at">diabetes =</span> <span class="dv">0</span>,        <span class="co"># Fix at mode</span></span>
+<span id="cb151-11"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-11" tabindex="-1"></a>  <span class="at">ckd =</span> <span class="dv">0</span>,            <span class="co"># Fix at mode  </span></span>
+<span id="cb151-12"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-12" tabindex="-1"></a>  <span class="at">cvd_history =</span> <span class="dv">0</span>     <span class="co"># Fix at mode</span></span>
+<span id="cb151-13"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-13" tabindex="-1"></a>)</span>
+<span id="cb151-14"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-14" tabindex="-1"></a></span>
+<span id="cb151-15"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-15" tabindex="-1"></a><span class="co"># Generate predictions for age effects</span></span>
+<span id="cb151-16"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-16" tabindex="-1"></a>age_predictions <span class="ot">&lt;-</span> <span class="fu">x_learner_rf</span>(X, Y, W, interpretation_data)</span>
+<span id="cb151-17"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-17" tabindex="-1"></a>interpretation_data<span class="sc">$</span>predicted_effect <span class="ot">&lt;-</span> age_predictions<span class="sc">$</span>tau_hat</span>
+<span id="cb151-18"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-18" tabindex="-1"></a></span>
+<span id="cb151-19"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-19" tabindex="-1"></a>p_age <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(interpretation_data, <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> predicted_effect)) <span class="sc">+</span></span>
+<span id="cb151-20"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-20" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">size =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb151-21"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-21" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb151-22"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-22" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb151-23"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-23" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Treatment Effect by Age&quot;</span>,</span>
+<span id="cb151-24"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-24" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">&quot;Holding other characteristics at typical values&quot;</span>,</span>
+<span id="cb151-25"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-25" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Age (years)&quot;</span>, </span>
+<span id="cb151-26"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-26" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Predicted SBP Reduction (mmHg)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb151-27"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-27" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb151-28"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-28" tabindex="-1"></a></span>
+<span id="cb151-29"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-29" tabindex="-1"></a><span class="co"># Create similar analysis for baseline blood pressure</span></span>
+<span id="cb151-30"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-30" tabindex="-1"></a>interpretation_data_sbp <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(</span>
+<span id="cb151-31"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-31" tabindex="-1"></a>  <span class="at">age =</span> <span class="dv">58</span>,            <span class="co"># Fix at mean</span></span>
+<span id="cb151-32"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-32" tabindex="-1"></a>  <span class="at">baseline_sbp =</span> sbp_seq,</span>
+<span id="cb151-33"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-33" tabindex="-1"></a>  <span class="at">bmi =</span> <span class="fl">28.5</span>,          <span class="co"># Fix at mean</span></span>
+<span id="cb151-34"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-34" tabindex="-1"></a>  <span class="at">diabetes =</span> <span class="dv">0</span>,        <span class="co"># Fix at mode</span></span>
+<span id="cb151-35"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-35" tabindex="-1"></a>  <span class="at">ckd =</span> <span class="dv">0</span>,            <span class="co"># Fix at mode</span></span>
+<span id="cb151-36"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-36" tabindex="-1"></a>  <span class="at">cvd_history =</span> <span class="dv">0</span>     <span class="co"># Fix at mode</span></span>
+<span id="cb151-37"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-37" tabindex="-1"></a>)</span>
+<span id="cb151-38"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-38" tabindex="-1"></a></span>
+<span id="cb151-39"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-39" tabindex="-1"></a>sbp_predictions <span class="ot">&lt;-</span> <span class="fu">x_learner_rf</span>(X, Y, W, interpretation_data_sbp)</span>
+<span id="cb151-40"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-40" tabindex="-1"></a>interpretation_data_sbp<span class="sc">$</span>predicted_effect <span class="ot">&lt;-</span> sbp_predictions<span class="sc">$</span>tau_hat</span>
+<span id="cb151-41"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-41" tabindex="-1"></a></span>
+<span id="cb151-42"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-42" tabindex="-1"></a>p_sbp <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(interpretation_data_sbp, <span class="fu">aes</span>(<span class="at">x =</span> baseline_sbp, <span class="at">y =</span> predicted_effect)) <span class="sc">+</span></span>
+<span id="cb151-43"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-43" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&quot;darkgreen&quot;</span>, <span class="at">size =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb151-44"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-44" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;darkgreen&quot;</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb151-45"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-45" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb151-46"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-46" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Treatment Effect by Baseline SBP&quot;</span>,</span>
+<span id="cb151-47"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-47" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">&quot;Holding other characteristics at typical values&quot;</span>, </span>
+<span id="cb151-48"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-48" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Baseline SBP (mmHg)&quot;</span>,</span>
+<span id="cb151-49"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-49" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Predicted SBP Reduction (mmHg)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb151-50"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-50" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb151-51"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-51" tabindex="-1"></a></span>
+<span id="cb151-52"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-52" tabindex="-1"></a><span class="fu">grid.arrange</span>(p_age, p_sbp, <span class="at">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb151-53"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-53" tabindex="-1"></a></span>
+<span id="cb151-54"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-54" tabindex="-1"></a><span class="fu">print</span>(p_age)</span>
+<span id="cb151-55"><a href="meta-learners-for-heterogeneous-treatment-effects.html#cb151-55" tabindex="-1"></a><span class="fu">print</span>(p_sbp)</span></code></pre></div>
+<p>These analyses reveal clinically interpretable patterns where younger patients and those with higher baseline blood pressure experience greater treatment benefits. Such insights directly inform clinical decision-making by identifying patient subgroups most likely to benefit from the new antihypertensive medication.</p>
+</div>
+</div>
+<div id="implementation-considerations-and-best-practices" class="section level2 hasAnchor" number="9.4">
+<h2><span class="header-section-number">9.4</span> Implementation Considerations and Best Practices<a href="meta-learners-for-heterogeneous-treatment-effects.html#implementation-considerations-and-best-practices" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Successful meta-learner implementation requires attention to several practical considerations that significantly impact performance. Sample size requirements vary across methods, with the T-learner being most sensitive to treatment group imbalance and the X-learner providing more robust performance under realistic conditions. Cross-validation strategies should account for the two-stage nature of treatment effect estimation by ensuring proper separation between model fitting and evaluation procedures.</p>
+<p>Algorithm selection within each meta-learner framework deserves careful consideration. Tree-based methods like random forests often perform well because they naturally capture interactions and handle mixed data types common in clinical applications. However, when the number of relevant covariates is small or when linear relationships dominate, regularized linear models may provide superior performance with better interpretability.</p>
+<p>The choice between meta-learners depends on study characteristics and performance requirements. The S-learner offers simplicity and computational efficiency but may struggle when treatment effects are small relative to outcome variation. The T-learner provides natural flexibility for different functional forms across treatment groups but suffers under severe imbalance. The X-learner typically achieves superior performance at the cost of increased complexity and computational requirements.</p>
+<p>Validation strategies should emphasize treatment effect estimation accuracy rather than outcome prediction accuracy. Standard cross-validation metrics may not capture performance differences that matter for treatment effect estimation, particularly when treatment effects represent small signals relative to overall outcome variation. When possible, validation should use held-out randomized trial data or careful simulation studies that mirror the complexity of real applications.</p>
+</div>
+<div id="conclusion-democratizing-causal-machine-learning" class="section level2 hasAnchor" number="9.5">
+<h2><span class="header-section-number">9.5</span> Conclusion: Democratizing Causal Machine Learning<a href="meta-learners-for-heterogeneous-treatment-effects.html#conclusion-democratizing-causal-machine-learning" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Meta-learners represent a transformative approach to heterogeneous treatment effect estimation that democratizes access to sophisticated causal inference methods by leveraging familiar supervised learning techniques. By carefully restructuring prediction problems to target treatment effects rather than outcomes directly, these methods enable practitioners to harness the full power of modern machine learning while maintaining focus on causal questions that drive clinical and policy decisions.</p>
+<p>The framework’s flexibility accommodates diverse machine learning algorithms, from simple linear models to complex ensemble methods and neural networks. This algorithmic agnosticism ensures that meta-learners can evolve with advances in machine learning while maintaining their core focus on causal inference. As new supervised learning methods emerge, they can be immediately incorporated into the meta-learner framework without requiring fundamental methodological innovations.</p>
+<p>Our hypertension management application demonstrates how meta-learners translate complex algorithmic insights into actionable clinical guidance. The discovery that younger patients with higher baseline blood pressure experience greater treatment benefits provides clear criteria for treatment decisions that move beyond one-size-fits-all approaches toward truly personalized medicine. Such insights emerge naturally from the data without requiring researchers to prespecify which patient characteristics might modify treatment effects.</p>
+<p>The comparative analysis reveals that while all three meta-learners offer value, the X-learner’s sophisticated approach to combining information across treatment groups typically yields superior performance in realistic scenarios with treatment imbalance and modest effect sizes. However, the additional complexity requires careful implementation and validation to realize these theoretical advantages in practice.</p>
+<p>Future developments in meta-learners focus on incorporating uncertainty quantification, handling multiple treatments simultaneously, and addressing challenges with unmeasured confounding through sensitivity analyses and instrumental variable approaches. The integration of meta-learners with experimental design methods also promises to optimize treatment assignment strategies that accelerate learning about heterogeneous treatment effects in adaptive trials and digital health interventions.</p>
+<p>The ultimate promise of meta-learners extends beyond methodological innovation to practical impact in clinical care, public policy, and any domain where treatment effects vary meaningfully across individuals. By making sophisticated causal inference accessible through familiar machine learning tools, meta-learners enable widespread adoption of personalized decision-making approaches grounded in rigorous statistical evidence rather than intuition alone. This represents a fundamental advance toward more effective, efficient, and equitable interventions that maximize benefit for each individual while optimizing resource allocation across entire populations.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="bayesian-structural-time-series-for-causal-inference.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/edit/main/09-Meta_learners.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/blob/main/09-Meta_learners.Rmd",
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

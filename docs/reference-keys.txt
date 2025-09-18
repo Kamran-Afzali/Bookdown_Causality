@@ -105,3 +105,17 @@ implementation-guidelines-for-healthcare-applications
 limitations-and-considerations-1
 comparison-with-alternative-methods
 conclusion-5
+meta-learners-for-heterogeneous-treatment-effects
+introduction-the-promise-and-peril-of-machine-learning-for-causal-inference
+theoretical-foundation-from-prediction-to-causal-inference
+the-s-learner-simplicity-with-hidden-complexity
+the-t-learner-divide-and-conquer
+the-x-learner-sophisticated-synthesis
+practical-implementation-hypertension-treatment-optimization
+implementing-the-s-learner
+implementing-the-t-learner
+implementing-the-x-learner
+comparative-analysis-and-model-selection
+clinical-pattern-discovery-and-interpretation
+implementation-considerations-and-best-practices
+conclusion-democratizing-causal-machine-learning
