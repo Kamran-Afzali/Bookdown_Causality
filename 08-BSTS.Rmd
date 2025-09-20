@@ -6,10 +6,6 @@ Bayesian Structural Time Series (BSTS) is a powerful statistical method for caus
 
 The method's foundation combines state-space modeling with Bayesian inference, enabling robust uncertainty quantification. Instead of providing a single point estimate of a causal effect, BSTS generates a full posterior distribution for the counterfactual outcome. This probabilistic approach provides a credible interval for the intervention's effect, naturally integrating uncertainty from the model, its parameters, and the prediction itself. This comprehensive view is crucial for making informed decisions in healthcare.
 
-
-
-### Theoretical Framework
-
 BSTS models a time series by decomposing it into several unobserved components, such as a trend, seasonal effects, and the influence of regression variables. For a healthcare outcome $y\_t$ observed from $t=1$ to $T$, with an intervention at time $T\_0+1$, the model's goal is to predict the counterfactual outcome—what would have happened to $y\_t$ after $T\_0$ if the intervention had not occurred.
 
 The core model is specified as a state-space model, which consists of an observation equation and a state equation.
@@ -34,7 +30,7 @@ The model is fit using data only from the pre-intervention period ($t \\le T\_0$
 
 
 
-### Control Variable Selection
+#### Control Variable Selection
 
 A key feature of the BSTS framework is its ability to perform automatic variable selection for the regression component. This is typically achieved using **spike-and-slab priors** on the regression coefficients $\\beta\_j$. Each coefficient's prior is a mixture of two distributions: a "slab" (a diffuse distribution, like a Normal) and a "spike" (a distribution tightly concentrated at zero).
 $$\beta_j | \pi_j \sim (1 - \pi_j) \cdot \mathcal{N}(0, \tau^2) + \pi_j \cdot \delta_0$$
@@ -42,15 +38,13 @@ Here, $\\pi\_j$ is the probability of the coefficient being in the "spike" (i.e.
 
 
 
-### Healthcare Policy Evaluation: Tobacco Tax Impact Analysis
+## R Implementation examples Healthcare
 
-### Scenario Description
+### Tobacco Tax Policy
 
 We analyze the causal impact of a new tobacco tax on smoking-related hospital admissions. A state implements a significant tax increase per pack of cigarettes, while neighboring states do not. An experimental design is not feasible. The objective is to estimate the reduction in hospital admissions caused by the tax, accounting for seasonality, underlying trends, and other confounding factors.
 
 The outcome variable is monthly smoking-related hospital admissions per 100,000 population, observed for 60 months. The tax is introduced at month 37. Control variables include unemployment rates, healthcare access indicators, demographic data, and admission rates from neighboring states without the tax change.
-
-### Implementation and Analysis
 
 The following R code simulates data for this scenario and applies a BSTS model to estimate the causal effect.
 
@@ -202,17 +196,12 @@ p1 <- ggplot(plot_data, aes(x = time)) +
 print(p1)
 ```
 
-#### Clinical Interpretation
-
 The analysis indicates a significant reduction in smoking-related hospital admissions following the tax increase. The model's variable selection automatically identified `neighboring_state_admissions` and `population_65plus` as strong predictors for the outcome, while correctly assigning low importance to the noisy `economic_index`.
 
 The estimated effect becomes more pronounced over time, reflecting the realistic timeline of behavior change; smoking cessation and its health benefits are not instantaneous. The 95% credible interval for the causal effect provides a range of plausible impacts, properly accounting for uncertainty from seasonal patterns, confounding variables, and model parameters. This probabilistic output allows policymakers to assess the intervention's value with a quantified level of confidence, moving beyond simple point estimates.
 
 
-
-### Example 2: Mental Health Intervention Evaluation
-
-#### Teletherapy Program Assessment
+### Teletherapy Program Assessment
 
 Consider evaluating a state-wide teletherapy program launched during the COVID-19 pandemic, a time when access to traditional therapy was limited. BSTS can help assess the program's impact on mental health-related emergency department (ED) visits while controlling for the confounding effects of the pandemic, seasonal mental health patterns (e.g., winter depression), and economic disruption.
 
@@ -268,20 +257,12 @@ The selection of high-quality **control variables** is equally critical. The cor
 
 Finally, the **model structure** must be specified to reflect the complexity of healthcare data. This often involves accounting for multiple layers of seasonality, such as annual patterns driven by flu seasons or holidays, alongside weekly cycles that capture day-of-the-week effects in hospital visits. These seasonal components, combined with a flexible local linear trend to model gradual changes in population health, allow the model to construct a precise and realistic counterfactual for estimating the intervention's true effect.
 
-
-
-
-### Limitations and Considerations
+## Conclusion
 
 While powerful, the validity of a BSTS analysis rests on several key assumptions that require careful consideration. Foremost among these is the **no interference assumption**, which posits that the intervention does not affect the control variables. This can be a challenging condition in public health, where spillover effects—such as people in a control region traveling to a treated region for a service—can contaminate the analysis. Furthermore, the model's conclusions can be sensitive to its internal **specification**; the choice of trend and seasonal components influences the resulting counterfactual, making it good practice to test the robustness of the findings across different plausible model structures. Finally, BSTS assumes that the relationship between the control variables and the outcome remains **stable** over time. A major concurrent event, like the pandemic in our second example, could violate this assumption, though such shocks can often be accounted for by explicitly including them as control variables in the model.
 
 
-### Comparison with Alternative Methods
-
 BSTS offers significant advantages over several traditional quasi-experimental methods. Compared to **Difference-in-Differences (DiD)**, it does not require the strict parallel trends assumption, as it can flexibly model complex seasonality and non-linear trends. Instead of relying on a single, pre-specified control group, BSTS automatically learns the optimal weighted combination of multiple control series. It also improves upon classical **Interrupted Time Series (ITS)** analysis by moving beyond simple linear trends and immediate, permanent effects, allowing it to model impacts that emerge gradually and evolve over time. Finally, BSTS can be understood as a Bayesian, probabilistic extension of the **Synthetic Control Method (SCM)**. It provides a more rigorous approach to uncertainty quantification by generating full posterior credible intervals and employs a more stable method for automatic control variable selection through the use of spike-and-slab priors.
 
-
-
-### Conclusion
 
 Bayesian Structural Time Series provides a robust and flexible framework for causal inference with observational time series data. Its ability to model complex real-world patterns, perform automatic predictor selection, and provide principled uncertainty quantification makes it an essential tool for evidence-based evaluation in healthcare and public policy. Successful application requires careful thought about data quality, control variable selection, and model specification, but the payoff is a more nuanced and reliable estimate of an intervention's true impact.
