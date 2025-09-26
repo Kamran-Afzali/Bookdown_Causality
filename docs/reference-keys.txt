@@ -113,3 +113,17 @@ comparative-analysis-and-model-selection
 clinical-pattern-discovery-and-interpretation
 implementation-considerations-and-best-practices
 conclusion-democratizing-causal-machine-learning
+meta-learners-for-heterogeneous-treatment-effects-1
+introduction-the-promise-and-peril-of-machine-learning-for-causal-inference-1
+theoretical-foundation-from-prediction-to-causal-inference-1
+the-s-learner-simplicity-with-hidden-complexity-1
+the-t-learner-divide-and-conquer-1
+the-x-learner-sophisticated-synthesis-1
+practical-implementation-hypertension-treatment-optimization-1
+implementing-the-s-learner-1
+implementing-the-t-learner-1
+implementing-the-x-learner-1
+comparative-analysis-and-model-selection-1
+clinical-pattern-discovery-and-interpretation-1
+implementation-considerations-and-best-practices-1
+conclusion-democratizing-causal-machine-learning-1

@@ -23,7 +23,7 @@
 <meta name="author" content="Kamran Afzali" />
 
 
-<meta name="date" content="2025-09-20" />
+<meta name="date" content="2025-09-26" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -302,6 +302,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.4" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementation-considerations-and-best-practices"><i class="fa fa-check"></i><b>9.4</b> Implementation Considerations and Best Practices</a></li>
 <li class="chapter" data-level="9.5" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#conclusion-democratizing-causal-machine-learning"><i class="fa fa-check"></i><b>9.5</b> Conclusion: Democratizing Causal Machine Learning</a></li>
 </ul></li>
+<li class="chapter" data-level="10" data-path="meta-learners-for-heterogeneous-treatment-effects-1.html"><a href="meta-learners-for-heterogeneous-treatment-effects-1.html"><i class="fa fa-check"></i><b>10</b> Meta-Learners for Heterogeneous Treatment Effects</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="meta-learners-for-heterogeneous-treatment-effects-1.html"><a href="meta-learners-for-heterogeneous-treatment-effects-1.html#introduction-the-promise-and-peril-of-machine-learning-for-causal-inference-1"><i class="fa fa-check"></i><b>10.1</b> Introduction: The Promise and Peril of Machine Learning for Causal Inference</a></li>
+<li class="chapter" data-level="10.2" data-path="meta-learners-for-heterogeneous-treatment-effects-1.html"><a href="meta-learners-for-heterogeneous-treatment-effects-1.html#theoretical-foundation-from-prediction-to-causal-inference-1"><i class="fa fa-check"></i><b>10.2</b> Theoretical Foundation: From Prediction to Causal Inference</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="meta-learners-for-heterogeneous-treatment-effects-1.html"><a href="meta-learners-for-heterogeneous-treatment-effects-1.html#the-s-learner-simplicity-with-hidden-complexity-1"><i class="fa fa-check"></i><b>10.2.1</b> The S-Learner: Simplicity with Hidden Complexity</a></li>
+<li class="chapter" data-level="10.2.2" data-path="meta-learners-for-heterogeneous-treatment-effects-1.html"><a href="meta-learners-for-heterogeneous-treatment-effects-1.html#the-t-learner-divide-and-conquer-1"><i class="fa fa-check"></i><b>10.2.2</b> The T-Learner: Divide and Conquer</a></li>
+<li class="chapter" data-level="10.2.3" data-path="meta-learners-for-heterogeneous-treatment-effects-1.html"><a href="meta-learners-for-heterogeneous-treatment-effects-1.html#the-x-learner-sophisticated-synthesis-1"><i class="fa fa-check"></i><b>10.2.3</b> The X-Learner: Sophisticated Synthesis</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="meta-learners-for-heterogeneous-treatment-effects-1.html"><a href="meta-learners-for-heterogeneous-treatment-effects-1.html#practical-implementation-hypertension-treatment-optimization-1"><i class="fa fa-check"></i><b>10.3</b> Practical Implementation: Hypertension Treatment Optimization</a>
+<ul>
+<li class="chapter" data-level="10.3.1" data-path="meta-learners-for-heterogeneous-treatment-effects-1.html"><a href="meta-learners-for-heterogeneous-treatment-effects-1.html#implementing-the-s-learner-1"><i class="fa fa-check"></i><b>10.3.1</b> Implementing the S-Learner</a></li>
+<li class="chapter" data-level="10.3.2" data-path="meta-learners-for-heterogeneous-treatment-effects-1.html"><a href="meta-learners-for-heterogeneous-treatment-effects-1.html#implementing-the-t-learner-1"><i class="fa fa-check"></i><b>10.3.2</b> Implementing the T-Learner</a></li>
+<li class="chapter" data-level="10.3.3" data-path="meta-learners-for-heterogeneous-treatment-effects-1.html"><a href="meta-learners-for-heterogeneous-treatment-effects-1.html#implementing-the-x-learner-1"><i class="fa fa-check"></i><b>10.3.3</b> Implementing the X-Learner</a></li>
+<li class="chapter" data-level="10.3.4" data-path="meta-learners-for-heterogeneous-treatment-effects-1.html"><a href="meta-learners-for-heterogeneous-treatment-effects-1.html#comparative-analysis-and-model-selection-1"><i class="fa fa-check"></i><b>10.3.4</b> Comparative Analysis and Model Selection</a></li>
+<li class="chapter" data-level="10.3.5" data-path="meta-learners-for-heterogeneous-treatment-effects-1.html"><a href="meta-learners-for-heterogeneous-treatment-effects-1.html#clinical-pattern-discovery-and-interpretation-1"><i class="fa fa-check"></i><b>10.3.5</b> Clinical Pattern Discovery and Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="meta-learners-for-heterogeneous-treatment-effects-1.html"><a href="meta-learners-for-heterogeneous-treatment-effects-1.html#implementation-considerations-and-best-practices-1"><i class="fa fa-check"></i><b>10.4</b> Implementation Considerations and Best Practices</a></li>
+<li class="chapter" data-level="10.5" data-path="meta-learners-for-heterogeneous-treatment-effects-1.html"><a href="meta-learners-for-heterogeneous-treatment-effects-1.html#conclusion-democratizing-causal-machine-learning-1"><i class="fa fa-check"></i><b>10.5</b> Conclusion: Democratizing Causal Machine Learning</a></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 </ul>
@@ -517,12 +537,12 @@ Here, <span class="math inline">\(\\pi\_j\)</span> is the probability of the coe
 <div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb132-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb132-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;True average effect:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(true_effect[post_period]), <span class="dv">2</span>), <span class="st">&quot;admissions per 100k</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
 <pre><code>## True average effect: -5.89 admissions per 100k</code></pre>
 <div class="sourceCode" id="cb134"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb134-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb134-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Estimated average effect:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(causal_effect), <span class="dv">2</span>), <span class="st">&quot;admissions per 100k</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
-<pre><code>## Estimated average effect: -6.97 admissions per 100k</code></pre>
+<pre><code>## Estimated average effect: -6.8 admissions per 100k</code></pre>
 <div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb136-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb136-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Cumulative effect 95% credible interval: [&quot;</span>, <span class="fu">round</span>(<span class="fu">sum</span>(effect_lower), <span class="dv">2</span>), <span class="st">&quot;,&quot;</span>, </span>
 <span id="cb136-2"><a href="bayesian-structural-time-series-for-causal-inference.html#cb136-2" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">sum</span>(effect_upper), <span class="dv">2</span>), <span class="st">&quot;]</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
-<pre><code>## Cumulative effect 95% credible interval: [ -785.44 , 282.69 ]</code></pre>
+<pre><code>## Cumulative effect 95% credible interval: [ -778.33 , 306.37 ]</code></pre>
 <div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb138-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb138-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Posterior probability of a negative effect:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(predictions<span class="sc">$</span>distribution <span class="sc">&gt;</span> observed_post), <span class="dv">3</span>) <span class="sc">*</span> <span class="dv">100</span>, <span class="st">&quot;%</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
-<pre><code>## Posterior probability of a negative effect: 74 %</code></pre>
+<pre><code>## Posterior probability of a negative effect: 73.6 %</code></pre>
 <div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb140-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-1" tabindex="-1"></a><span class="co"># Visualization</span></span>
 <span id="cb140-2"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-2" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb140-3"><a href="bayesian-structural-time-series-for-causal-inference.html#cb140-3" tabindex="-1"></a>  <span class="at">time =</span> time_idx,</span>
