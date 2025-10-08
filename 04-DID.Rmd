@@ -79,7 +79,7 @@ We simulate data for 200 clinics (100 treated, 100 control) with readmission rat
 
 Below is the R code to simulate the data, estimate the DiD effect, and perform diagnostics.
 
-```r
+```{r}
 # Load required packages
 library(ggplot2)
 library(dplyr)
@@ -112,7 +112,9 @@ data$readmission <- 20 +                   # Baseline readmission rate
 
 # Preview data
 head(data)
+```
 
+```{r}
 # Check parallel trends: Pre-treatment data (2021-2023)
 data_pre <- data.frame(
   clinic = rep(1:n_clinics, each = 3),
@@ -138,7 +140,9 @@ ggplot(means_pre, aes(x = year, y = readmission, color = factor(treated), group 
        color = "Group") +
   scale_color_manual(values = c("blue", "red"), labels = c("Control", "Treated")) +
   theme_minimal()
+```
 
+```{r}
 # Post-treatment trends for visualization
 means_post <- data %>%
   group_by(year, treated) %>%
@@ -153,7 +157,9 @@ ggplot(means_post, aes(x = year, y = readmission, color = factor(treated), group
        color = "Group") +
   scale_color_manual(values = c("blue", "red"), labels = c("Control", "Treated")) +
   theme_minimal()
+```
 
+```{r}
 # DiD regression with covariate
 did_model <- lm(readmission ~ treated + time + treated:time + age, data = data)
 
