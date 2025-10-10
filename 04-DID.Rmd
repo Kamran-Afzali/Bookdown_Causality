@@ -58,8 +58,6 @@ $$
 
 This assumes that, absent treatment, the average change in outcomes for the treated group would equal that of the control group. While this assumption is untestable directly (since $Y_{i1}(0)$ is unobserved for the treated group post-treatment), we can assess its plausibility by examining pre-treatment trends or including covariates to adjust for potential confounders.
 
-### Practical Considerations
-
 - **Data Requirements**: DiD requires panel data (same units observed over time) or repeated cross-sectional data with clear treatment and control groups.
 - **Covariates**: Including control variables unaffected by the treatment can improve precision and adjust for time-varying confounders.
 - **Diagnostics**: Pre-treatment trends should be visualized to assess the parallel trends assumption. Robustness checks, such as placebo tests, can further validate the model.
@@ -67,11 +65,7 @@ This assumes that, absent treatment, the average change in outcomes for the trea
 
 ## Application: Evaluating a Telemedicine Program in Healthcare
 
-### Scenario
-
 Consider a hospital system implementing a telemedicine program in 2024 to improve patient outcomes, such as reducing hospital readmissions for chronic disease patients. The program is rolled out in select clinics (treated group), while others continue standard in-person care (control group). We observe patient outcomes (e.g., 30-day readmission rates) in 2023 (pre-treatment) and 2025 (post-treatment). Using DiD, we estimate the program’s causal effect on readmissions.
-
-### Simulated Data
 
 We simulate data for 200 clinics (100 treated, 100 control) with readmission rates over two years. The true treatment effect is a 3% reduction in readmissions. We include a covariate (average patient age) to account for potential confounding.
 
@@ -185,15 +179,15 @@ did_placebo <- lm(readmission ~ treated * factor(year), data = data_placebo)
 summary(did_placebo)
 ```
 
-### Interpretation
+
+### Limitations and takeaways
+
 
 - **Pre-Treatment Trends**: The plot checks if readmission rates for treated and control clinics followed parallel trends before 2023, supporting the parallel trends assumption.
 - **DiD Estimate**: The regression coefficient on the interaction term ($\text{treated} \cdot \text{time}$) estimates the treatment effect, adjusted for patient age. The manual calculation confirms this estimate.
 - **Placebo Test**: Applying DiD to pre-treatment years (2022 vs. 2023) should yield an insignificant effect, reinforcing the validity of the parallel trends assumption.
 
 In our simulation, the estimated effect is close to the true effect (-3%), indicating that the telemedicine program reduced readmissions by approximately 3 percentage points.
-
-## Limitations and Extensions
 
 - **Parallel Trends Violation**: If pre-treatment trends diverge, DiD estimates may be biased. Techniques like synthetic controls or triple differences can address this.
 - **Time-Varying Confounders**: Unobserved factors changing differentially between groups (e.g., new healthcare policies) can bias results. Including relevant covariates mitigates this.

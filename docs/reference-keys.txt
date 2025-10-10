@@ -32,13 +32,9 @@ difference-in-differences-theoretical-framework
 core-concept
 mathematical-formalism
 key-assumption-parallel-trends
-practical-considerations
 application-evaluating-a-telemedicine-program-in-healthcare
-scenario
-simulated-data
 r-implementation-2
-interpretation
-limitations-and-extensions
+limitations-and-takeaways
 conclusion-2
 references-2
 causal-inference-in-practice-iv-instrumental-variables
@@ -56,7 +52,7 @@ causal-inference-in-practice-v-regression-discontinuity-design
 introduction-4
 comparison-with-other-methods
 healthcare-application-icu-admission-and-mortality
-scenario-1
+scenario
 assumptions-and-validity
 r-implementation-4
 interpretation-and-diagnostics
