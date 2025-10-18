@@ -10,10 +10,6 @@ Targeted Maximum Likelihood Estimation (TMLE) resolves this dilemma through a pr
 
 This double robustness property transforms observational studies by acknowledging that we cannot perfectly model complex healthcare processes while still providing statistically optimal estimates when our models are approximately correct. TMLE accomplishes this through targeted bias correction that specifically optimizes the parts of our models most relevant for the causal parameter of interest, rather than attempting to model every aspect of the data generating process with equal precision.
 
-## Theoretical Foundations: The Semiparametric Revolution
-
-### The Efficiency Frontier in Causal Inference
-
 TMLE emerges from semiparametric efficiency theory, which provides mathematical foundations for optimal estimation when some aspects of the data generating process are known while others remain unspecified. In causal inference settings, we typically know the structure of our causal question—we want to estimate the average treatment effect $\mathbb{E}[Y^1 - Y^0]$—but remain uncertain about the complex relationships between patient characteristics, treatment assignment, and outcomes.
 
 The fundamental insight is that causal parameters like average treatment effects can be expressed as functionals of the data generating distribution $P_0$, written as $\Psi(P_0)$. For the average treatment effect, this becomes $\Psi(P_0) = \mathbb{E}_{P_0}[\mathbb{E}_{P_0}[Y|A=1,W] - \mathbb{E}_{P_0}[Y|A=0,W]]$, where $W$ represents patient characteristics, $A$ indicates treatment assignment, and $Y$ denotes the outcome. This formulation separates the causal parameter we want to estimate from the nuisance parameters—the outcome regression $\mathbb{E}[Y|A,W]$ and propensity score $\mathbb{E}[A|W]$—that we need to handle along the way.
@@ -41,8 +37,6 @@ The targeting step represents TMLE's core innovation. Rather than using the init
 The final step computes the causal parameter estimate by substituting the updated outcome model: $\hat{\Psi} = \frac{1}{n}\sum_{i=1}^n[\bar{Q}_n^*(1,W_i) - \bar{Q}_n^*(0,W_i)]$. This substitution principle ensures that our causal estimate incorporates both the flexibility of machine learning and the bias correction necessary for optimal performance.
 
 ## Healthcare Application: Comparative Effectiveness of Hypertension Treatments
-
-### Clinical Context and Data Generation
 
 We'll demonstrate TMLE through a realistic comparative effectiveness study examining whether ACE inhibitors reduce cardiovascular events more effectively than calcium channel blockers among patients with hypertension. This scenario reflects common observational studies where treatment selection depends on complex patient characteristics that electronic health records capture imperfectly, creating both confounding and measurement challenges that TMLE is designed to address.
 
@@ -445,17 +439,9 @@ print(subgroup_results[, c("Subgroup", "N", "Risk_Diff_Percent", "CI_Lower", "CI
 
 The subgroup analysis reveals heterogeneous treatment effects consistent with clinical understanding. Patients with diabetes and heart failure show larger benefits from ACE inhibitors, reflecting the additional cardioprotective mechanisms beyond blood pressure reduction. Elderly patients show smaller benefits, possibly reflecting competing risks or reduced physiological responsiveness to treatment.
 
-## Computational Considerations and Implementation Challenges
 
-TMLE's computational intensity stems from the SuperLearner ensemble approach, which requires fitting multiple machine learning algorithms with cross-validation for each nuisance parameter. In large healthcare datasets with hundreds of thousands of patients and numerous covariates, computational time can become prohibitive without careful implementation strategies.
+## Limitations and Practical Implementation 
 
-The most computationally demanding aspect involves the SuperLearner cross-validation, which typically uses 10-fold cross-validation for each candidate algorithm. With five candidate algorithms for both outcome and propensity score models, a single TMLE analysis requires fitting 100 models (10 CV folds × 5 algorithms × 2 nuisance parameters). Parallel processing across multiple cores can dramatically reduce runtime, particularly for embarrassingly parallel algorithms like random forests.
-
-Memory requirements scale with both sample size and the complexity of machine learning algorithms. Tree-based methods like random forests can require substantial memory for large datasets, while simpler algorithms like penalized regression remain more memory-efficient. Practitioners working with massive healthcare datasets may need to balance ensemble complexity against computational feasibility, potentially using smaller SuperLearner libraries or more efficient algorithms.
-
-The honesty principle underlying TMLE's theoretical guarantees requires sample splitting that reduces effective sample sizes for each model. This creates practical tradeoffs between statistical efficiency and computational tractability. In moderate-sized datasets, the sample splitting combined with cross-validation can yield unstable estimates, suggesting that TMLE may be most appropriate for large healthcare databases where abundant data supports both sample splitting and complex ensemble modeling.
-
-## Limitations and Alternative Approaches
 
 TMLE shares fundamental limitations with all observational causal inference methods, most notably the untestable assumption of no unmeasured confounding. In healthcare settings, unmeasured factors like disease severity, patient preferences, or physician practice patterns could bias treatment effect estimates regardless of methodological sophistication. Sensitivity analyses examining how conclusions might change under various assumptions about unmeasured confounding remain essential for responsible interpretation.
 
@@ -465,7 +451,13 @@ The positivity assumption requires that patients with similar characteristics ha
 
 Alternative approaches to TMLE offer different advantages depending on the specific research context. Augmented inverse probability weighting (AIPW) provides similar double robustness properties with simpler implementation but lacks TMLE's theoretical efficiency guarantees. Double machine learning methods achieve similar robustness through different sample splitting strategies and may offer computational advantages in some settings. Bayesian approaches can naturally incorporate uncertainty about model specification but require stronger distributional assumptions and more complex implementation.
 
-## Extensions and Advanced Applications
+TMLE's computational intensity stems from the SuperLearner ensemble approach, which requires fitting multiple machine learning algorithms with cross-validation for each nuisance parameter. In large healthcare datasets with hundreds of thousands of patients and numerous covariates, computational time can become prohibitive without careful implementation strategies.
+
+The most computationally demanding aspect involves the SuperLearner cross-validation, which typically uses 10-fold cross-validation for each candidate algorithm. With five candidate algorithms for both outcome and propensity score models, a single TMLE analysis requires fitting 100 models (10 CV folds × 5 algorithms × 2 nuisance parameters). Parallel processing across multiple cores can dramatically reduce runtime, particularly for embarrassingly parallel algorithms like random forests.
+
+Memory requirements scale with both sample size and the complexity of machine learning algorithms. Tree-based methods like random forests can require substantial memory for large datasets, while simpler algorithms like penalized regression remain more memory-efficient. Practitioners working with massive healthcare datasets may need to balance ensemble complexity against computational feasibility, potentially using smaller SuperLearner libraries or more efficient algorithms.
+
+The honesty principle underlying TMLE's theoretical guarantees requires sample splitting that reduces effective sample sizes for each model. This creates practical tradeoffs between statistical efficiency and computational tractability. In moderate-sized datasets, the sample splitting combined with cross-validation can yield unstable estimates, suggesting that TMLE may be most appropriate for large healthcare databases where abundant data supports both sample splitting and complex ensemble modeling.
 
 Recent methodological developments extend TMLE to increasingly complex causal questions that arise in healthcare research. Longitudinal TMLE handles time-varying treatments and confounders, enabling analysis of dynamic treatment regimens where treatment decisions evolve based on patient response and changing clinical status. This extension proves particularly valuable for chronic disease management where treatment intensification or modification occurs based on ongoing monitoring.
 
@@ -475,8 +467,6 @@ Survival analysis extensions handle time-to-event outcomes with censoring, commo
 
 Variable importance measures within the TMLE framework identify which patient characteristics contribute most to treatment effect heterogeneity. Unlike traditional regression coefficients that may be confounded by model specification, TMLE-based importance measures provide robust rankings of covariate relevance for treatment decisions. This capability supports precision medicine initiatives by identifying patient characteristics that should guide treatment selection.
 
-## Integration with Electronic Health Records
-
 Modern healthcare generates massive electronic health record databases that present both opportunities and challenges for TMLE implementation. The rich longitudinal data captured in EHRs enables comprehensive confounder control but introduces data quality issues that can compromise causal inference. Missing data patterns may relate to both treatment assignment and outcomes, violating TMLE's assumptions if not handled appropriately.
 
 The temporal structure of EHR data requires careful consideration of baseline covariate definition and follow-up windows. Treatment effects may vary with time since initiation, and the choice of follow-up period can substantially influence estimates. TMLE's framework accommodates these complexities through careful problem formulation, but practitioners must make explicit choices about time windows and covariate measurement timing.
@@ -485,8 +475,6 @@ High-dimensional EHR data with thousands of potential confounders benefits from 
 
 The increasing availability of real-world evidence platforms that standardize EHR data across health systems creates opportunities for large-scale TMLE analyses with enhanced external validity. Multi-site analyses using TMLE can pool evidence across diverse healthcare settings while accounting for site-specific confounding patterns through appropriate covariate adjustment.
 
-## Practical Implementation Guidelines
-
 Successful TMLE implementation requires systematic attention to several practical considerations that bridge theoretical properties with real-world data challenges. Sample size planning should account for the efficiency losses inherent in sample splitting and cross-validation, typically requiring larger samples than traditional regression approaches for equivalent precision. Healthcare datasets with fewer than several thousand observations may not provide sufficient power for stable TMLE estimates, particularly when investigating numerous potential confounders.
 
 Covariate selection remains crucial despite TMLE's flexibility. Including variables that predict treatment assignment or outcomes without being confounders improves efficiency, while including instrumental variables can worsen performance by increasing variance without reducing bias. Clinical knowledge should guide initial variable selection, with machine learning methods handling functional form specification and interaction detection.
@@ -494,8 +482,6 @@ Covariate selection remains crucial despite TMLE's flexibility. Including variab
 Diagnostic procedures should evaluate both nuisance parameter model performance and assumption validity. Propensity score distributions should show adequate overlap between treatment groups, outcome model residuals should appear unrelated to patient characteristics, and influential observation diagnostics should identify patients whose removal substantially changes estimates. These diagnostics help distinguish between method limitations and data quality issues.
 
 Results reporting should emphasize both statistical significance and clinical relevance. The risk difference scale often provides more intuitive interpretation than odds ratios, particularly for communicating with clinical audiences. Number needed to treat calculations translate risk differences into clinical decision-making frameworks that support evidence-based practice.
-
-## Future Directions and Methodological Developments
 
 The TMLE framework continues evolving to address increasingly complex causal questions in healthcare research. Machine learning advances in deep learning and automated feature engineering promise to improve nuisance parameter estimation, potentially enhancing both the flexibility and stability of TMLE estimates. However, these advances must be balanced against interpretability requirements and computational constraints.
 
