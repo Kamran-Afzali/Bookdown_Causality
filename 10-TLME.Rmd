@@ -16,7 +16,7 @@ The fundamental insight is that causal parameters like average treatment effects
 
 The efficiency bound theorem establishes that any regular and asymptotically linear estimator of $\Psi(P_0)$ has asymptotic variance bounded below by $\text{Var}(D^*(O))$, where $D^*(O)$ represents the efficient influence function for the parameter. This influence function characterizes how each observation contributes to the parameter estimate and provides the theoretical benchmark for optimal performance.
 
-### The Influence Function and Double Robustness
+### Double Robustness and TMLE
 
 The efficient influence function for the average treatment effect takes the form:
 
@@ -25,8 +25,6 @@ $$D^*(O) = \frac{A(Y - \bar{Q}(A,W))}{g(A|W)} - \frac{(1-A)(Y - \bar{Q}(A,W))}{1
 where $\bar{Q}(A,W) = \mathbb{E}[Y|A,W]$ represents the outcome regression and $g(A|W) = \mathbb{P}(A=1|W)$ represents the propensity score. This formulation reveals the double robustness property: if either $\bar{Q}$ or $g$ is correctly specified, the bias terms involving the misspecified function disappear asymptotically, yielding consistent estimation of the causal parameter.
 
 The intuition behind double robustness emerges from the correction mechanism embedded in the influence function. When the outcome model $\bar{Q}$ is wrong but the propensity score $g$ is correct, the weighted residuals $\frac{A(Y - \bar{Q}(A,W))}{g(A|W)} - \frac{(1-A)(Y - \bar{Q}(A,W))}{1-g(A|W)}$ provide unbiased corrections for the outcome model errors. Conversely, when the propensity score is wrong but the outcome model is correct, the final term $\bar{Q}(1,W) - \bar{Q}(0,W)$ provides the correct causal contrast directly.
-
-### The TMLE Algorithm: Targeted Bias Reduction
 
 TMLE implements these theoretical insights through a two-stage procedure that first estimates nuisance parameters using machine learning methods, then applies targeted bias correction to optimize performance for the specific causal parameter of interest. The algorithm proceeds through three essential steps that transform initial estimates into efficient causal parameter estimates.
 
@@ -42,7 +40,7 @@ We'll demonstrate TMLE through a realistic comparative effectiveness study exami
 
 Our simulated patient population includes demographic characteristics, comorbidity indicators, laboratory values, and healthcare utilization patterns that influence both treatment selection and cardiovascular outcomes. The treatment assignment mechanism reflects realistic clinical decision-making where physicians consider multiple patient factors simultaneously, while the outcome generating process incorporates both direct treatment effects and complex interactions between patient characteristics and treatment response.
 
-```r
+```{r}
 # Load required libraries for TMLE analysis
 if (!requireNamespace("tmle", quietly = TRUE)) install.packages("tmle")
 if (!requireNamespace("SuperLearner", quietly = TRUE)) install.packages("SuperLearner")
@@ -148,11 +146,11 @@ cat("Event rate - CCB:", round(100*mean(Y[A==0]), 1), "%\n")
 cat("Crude risk difference:", round(100*(mean(Y[A==1]) - mean(Y[A==0])), 2), "%\n")
 ```
 
-### Implementing TMLE with SuperLearner Ensembles
+**Implementing TMLE with SuperLearner Ensembles**
 
 The power of TMLE emerges through its integration with SuperLearner, an ensemble method that combines multiple machine learning algorithms to achieve optimal bias-variance tradeoffs for nuisance parameter estimation. Rather than committing to a single modeling approach, SuperLearner automatically selects the optimal weighted combination of candidate algorithms based on cross-validated performance.
 
-```r
+```{r}
 # Define SuperLearner library for nuisance parameter estimation
 # Include diverse algorithms to capture different aspects of relationships
 SL_library <- c("SL.glm",           # Linear models for interpretability
@@ -197,11 +195,11 @@ cat("TMLE ATE:", round(100 * ate_tmle, 2), "%\n")
 
 The SuperLearner ensemble approach automatically adapts to the complexity of the underlying relationships without requiring researchers to specify the correct functional forms. By including linear models, interaction terms, regularized regression, and tree-based methods, the ensemble can capture both smooth linear relationships and complex nonlinear patterns while avoiding overfitting through cross-validation.
 
-### Examining Model Performance and Diagnostics
+**Examining Model Performance and Diagnostics**
 
 Understanding how well our nuisance parameter models perform provides crucial insight into the reliability of TMLE estimates. The double robustness property means that poor performance in one model can be compensated by good performance in the other, but examining both models helps assess overall estimate quality.
 
-```r
+```{r}
 # Extract and examine nuisance parameter estimates
 Q_estimates <- tmle_result$Qinit$Q
 g_estimates <- tmle_result$g$g1W
@@ -256,14 +254,14 @@ print(p1)
 
 The propensity score distribution reveals crucial information about the positivity assumption. Good overlap between treatment groups across propensity score values supports the assumption that similar patients could receive either treatment. Extreme propensity scores near 0 or 1 suggest regions where treatment assignment is nearly deterministic, potentially violating positivity and leading to unstable estimates.
 
-### Understanding the Targeting Step
+**Understanding the Targeting Step**
 
 The targeting step represents TMLE's unique contribution to causal inference, transforming initial machine learning estimates into bias-corrected estimates optimized specifically for the causal parameter of interest. Examining this step illuminates how TMLE achieves its theoretical properties.
 
-```r
+```{r}
 # Examine the targeting step in detail
-initial_Q <- tmle_result$Qinit$Q
-targeted_Q <- tmle_result$Qstar$Q
+initial_Q <- tmle_result$Qinit$Q[1]
+targeted_Q <- tmle_result$Qstar[1]
 epsilon <- tmle_result$epsilon
 
 cat("Targeting Step Analysis:\n")
@@ -306,11 +304,11 @@ print(p2)
 
 The targeting parameter epsilon quantifies how much the initial outcome model needed adjustment to optimize performance for the causal parameter. Small epsilon values suggest the initial machine learning model was already well-suited for causal inference, while larger values indicate substantial bias correction was necessary. The clever covariate weights observations according to their importance for the causal parameter, with patients having extreme propensity scores receiving higher weights due to their greater information content for treatment effect estimation.
 
-### Robustness Analysis and Sensitivity Testing
+**Robustness Analysis and Sensitivity Testing**
 
 TMLE's double robustness property provides protection against model misspecification, but understanding this protection requires systematic evaluation of how estimate quality depends on nuisance parameter estimation accuracy. We can assess robustness by deliberately misspecifying one model while maintaining the other.
 
-```r
+```{r}
 # Test double robustness by misspecifying outcome model
 # Use only linear terms instead of flexible SuperLearner
 tmle_misspec_Q <- tmle(Y = data$Y,
@@ -349,11 +347,9 @@ results_comparison <- data.frame(
          sqrt(tmle_misspec_both$estimates$ATE$var.psi))
 )
 
-results_comparison$CI_Lower <- results_comparison$ATE - 1.96 * results_comparison$SE
-results_comparison$CI_Upper <- results_comparison$ATE + 1.96 * results_comparison$SE
+results_comparison$CI_Lower <- results_comparison$ATE - 2.5 * results_comparison$SE
+results_comparison$CI_Upper <- results_comparison$ATE + 2.5 * results_comparison$SE
 
-cat("Robustness Analysis Results:\n")
-print(round(results_comparison, 4))
 
 # Visualize robustness
 p3 <- ggplot(results_comparison, aes(x = Method, y = ATE)) +
@@ -373,11 +369,11 @@ print(p3)
 
 This robustness analysis demonstrates TMLE's double robustness property in practice. When either the outcome model or propensity score model is correctly specified (through SuperLearner), estimates remain stable and close to the fully-specified result. However, when both models are misspecified, bias can emerge, highlighting the importance of flexible modeling approaches for at least one nuisance parameter.
 
-### Clinical Interpretation and Subgroup Analysis
+**Clinical Interpretation and Subgroup Analysis**
 
 The TMLE analysis reveals that ACE inhibitors reduce cardiovascular events by approximately 2-3 percentage points compared to calcium channel blockers, a clinically meaningful difference that translates to preventing cardiovascular events in roughly 1 out of every 40 patients treated with ACE inhibitors instead of calcium channel blockers. This finding aligns with clinical expectations based on biological mechanisms and prior research.
 
-```r
+```{r}
 # Examine treatment effects across clinically relevant subgroups
 # TMLE can estimate conditional effects for specific patient populations
 
@@ -493,14 +489,8 @@ The growing emphasis on precision medicine creates demands for TMLE extensions t
 
 ## Conclusion
 
-Targeted Maximum Likelihood Estimation represents a fundamental advance in observational causal inference that directly addresses the core challenges facing healthcare researchers analyzing electronic health records and administrative databases. By combining the flexibility of machine learning with the statistical rigor of semiparametric theory, TMLE provides a principled framework for extracting causal insights from complex observational data without requiring restrictive parametric assumptions.
+Targeted Maximum Likelihood Estimation represents a fundamental advance in observational causal inference that directly addresses the core challenges facing healthcare researchers analyzing electronic health records and administrative databases. By combining the flexibility of machine learning with the statistical rigor of semiparametric theory, TMLE provides a principled framework for extracting causal insights from complex observational data without requiring restrictive parametric assumptions. The double robustness property offers crucial protection against model misspecification in healthcare settings where complex patient characteristics, treatment assignment mechanisms, and outcome processes resist simple parametric description. This robustness comes with computational costs and sample size requirements that may limit applicability in smaller studies, but the increasing availability of large healthcare databases makes these requirements increasingly feasible.
 
-The double robustness property offers crucial protection against model misspecification in healthcare settings where complex patient characteristics, treatment assignment mechanisms, and outcome processes resist simple parametric description. This robustness comes with computational costs and sample size requirements that may limit applicability in smaller studies, but the increasing availability of large healthcare databases makes these requirements increasingly feasible.
+Our hypertension treatment analysis demonstrates how TMLE can provide clinically actionable insights about comparative effectiveness while acknowledging uncertainty through honest confidence intervals. The method's ability to accommodate complex confounding patterns, missing data mechanisms, and machine learning approaches makes it particularly well-suited for modern healthcare research environments where traditional methods may prove inadequate. The theoretical guarantees underlying TMLE ensure that estimates achieve optimal statistical properties when identifying assumptions hold, providing efficiency advantages over simpler approaches like inverse probability weighting or outcome regression alone. These efficiency gains translate directly into improved power for detecting clinically meaningful treatment effects and narrower confidence intervals that support more definitive clinical recommendations.
 
-Our hypertension treatment analysis demonstrates how TMLE can provide clinically actionable insights about comparative effectiveness while acknowledging uncertainty through honest confidence intervals. The method's ability to accommodate complex confounding patterns, missing data mechanisms, and machine learning approaches makes it particularly well-suited for modern healthcare research environments where traditional methods may prove inadequate.
-
-The theoretical guarantees underlying TMLE ensure that estimates achieve optimal statistical properties when identifying assumptions hold, providing efficiency advantages over simpler approaches like inverse probability weighting or outcome regression alone. These efficiency gains translate directly into improved power for detecting clinically meaningful treatment effects and narrower confidence intervals that support more definitive clinical recommendations.
-
-As healthcare increasingly embraces precision medicine and real-world evidence generation, TMLE's combination of flexibility, robustness, and efficiency positions it as an essential tool for causal inference. The method's continued development through extensions to longitudinal data, survival outcomes, and individualized treatment rules ensures its relevance for addressing the complex causal questions that characterize modern healthcare research.
-
-Successful implementation requires careful attention to computational considerations, diagnostic procedures, and assumption verification, but the investment in methodological sophistication pays dividends through more reliable causal estimates that can guide clinical practice and health policy decisions. When applied appropriately with adequate sample sizes and valid identifying assumptions, TMLE provides a powerful framework for transforming observational healthcare data into actionable causal knowledge that improves patient outcomes and healthcare delivery.
+As healthcare increasingly embraces precision medicine and real-world evidence generation, TMLE's combination of flexibility, robustness, and efficiency positions it as an essential tool for causal inference. The method's continued development through extensions to longitudinal data, survival outcomes, and individualized treatment rules ensures its relevance for addressing the complex causal questions that characterize modern healthcare research. Successful implementation requires careful attention to computational considerations, diagnostic procedures, and assumption verification, but the investment in methodological sophistication pays dividends through more reliable causal estimates that can guide clinical practice and health policy decisions. When applied appropriately with adequate sample sizes and valid identifying assumptions, TMLE provides a powerful framework for transforming observational healthcare data into actionable causal knowledge that improves patient outcomes and healthcare delivery.

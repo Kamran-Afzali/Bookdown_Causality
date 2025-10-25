@@ -97,14 +97,8 @@ implementation-considerations-and-best-practices
 conclusion-democratizing-causal-machine-learning
 targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare
 introduction-7
-the-influence-function-and-double-robustness
-the-tmle-algorithm-targeted-bias-reduction
+double-robustness-and-tmle
 healthcare-application-comparative-effectiveness-of-hypertension-treatments
-implementing-tmle-with-superlearner-ensembles
-examining-model-performance-and-diagnostics
-understanding-the-targeting-step
-robustness-analysis-and-sensitivity-testing
-clinical-interpretation-and-subgroup-analysis
 limitations-and-practical-implementation
 conclusion-7
 g-computation-for-causal-inference
