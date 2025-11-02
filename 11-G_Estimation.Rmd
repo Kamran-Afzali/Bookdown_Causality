@@ -88,3 +88,437 @@ Our hypertension case study demonstrates practical implementation using the `gfo
 Successful application requires careful attention to model specification, adequate sample sizes, and validation of modeling assumptions through diagnostic procedures. The method works best when researchers possess substantive knowledge about the causal structure underlying their data and can specify models that capture essential relationships between treatments, confounders, and outcomes. While G-computation demands more upfront modeling effort than some alternatives, it rewards that investment with estimates of causal effects under realistic treatment strategies that match how clinicians actually make decisions in practice.
 
 The integration of G-computation with modern computational tools and machine learning methods continues expanding the frontier of what's possible in causal inference from complex longitudinal data. As healthcare increasingly relies on observational electronic health records and registry data to inform treatment decisions, methods like G-computation that can extract valid causal conclusions from such data become essential tools for evidence-based medicine and precision healthcare delivery.
+
+
+```{r}
+if (!require("data.table")) install.packages("data.table")
+if (!require("ggplot2")) install.packages("ggplot2")
+if (!require("dplyr")) install.packages("dplyr")
+if (!require("betareg")) install.packages("betareg")
+if (!require("survival")) install.packages("survival")
+
+library(data.table)
+library(ggplot2)
+library(dplyr)
+library(betareg)
+library(survival)
+
+set.seed(123)
+
+
+simulate_hypertension_data <- function(n = 1000, time_points = 6) {
+  
+  # Baseline characteristics
+  baseline <- data.frame(
+    id = 1:n,
+    age = rnorm(n, 55, 8),
+    diabetes = rbinom(n, 1, 0.3),
+    smoking = rbinom(n, 1, 0.25),
+    baseline_sbp = rnorm(n, 145, 15)
+  )
+  
+  # Pre-allocate list with proper size
+  long_data <- vector("list", n)
+  
+  for (i in 1:n) {
+    # Individual baseline values
+    sbp <- baseline$baseline_sbp[i]
+    treatment <- 0
+    adherence <- 1
+    
+    # Pre-allocate data frame
+    individual_data <- data.frame(
+      id = rep(baseline$id[i], time_points),
+      time = 0:(time_points - 1),
+      age = rep(baseline$age[i], time_points),
+      diabetes = rep(baseline$diabetes[i], time_points),
+      smoking = rep(baseline$smoking[i], time_points),
+      sbp = numeric(time_points),
+      treatment = numeric(time_points),
+      adherence = numeric(time_points),
+      cvd_event = numeric(time_points),
+      event_time = rep(NA, time_points)
+    )
+    
+    cvd_event_occurred <- FALSE
+    event_time <- NA
+    
+    for (t in 0:(time_points - 1)) {
+      # Record current state
+      individual_data$sbp[t + 1] <- sbp
+      individual_data$treatment[t + 1] <- treatment
+      individual_data$adherence[t + 1] <- adherence
+      
+      # CVD event (incident event only)
+      if (!cvd_event_occurred) {
+        event_prob <- plogis(-8 + 0.04 * sbp + 0.05 * baseline$age[i] + 
+                               0.8 * baseline$diabetes[i] + 0.6 * baseline$smoking[i] - 
+                               0.5 * treatment * adherence)
+        cvd_event_occurred <- rbinom(1, 1, event_prob) == 1
+        
+        if (cvd_event_occurred) {
+          event_time <- t
+        }
+      }
+      
+      # Record event (incident, not absorbing state for modeling)
+      individual_data$cvd_event[t + 1] <- as.integer(cvd_event_occurred && t == event_time)
+      individual_data$event_time[t + 1] <- event_time
+      
+      # Update variables for next time point
+      if (t < time_points - 1) {
+        # Treatment decision (based on previous blood pressure and risk factors)
+        treatment_prob <- plogis(-2 + 0.03 * sbp + 0.5 * baseline$diabetes[i] + 
+                                   0.3 * baseline$smoking[i])
+        treatment <- rbinom(1, 1, treatment_prob)
+        
+        # Adherence (affected by treatment intensity)
+        adherence_mean <- plogis(1 - 0.5 * treatment + 0.01 * (sbp - 120))
+        # Transform to avoid boundary issues in beta regression
+        adherence <- pmin(0.99, pmax(0.01, rnorm(1, adherence_mean, 0.15)))
+        
+        # Update SBP (affected by treatment and adherence)
+        treatment_effect <- -12 * treatment * adherence
+        sbp <- 0.7 * sbp + 0.3 * baseline$baseline_sbp[i] + 
+          treatment_effect + rnorm(1, 0, 5)
+        sbp <- pmax(90, pmin(200, sbp))
+      }
+    }
+    
+    long_data[[i]] <- individual_data
+  }
+  
+  # Combine all individual data
+  data <- rbindlist(long_data)
+  setorder(data, id, time)
+  
+  return(as.data.frame(data))
+}
+
+# Generate the dataset
+cat("Simulating longitudinal hypertension data...\n")
+hypertension_data <- simulate_hypertension_data(n = 1000, time_points = 6)
+
+# Create lagged variables
+hypertension_data <- hypertension_data %>%
+  group_by(id) %>%
+  mutate(
+    sbp_lag = lag(sbp, default = first(sbp)),
+    treatment_lag = lag(treatment, default = 0),
+    adherence_lag = lag(adherence, default = 1)
+  ) %>%
+  ungroup() %>%
+  as.data.frame()
+
+# Display summary statistics
+cat("\nDataset Summary:\n")
+cat("Total observations:", nrow(hypertension_data), "\n")
+cat("Number of patients:", length(unique(hypertension_data$id)), "\n")
+cat("Time points:", max(hypertension_data$time) + 1, "\n")
+cat("\nBaseline characteristics:\n")
+print(summary(hypertension_data[hypertension_data$time == 0, 
+                                c("age", "diabetes", "smoking", "sbp")]))
+
+cat("\nIncident CVD events by time point:\n")
+event_rates <- hypertension_data %>%
+  group_by(time) %>%
+  summarise(
+    incident_events = sum(cvd_event),
+    cumulative_incidence = mean(!is.na(event_time) & event_time <= time)
+  )
+print(event_rates)
+
+cat("\n\n=== MODEL FITTING ===\n\n")
+
+fit_confounder_models <- function(data) {
+  # SBP model (continuous outcome)
+  cat("Fitting SBP model...\n")
+  sbp_model <- lm(sbp ~ sbp_lag + treatment + treatment_lag + 
+                    adherence + adherence_lag + diabetes + smoking + age + time,
+                  data = data[data$time > 0, ])
+  
+  # Adherence model (beta regression for bounded continuous outcome)
+  cat("Fitting adherence model...\n")
+  # Beta regression requires values in (0,1), not including boundaries
+  adherence_data <- data[data$time > 0 & data$adherence > 0 & data$adherence < 1, ]
+  adherence_model <- betareg(adherence ~ treatment + sbp_lag + diabetes + time,
+                             data = adherence_data)
+  
+  # Outcome model (logistic regression for incident events)
+  cat("Fitting CVD outcome model...\n")
+  # Only model incident events (not absorbing state)
+  outcome_model <- glm(cvd_event ~ sbp + treatment + adherence + 
+                         age + diabetes + smoking + time,
+                       data = data, 
+                       family = binomial())
+  
+  cat("\nModel diagnostics:\n")
+  cat("SBP model R-squared:", round(summary(sbp_model)$r.squared, 3), "\n")
+  cat("Adherence model pseudo R-squared:", round(adherence_model$pseudo.r.squared, 3), "\n")
+  cat("Outcome model AIC:", round(AIC(outcome_model), 1), "\n")
+  
+  list(
+    sbp = sbp_model, 
+    adherence = adherence_model, 
+    outcome = outcome_model,
+    sbp_sigma = sigma(sbp_model)
+  )
+}
+
+models <- fit_confounder_models(hypertension_data)
+
+cat("\n=== KEY MODEL COEFFICIENTS ===\n")
+cat("\nSBP Model - Treatment Effect:\n")
+print(coef(summary(models$sbp))["treatment", ])
+cat("\nOutcome Model - Treatment Effect:\n")
+print(coef(summary(models$outcome))["treatment", ])
+
+cat("\n\n=== MONTE CARLO G-COMPUTATION ===\n\n")
+
+simulate_counterfactual_mc <- function(data, models, treatment_strategy, 
+                                       n_simulations = 500, verbose = TRUE) {
+  
+  baseline_data <- data[data$time == 0, ]
+  n_subjects <- nrow(baseline_data)
+  
+  # Store results across simulations
+  all_risks <- matrix(NA, nrow = n_simulations, ncol = 6)
+  all_cumulative_incidence <- numeric(n_simulations)
+  
+  for (sim in 1:n_simulations) {
+    if (verbose && sim %% 100 == 0) cat("  Simulation", sim, "of", n_simulations, "\n")
+    
+    sim_data <- baseline_data
+    sim_data$treatment <- treatment_strategy(sim_data, 0)
+    sim_data$cvd_event_sim <- 0
+    sim_data$event_occurred <- FALSE
+    
+    for (t in 1:5) {
+      prev_data <- sim_data[sim_data$time == t - 1, ]
+      
+      # Create new data for time t
+      new_data <- prev_data
+      new_data$time <- t
+      new_data$treatment_lag <- prev_data$treatment
+      new_data$sbp_lag <- prev_data$sbp
+      new_data$adherence_lag <- prev_data$adherence
+      
+      # Assign treatment according to strategy
+      new_data$treatment <- treatment_strategy(new_data, t)
+      
+      # Simulate adherence
+      adherence_pred <- predict(models$adherence, newdata = new_data, type = "response")
+      adherence_noise <- rnorm(nrow(new_data), 0, 0.1)
+      new_data$adherence <- pmin(0.99, pmax(0.01, adherence_pred + adherence_noise))
+      
+      # Simulate SBP
+      sbp_pred <- predict(models$sbp, newdata = new_data)
+      new_data$sbp <- sbp_pred + rnorm(nrow(new_data), 0, models$sbp_sigma)
+      new_data$sbp <- pmin(200, pmax(90, new_data$sbp))
+      
+      # Simulate CVD events (only for those who haven't had event yet)
+      cvd_prob <- predict(models$outcome, newdata = new_data, type = "response")
+      new_event <- rbinom(nrow(new_data), 1, cvd_prob)
+      
+      # Only count incident events
+      new_data$cvd_event_sim <- ifelse(!prev_data$event_occurred, new_event, 0)
+      new_data$event_occurred <- prev_data$event_occurred | (new_event == 1)
+      
+      sim_data <- rbind(sim_data, new_data)
+    }
+    
+    # Calculate risk at each time point for this simulation
+    for (t in 0:5) {
+      all_risks[sim, t + 1] <- mean(sim_data[sim_data$time == t, "event_occurred"])
+    }
+    
+    # Cumulative incidence by end of follow-up
+    all_cumulative_incidence[sim] <- mean(sim_data[sim_data$time == 5, "event_occurred"])
+  }
+  
+  list(
+    mean_risk_trajectory = colMeans(all_risks),
+    risk_trajectory_se = apply(all_risks, 2, sd),
+    cumulative_incidence = mean(all_cumulative_incidence),
+    cumulative_incidence_se = sd(all_cumulative_incidence),
+    all_cumulative_incidence = all_cumulative_incidence
+  )
+}
+
+# Define treatment strategies
+strategies <- list(
+  never_treat = function(data, time) rep(0, nrow(data)),
+  always_treat = function(data, time) rep(1, nrow(data)),
+  delayed_treat = function(data, time) ifelse(time >= 2, 1, 0),
+  threshold_strategy = function(data, time) {
+    if (time == 0) return(rep(0, nrow(data)))
+    ifelse(data$sbp > 140, 1, 0)
+  }
+)
+
+# Run simulations for each strategy
+cat("Running Monte Carlo simulations (500 iterations per strategy)...\n\n")
+results <- list()
+
+for (strategy_name in names(strategies)) {
+  cat("Strategy:", strategy_name, "\n")
+  results[[strategy_name]] <- simulate_counterfactual_mc(
+    hypertension_data, 
+    models, 
+    strategies[[strategy_name]],
+    n_simulations = 500,
+    verbose = FALSE
+  )
+  cat("  Cumulative incidence at 5 years:", 
+      round(results[[strategy_name]]$cumulative_incidence * 100, 2), "%",
+      " (SE:", round(results[[strategy_name]]$cumulative_incidence_se * 100, 2), "%)\n\n")
+}
+
+cat("\n=== CAUSAL EFFECT ESTIMATES ===\n\n")
+
+# Function to calculate risk difference and ratio with bootstrap CI
+calculate_effect <- function(results, reference, comparator) {
+  ref_samples <- results[[reference]]$all_cumulative_incidence
+  comp_samples <- results[[comparator]]$all_cumulative_incidence
+  
+  risk_diff <- ref_samples - comp_samples
+  risk_ratio <- ref_samples / comp_samples
+  
+  list(
+    risk_diff_mean = mean(risk_diff),
+    risk_diff_ci = quantile(risk_diff, c(0.025, 0.975)),
+    risk_ratio_mean = mean(risk_ratio),
+    risk_ratio_ci = quantile(risk_ratio, c(0.025, 0.975))
+  )
+}
+
+# Compare strategies
+comparisons <- list(
+  c("never_treat", "always_treat"),
+  c("never_treat", "threshold_strategy"),
+  c("always_treat", "threshold_strategy")
+)
+
+effect_summary <- data.frame()
+
+for (comp in comparisons) {
+  effect <- calculate_effect(results, comp[1], comp[2])
+  
+  cat(sprintf("\n%s vs %s:\n", comp[1], comp[2]))
+  cat(sprintf("  Risk Difference: %.2f%% (95%% CI: %.2f%% to %.2f%%)\n",
+              effect$risk_diff_mean * 100,
+              effect$risk_diff_ci[1] * 100,
+              effect$risk_diff_ci[2] * 100))
+  cat(sprintf("  Risk Ratio: %.2f (95%% CI: %.2f to %.2f)\n",
+              effect$risk_ratio_mean,
+              effect$risk_ratio_ci[1],
+              effect$risk_ratio_ci[2]))
+  
+  effect_summary <- rbind(effect_summary, data.frame(
+    comparison = paste(comp[1], "vs", comp[2]),
+    risk_diff = effect$risk_diff_mean * 100,
+    rd_lower = effect$risk_diff_ci[1] * 100,
+    rd_upper = effect$risk_diff_ci[2] * 100,
+    risk_ratio = effect$risk_ratio_mean,
+    rr_lower = effect$risk_ratio_ci[1],
+    rr_upper = effect$risk_ratio_ci[2]
+  ))
+}
+
+cat("\n\nGenerating visualizations...\n")
+
+# Plot 1: Cumulative incidence trajectories with uncertainty
+risk_trajectories <- do.call(rbind, lapply(names(results), function(strategy) {
+  data.frame(
+    time = 0:5,
+    mean_risk = results[[strategy]]$mean_risk_trajectory,
+    lower = results[[strategy]]$mean_risk_trajectory - 
+      1.96 * results[[strategy]]$risk_trajectory_se,
+    upper = results[[strategy]]$mean_risk_trajectory + 
+      1.96 * results[[strategy]]$risk_trajectory_se,
+    strategy = strategy
+  )
+}))
+
+p1 <- ggplot(risk_trajectories, aes(x = time, y = mean_risk * 100, 
+                                    color = strategy, fill = strategy)) +
+  geom_line(linewidth = 1) +
+  geom_ribbon(aes(ymin = lower * 100, ymax = upper * 100), 
+              alpha = 0.2, color = NA) +
+  labs(
+    title = "Cumulative CVD Incidence Under Different Treatment Strategies",
+    subtitle = "Mean ± 95% CI from 500 Monte Carlo simulations",
+    x = "Time (years)",
+    y = "Cumulative CVD Incidence (%)",
+    color = "Strategy",
+    fill = "Strategy"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+
+print(p1)
+
+# Plot 2: Risk differences with confidence intervals
+p2 <- ggplot(effect_summary, aes(x = comparison, y = risk_diff)) +
+  geom_col(fill = "steelblue", alpha = 0.7, width = 0.6) +
+  geom_errorbar(aes(ymin = rd_lower, ymax = rd_upper), 
+                width = 0.2, linewidth = 0.8) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  geom_text(aes(label = sprintf("%.1f%%", risk_diff)), 
+            vjust = -0.5, size = 4, fontface = "bold") +
+  labs(
+    title = "Treatment Effects: Absolute Risk Reduction",
+    subtitle = "Risk difference with 95% confidence intervals",
+    x = "",
+    y = "Risk Difference (percentage points)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 15, hjust = 1)) +
+  coord_cartesian(ylim = c(min(effect_summary$rd_lower) * 0.8, 
+                           max(effect_summary$rd_upper) * 1.2))
+
+print(p2)
+
+# Plot 3: Risk ratios with confidence intervals
+p3 <- ggplot(effect_summary, aes(x = comparison, y = risk_ratio)) +
+  geom_point(size = 4, color = "darkred") +
+  geom_errorbar(aes(ymin = rr_lower, ymax = rr_upper), 
+                width = 0.2, linewidth = 0.8, color = "darkred") +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "black") +
+  labs(
+    title = "Treatment Effects: Relative Risk",
+    subtitle = "Risk ratio with 95% confidence intervals",
+    x = "",
+    y = "Risk Ratio"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 15, hjust = 1)) +
+  coord_cartesian(ylim = c(0, max(effect_summary$rr_upper) * 1.1))
+
+print(p3)
+
+cat("\n\n=== ANALYSIS SUMMARY ===\n\n")
+cat("Key Improvements in This Implementation:\n")
+cat("1. Proper incident event modeling (not absorbing state)\n")
+cat("2. Monte Carlo simulation (500 iterations) for uncertainty quantification\n")
+cat("3. Beta regression for adherence (bounded continuous outcome)\n")
+cat("4. Confidence intervals via simulation-based inference\n")
+cat("5. Dynamic threshold-based treatment strategy\n")
+cat("6. Efficient data structures (pre-allocation, data.table)\n\n")
+
+cat("Clinical Interpretation:\n")
+best_strategy <- names(results)[which.min(sapply(results, function(x) x$cumulative_incidence))]
+cat(sprintf("- Best performing strategy: %s\n", best_strategy))
+cat(sprintf("- 5-year CVD risk: %.1f%% (95%% CI: %.1f%%-%.1f%%)\n",
+            results[[best_strategy]]$cumulative_incidence * 100,
+            quantile(results[[best_strategy]]$all_cumulative_incidence, 0.025) * 100,
+            quantile(results[[best_strategy]]$all_cumulative_incidence, 0.975) * 100))
+
+cat("\nMethodological Notes:\n")
+cat("- G-computation handles time-varying confounding via sequential regression\n")
+cat("- Monte Carlo approach propagates uncertainty through complex simulations\n")
+cat("- Results assume correct model specification and positivity\n")
+cat("- Real applications should assess model fit and sensitivity to assumptions\n")
+
+cat("\nAnalysis complete!\n")
+```
