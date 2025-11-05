@@ -109,3 +109,8 @@ interpreting-results-and-model-diagnostics
 advanced-applications-dynamic-treatment-regimes
 practical-considerations-and-limitations
 conclusion-integrating-g-computation-into-practice
+structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways
+introduction-9
+a-mediation-analysis-physical-activity-mental-health-and-diabetes-control
+clinical-interpretation-and-limitations
+conclusion-8
