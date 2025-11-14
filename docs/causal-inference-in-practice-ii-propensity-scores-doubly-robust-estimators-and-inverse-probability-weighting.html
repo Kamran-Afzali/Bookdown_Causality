@@ -23,7 +23,7 @@
 <meta name="author" content="Kamran Afzali" />
 
 
-<meta name="date" content="2025-11-05" />
+<meta name="date" content="2025-11-14" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -295,7 +295,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="11.2.1" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#fitting-the-g-formula-model"><i class="fa fa-check"></i><b>11.2.1</b> Fitting the G-Formula Model</a></li>
 <li class="chapter" data-level="11.2.2" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#interpreting-results-and-model-diagnostics"><i class="fa fa-check"></i><b>11.2.2</b> Interpreting Results and Model Diagnostics</a></li>
-<li class="chapter" data-level="11.2.3" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#advanced-applications-dynamic-treatment-regimes"><i class="fa fa-check"></i><b>11.2.3</b> Advanced Applications: Dynamic Treatment Regimes</a></li>
 </ul></li>
 <li class="chapter" data-level="11.3" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#practical-considerations-and-limitations"><i class="fa fa-check"></i><b>11.3</b> Practical Considerations and Limitations</a></li>
 <li class="chapter" data-level="11.4" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#conclusion-integrating-g-computation-into-practice"><i class="fa fa-check"></i><b>11.4</b> Conclusion: Integrating G-Computation into Practice</a></li>
@@ -354,7 +353,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb12-15"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-15" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> pscore, <span class="at">color =</span> <span class="fu">factor</span>(treatment))) <span class="sc">+</span></span>
 <span id="cb12-16"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-16" tabindex="-1"></a>  <span class="fu">geom_density</span>() <span class="sc">+</span></span>
 <span id="cb12-17"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb12-17" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Propensity Score by Treatment Group&quot;</span>)</span></code></pre></div>
-<p><img src="bookdownproj_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>To estimate ATE by matching:</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb13-1" tabindex="-1"></a><span class="fu">library</span>(MatchIt)</span>
 <span id="cb13-2"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb13-2" tabindex="-1"></a>match_out <span class="ot">&lt;-</span> <span class="fu">matchit</span>(treatment <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">data =</span> data, <span class="at">method =</span> <span class="st">&quot;nearest&quot;</span>, <span class="at">ratio =</span> <span class="dv">1</span>)</span>
@@ -400,7 +399,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## Multiple R-squared:  0.4418, Adjusted R-squared:  0.4415 
 ## F-statistic:  1581 on 1 and 1998 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#cb17-1" tabindex="-1"></a><span class="fu">plot</span>(match_out, <span class="at">type =</span> <span class="st">&quot;qq&quot;</span>, <span class="at">interactive =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
-<p><img src="bookdownproj_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>Here, <code>coefficients()</code> for treatment gives the ATE among matched units, interpretable under the assumption of balance on <span class="math inline">\(X\)</span>. Diagnostics should include covariate balance checks after matching (e.g., <code>plot(match_out, type="jitter")</code>).</p>
 </div>
 <div id="inverse-probability-weighting-ipw" class="section level2 hasAnchor" number="3.2">

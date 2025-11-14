@@ -23,7 +23,7 @@
 <meta name="author" content="Kamran Afzali" />
 
 
-<meta name="date" content="2025-11-05" />
+<meta name="date" content="2025-11-14" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -295,7 +295,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="11.2.1" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#fitting-the-g-formula-model"><i class="fa fa-check"></i><b>11.2.1</b> Fitting the G-Formula Model</a></li>
 <li class="chapter" data-level="11.2.2" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#interpreting-results-and-model-diagnostics"><i class="fa fa-check"></i><b>11.2.2</b> Interpreting Results and Model Diagnostics</a></li>
-<li class="chapter" data-level="11.2.3" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#advanced-applications-dynamic-treatment-regimes"><i class="fa fa-check"></i><b>11.2.3</b> Advanced Applications: Dynamic Treatment Regimes</a></li>
 </ul></li>
 <li class="chapter" data-level="11.3" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#practical-considerations-and-limitations"><i class="fa fa-check"></i><b>11.3</b> Practical Considerations and Limitations</a></li>
 <li class="chapter" data-level="11.4" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#conclusion-integrating-g-computation-into-practice"><i class="fa fa-check"></i><b>11.4</b> Conclusion: Integrating G-Computation into Practice</a></li>
@@ -522,12 +521,12 @@ Here, <span class="math inline">\(\\pi\_j\)</span> is the probability of the coe
 <div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb206-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb206-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;True average effect:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(true_effect[post_period]), <span class="dv">2</span>), <span class="st">&quot;admissions per 100k</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
 <pre><code>## True average effect: -5.89 admissions per 100k</code></pre>
 <div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb208-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb208-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Estimated average effect:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(causal_effect), <span class="dv">2</span>), <span class="st">&quot;admissions per 100k</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
-<pre><code>## Estimated average effect: -6.86 admissions per 100k</code></pre>
+<pre><code>## Estimated average effect: -6.8 admissions per 100k</code></pre>
 <div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb210-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Cumulative effect 95% credible interval: [&quot;</span>, <span class="fu">round</span>(<span class="fu">sum</span>(effect_lower), <span class="dv">2</span>), <span class="st">&quot;,&quot;</span>, </span>
 <span id="cb210-2"><a href="bayesian-structural-time-series-for-causal-inference.html#cb210-2" tabindex="-1"></a>    <span class="fu">round</span>(<span class="fu">sum</span>(effect_upper), <span class="dv">2</span>), <span class="st">&quot;]</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
-<pre><code>## Cumulative effect 95% credible interval: [ -796.21 , 328.55 ]</code></pre>
+<pre><code>## Cumulative effect 95% credible interval: [ -778.33 , 306.37 ]</code></pre>
 <div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb212-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb212-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Posterior probability of a negative effect:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(predictions<span class="sc">$</span>distribution <span class="sc">&gt;</span> observed_post), <span class="dv">3</span>) <span class="sc">*</span> <span class="dv">100</span>, <span class="st">&quot;%</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
-<pre><code>## Posterior probability of a negative effect: 73.4 %</code></pre>
+<pre><code>## Posterior probability of a negative effect: 73.6 %</code></pre>
 <div class="sourceCode" id="cb214"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb214-1"><a href="bayesian-structural-time-series-for-causal-inference.html#cb214-1" tabindex="-1"></a><span class="co"># Visualization</span></span>
 <span id="cb214-2"><a href="bayesian-structural-time-series-for-causal-inference.html#cb214-2" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb214-3"><a href="bayesian-structural-time-series-for-causal-inference.html#cb214-3" tabindex="-1"></a>  <span class="at">time =</span> time_idx,</span>
@@ -560,7 +559,7 @@ Here, <span class="math inline">\(\\pi\_j\)</span> is the probability of the coe
 <span id="cb214-30"><a href="bayesian-structural-time-series-for-causal-inference.html#cb214-30" tabindex="-1"></a></span>
 <span id="cb214-31"><a href="bayesian-structural-time-series-for-causal-inference.html#cb214-31" tabindex="-1"></a><span class="fu">print</span>(p1)</span></code></pre></div>
 <pre><code>## Warning: Removed 36 rows containing missing values or values outside the scale range (`geom_line()`).</code></pre>
-<p><img src="bookdownproj_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 <p>The analysis indicates a significant reduction in smoking-related hospital admissions following the tax increase. The model’s variable selection automatically identified <code>neighboring_state_admissions</code> and <code>population_65plus</code> as strong predictors for the outcome, while correctly assigning low importance to the noisy <code>economic_index</code>.</p>
 <p>The estimated effect becomes more pronounced over time, reflecting the realistic timeline of behavior change; smoking cessation and its health benefits are not instantaneous. The 95% credible interval for the causal effect provides a range of plausible impacts, properly accounting for uncertainty from seasonal patterns, confounding variables, and model parameters. This probabilistic output allows policymakers to assess the intervention’s value with a quantified level of confidence, moving beyond simple point estimates.</p>
 </div>

@@ -37,57 +37,6 @@ We'll explore G-computation through a realistic scenario involving management of
 
 This simulation captures realistic features of hypertension management including treatment intensification based on blood pressure levels and risk factors, imperfect adherence that affects treatment effectiveness, blood pressure evolution depending on treatment and adherence patterns, and cardiovascular events influenced by current blood pressure, treatment, and baseline risk factors. The time-dependent confounding emerges naturally as blood pressure at time $t$ affects treatment decisions at time $t$ and outcomes at time $t+1$, while past treatment affects current blood pressure.
 
-### Fitting the G-Formula Model
-
-The `gfoRmula` package provides a comprehensive implementation of the parametric G-formula algorithm with built-in bootstrap inference and diagnostic tools. The key challenge lies in correctly specifying the models for time-varying confounders and the outcome, capturing the dependence structure while avoiding overfitting.
-
-
-The model specification requires careful consideration of which variables predict confounder evolution and outcomes. For systolic blood pressure, we include the lagged value to capture persistence, current treatment and adherence to capture treatment effects, and baseline risk factors that might influence blood pressure trajectory. The adherence model captures how treatment intensity and perceived risk (via lagged blood pressure) influence compliance. The outcome model includes both current blood pressure and treatment, allowing the effect of treatment to operate both through blood pressure reduction and potentially through other pathways.
-
-### Interpreting Results and Model Diagnostics
-
-The G-formula estimates reveal the causal effects of sustained treatment strategies by comparing counterfactual risks under different regimes. The key estimands include risk under each treatment regime representing the probability of cardiovascular events by five years if all patients followed that regime, risk differences quantifying absolute risk reduction from intensive treatment, and risk ratios providing relative measures of treatment benefit.
-
-Beyond point estimates, we must evaluate model adequacy through diagnostic procedures. The `gfoRmula` package provides tools for assessing whether our parametric models adequately capture the data-generating process. Goodness-of-fit statistics for each covariate model indicate whether we correctly specified the functional form and included relevant predictors. Balance checks compare the simulated covariate distributions under the natural course to the observed distributions—large discrepancies suggest model misspecification.
-
-Good agreement between observed and simulated blood pressure trajectories under the natural course provides evidence that our covariate models adequately capture the time-varying confounder process. Substantial deviations would suggest model misspecification requiring revision of functional forms, addition of interaction terms, or inclusion of additional predictors. The confidence intervals around regime-specific risks reflect bootstrap uncertainty, accounting for both sampling variability and estimation error in the fitted models.
-
-### Advanced Applications: Dynamic Treatment Regimes
-
-The true power of G-computation emerges when estimating effects of dynamic treatment regimes that adapt to patient status over time, mimicking realistic clinical decision-making where treatment intensification depends on evolving patient characteristics. Unlike static regimes that specify treatment at baseline, dynamic regimes specify treatment rules as functions of observed history.
-
-
-Dynamic regimes enable answering clinically relevant questions such as whether treating based on blood pressure thresholds versus treating all patients yields better outcomes, what threshold should trigger treatment intensification for different patient subgroups, and how frequently monitoring should occur to implement threshold-based treatment rules effectively. The G-formula naturally accommodates such questions by simulating how blood pressure would evolve under different decision rules and computing resulting event rates.
-
-## Practical Considerations and Limitations
-
-Successful G-computation implementation requires attention to several practical considerations that determine whether the method provides valid causal estimates. Model specification represents the most critical challenge, as the method depends on correctly modeling the relationships between treatments, confounders, and outcomes. Unlike propensity score methods that can be robust to outcome model misspecification, G-computation requires accurate outcome and covariate models. However, this requirement is less stringent than it appears—models need not be perfectly specified, but must capture the essential relationships between variables. Including relevant interactions, nonlinear terms, and lagged variables typically suffices for adequate performance.
-
-Sample size considerations become particularly important in longitudinal settings where we must fit separate models for each time-varying covariate. Small samples may not provide stable estimates, especially when treatment patterns are sparse or covariate distributions change substantially over time. As a rough guideline, longitudinal G-computation requires at least several hundred subjects with complete follow-up to provide reliable estimates, though exact requirements depend on the complexity of the data-generating process and number of time points.
-
-The fundamental assumption of no unmeasured confounding cannot be empirically verified and requires substantive knowledge about the data-generating process. In observational hypertension studies, unmeasured factors like patient preferences, physician practice patterns, or health behaviors might influence both treatment decisions and cardiovascular outcomes. Sensitivity analyses examining how results change under various degrees of unmeasured confounding provide important context for causal conclusions, though G-computation itself does not resolve confounding from unmeasured variables.
-
-Computational demands of bootstrap inference can become substantial in longitudinal settings with many time points and covariates. Each bootstrap iteration requires refitting all covariate models and outcome models, then simulating counterfactual trajectories for all subjects under each treatment regime. Parallel computing substantially reduces computation time, but researchers should expect hours rather than minutes for complex analyses with adequate bootstrap samples.
-
-Model compatibility represents another consideration often overlooked in practice. When covariate models and outcome models make incompatible assumptions about the data-generating process, G-formula estimates may be biased even if individual models appear well-specified. For instance, if the blood pressure model assumes linear time trends but the outcome model includes nonlinear time effects, the simulated counterfactual trajectories may not accurately reflect how outcomes would evolve under different treatment regimes. Ensuring consistency across models requires careful consideration of functional forms and included covariates.
-
-Recent methodological developments extend G-computation to increasingly complex settings that expand its practical applicability. Doubly robust estimation combines G-computation with inverse probability weighting, providing valid estimates if either the outcome model or the treatment model is correctly specified. This approach offers protection against model misspecification that purely model-based G-computation lacks, though at the cost of increased computational complexity and potentially wider confidence intervals.
-
-Machine learning methods for G-computation replace parametric models with flexible algorithms like random forests, gradient boosting, or neural networks. These approaches can capture complex nonlinear relationships and interactions without requiring explicit specification, potentially improving performance when the true data-generating process differs substantially from parametric assumptions. However, machine learning G-computation requires careful attention to overfitting and may provide less stable estimates in moderate sample sizes, along with reduced interpretability compared to parametric approaches.
-
-Targeted maximum likelihood estimation provides a more efficient alternative to standard G-computation by incorporating information from both the outcome and treatment models. This approach updates initial model-based estimates using clever weighting schemes that reduce bias and improve precision. The method has gained traction in epidemiology and biostatistics for settings where optimal efficiency matters, though implementation complexity exceeds standard G-computation.
-
-Mediation analysis represents a natural application for G-computation, as the method's explicit modeling of intermediate variables enables decomposition of total effects into direct and indirect pathways. For hypertension management, we might decompose the treatment effect into a direct effect not mediated by blood pressure reduction and an indirect effect operating through blood pressure control. Such decompositions provide mechanistic insights about how treatments produce their effects, guiding development of more effective interventions.
-
-## Conclusion: Integrating G-Computation into Practice
-
-G-computation provides a powerful and flexible framework for causal inference from observational data, particularly excelling in longitudinal settings with time-varying treatments and confounders where traditional methods struggle. The method's explicit modeling of the data-generating process enables estimation of effects under complex treatment regimes while providing interpretable insights about how treatments affect outcomes over time.
-
-Our hypertension case study demonstrates practical implementation using the `gfoRmula` package, showing how to specify appropriate models, simulate counterfactual trajectories, and interpret results in clinically meaningful terms. The ability to compare static and dynamic treatment regimes enables answering questions directly relevant to clinical decision-making about when and how intensively to treat patients with evolving risk profiles.
-
-Successful application requires careful attention to model specification, adequate sample sizes, and validation of modeling assumptions through diagnostic procedures. The method works best when researchers possess substantive knowledge about the causal structure underlying their data and can specify models that capture essential relationships between treatments, confounders, and outcomes. While G-computation demands more upfront modeling effort than some alternatives, it rewards that investment with estimates of causal effects under realistic treatment strategies that match how clinicians actually make decisions in practice.
-
-The integration of G-computation with modern computational tools and machine learning methods continues expanding the frontier of what's possible in causal inference from complex longitudinal data. As healthcare increasingly relies on observational electronic health records and registry data to inform treatment decisions, methods like G-computation that can extract valid causal conclusions from such data become essential tools for evidence-based medicine and precision healthcare delivery.
 
 
 ```{r}
@@ -267,14 +216,21 @@ fit_confounder_models <- function(data) {
 
 models <- fit_confounder_models(hypertension_data)
 
-cat("\n=== KEY MODEL COEFFICIENTS ===\n")
 cat("\nSBP Model - Treatment Effect:\n")
 print(coef(summary(models$sbp))["treatment", ])
 cat("\nOutcome Model - Treatment Effect:\n")
 print(coef(summary(models$outcome))["treatment", ])
+```
 
-cat("\n\n=== MONTE CARLO G-COMPUTATION ===\n\n")
 
+### Fitting the G-Formula Model
+
+The `gfoRmula` package provides a comprehensive implementation of the parametric G-formula algorithm with built-in bootstrap inference and diagnostic tools. The key challenge lies in correctly specifying the models for time-varying confounders and the outcome, capturing the dependence structure while avoiding overfitting.
+
+
+The model specification requires careful consideration of which variables predict confounder evolution and outcomes. For systolic blood pressure, we include the lagged value to capture persistence, current treatment and adherence to capture treatment effects, and baseline risk factors that might influence blood pressure trajectory. The adherence model captures how treatment intensity and perceived risk (via lagged blood pressure) influence compliance. The outcome model includes both current blood pressure and treatment, allowing the effect of treatment to operate both through blood pressure reduction and potentially through other pathways.
+
+```{r}
 simulate_counterfactual_mc <- function(data, models, treatment_strategy, 
                                        n_simulations = 500, verbose = TRUE) {
   
@@ -374,7 +330,13 @@ for (strategy_name in names(strategies)) {
       " (SE:", round(results[[strategy_name]]$cumulative_incidence_se * 100, 2), "%)\n\n")
 }
 
-cat("\n=== CAUSAL EFFECT ESTIMATES ===\n\n")
+
+
+```
+
+
+
+```{r}
 
 # Function to calculate risk difference and ratio with bootstrap CI
 calculate_effect <- function(results, reference, comparator) {
@@ -425,8 +387,23 @@ for (comp in comparisons) {
   ))
 }
 
-cat("\n\nGenerating visualizations...\n")
+```
 
+
+
+### Interpreting Results and Model Diagnostics
+
+The G-formula estimates reveal the causal effects of sustained treatment strategies by comparing counterfactual risks under different regimes. The key estimands include risk under each treatment regime representing the probability of cardiovascular events by five years if all patients followed that regime, risk differences quantifying absolute risk reduction from intensive treatment, and risk ratios providing relative measures of treatment benefit.
+
+Beyond point estimates, we must evaluate model adequacy through diagnostic procedures. The `gfoRmula` package provides tools for assessing whether our parametric models adequately capture the data-generating process. Goodness-of-fit statistics for each covariate model indicate whether we correctly specified the functional form and included relevant predictors. Balance checks compare the simulated covariate distributions under the natural course to the observed distributions—large discrepancies suggest model misspecification.
+
+Good agreement between observed and simulated blood pressure trajectories under the natural course provides evidence that our covariate models adequately capture the time-varying confounder process. Substantial deviations would suggest model misspecification requiring revision of functional forms, addition of interaction terms, or inclusion of additional predictors. The confidence intervals around regime-specific risks reflect bootstrap uncertainty, accounting for both sampling variability and estimation error in the fitted models.
+
+
+
+
+
+```{r}
 # Plot 1: Cumulative incidence trajectories with uncertainty
 risk_trajectories <- do.call(rbind, lapply(names(results), function(strategy) {
   data.frame(
@@ -497,16 +474,8 @@ p3 <- ggplot(effect_summary, aes(x = comparison, y = risk_ratio)) +
 
 print(p3)
 
-cat("\n\n=== ANALYSIS SUMMARY ===\n\n")
-cat("Key Improvements in This Implementation:\n")
-cat("1. Proper incident event modeling (not absorbing state)\n")
-cat("2. Monte Carlo simulation (500 iterations) for uncertainty quantification\n")
-cat("3. Beta regression for adherence (bounded continuous outcome)\n")
-cat("4. Confidence intervals via simulation-based inference\n")
-cat("5. Dynamic threshold-based treatment strategy\n")
-cat("6. Efficient data structures (pre-allocation, data.table)\n\n")
 
-cat("Clinical Interpretation:\n")
+
 best_strategy <- names(results)[which.min(sapply(results, function(x) x$cumulative_incidence))]
 cat(sprintf("- Best performing strategy: %s\n", best_strategy))
 cat(sprintf("- 5-year CVD risk: %.1f%% (95%% CI: %.1f%%-%.1f%%)\n",
@@ -514,11 +483,39 @@ cat(sprintf("- 5-year CVD risk: %.1f%% (95%% CI: %.1f%%-%.1f%%)\n",
             quantile(results[[best_strategy]]$all_cumulative_incidence, 0.025) * 100,
             quantile(results[[best_strategy]]$all_cumulative_incidence, 0.975) * 100))
 
-cat("\nMethodological Notes:\n")
-cat("- G-computation handles time-varying confounding via sequential regression\n")
-cat("- Monte Carlo approach propagates uncertainty through complex simulations\n")
-cat("- Results assume correct model specification and positivity\n")
-cat("- Real applications should assess model fit and sensitivity to assumptions\n")
-
-cat("\nAnalysis complete!\n")
 ```
+
+
+## Practical Considerations and Limitations
+
+The true power of G-computation emerges when estimating effects of dynamic treatment regimes that adapt to patient status over time, mimicking realistic clinical decision-making where treatment intensification depends on evolving patient characteristics. Unlike static regimes that specify treatment at baseline, dynamic regimes specify treatment rules as functions of observed history.
+
+Dynamic regimes enable answering clinically relevant questions such as whether treating based on blood pressure thresholds versus treating all patients yields better outcomes, what threshold should trigger treatment intensification for different patient subgroups, and how frequently monitoring should occur to implement threshold-based treatment rules effectively. The G-formula naturally accommodates such questions by simulating how blood pressure would evolve under different decision rules and computing resulting event rates.
+
+Successful G-computation implementation requires attention to several practical considerations that determine whether the method provides valid causal estimates. Model specification represents the most critical challenge, as the method depends on correctly modeling the relationships between treatments, confounders, and outcomes. Unlike propensity score methods that can be robust to outcome model misspecification, G-computation requires accurate outcome and covariate models. However, this requirement is less stringent than it appears—models need not be perfectly specified, but must capture the essential relationships between variables. Including relevant interactions, nonlinear terms, and lagged variables typically suffices for adequate performance.
+
+Sample size considerations become particularly important in longitudinal settings where we must fit separate models for each time-varying covariate. Small samples may not provide stable estimates, especially when treatment patterns are sparse or covariate distributions change substantially over time. As a rough guideline, longitudinal G-computation requires at least several hundred subjects with complete follow-up to provide reliable estimates, though exact requirements depend on the complexity of the data-generating process and number of time points.
+
+The fundamental assumption of no unmeasured confounding cannot be empirically verified and requires substantive knowledge about the data-generating process. In observational hypertension studies, unmeasured factors like patient preferences, physician practice patterns, or health behaviors might influence both treatment decisions and cardiovascular outcomes. Sensitivity analyses examining how results change under various degrees of unmeasured confounding provide important context for causal conclusions, though G-computation itself does not resolve confounding from unmeasured variables.
+
+Computational demands of bootstrap inference can become substantial in longitudinal settings with many time points and covariates. Each bootstrap iteration requires refitting all covariate models and outcome models, then simulating counterfactual trajectories for all subjects under each treatment regime. Parallel computing substantially reduces computation time, but researchers should expect hours rather than minutes for complex analyses with adequate bootstrap samples.
+
+Model compatibility represents another consideration often overlooked in practice. When covariate models and outcome models make incompatible assumptions about the data-generating process, G-formula estimates may be biased even if individual models appear well-specified. For instance, if the blood pressure model assumes linear time trends but the outcome model includes nonlinear time effects, the simulated counterfactual trajectories may not accurately reflect how outcomes would evolve under different treatment regimes. Ensuring consistency across models requires careful consideration of functional forms and included covariates.
+
+Recent methodological developments extend G-computation to increasingly complex settings that expand its practical applicability. Doubly robust estimation combines G-computation with inverse probability weighting, providing valid estimates if either the outcome model or the treatment model is correctly specified. This approach offers protection against model misspecification that purely model-based G-computation lacks, though at the cost of increased computational complexity and potentially wider confidence intervals.
+
+Machine learning methods for G-computation replace parametric models with flexible algorithms like random forests, gradient boosting, or neural networks. These approaches can capture complex nonlinear relationships and interactions without requiring explicit specification, potentially improving performance when the true data-generating process differs substantially from parametric assumptions. However, machine learning G-computation requires careful attention to overfitting and may provide less stable estimates in moderate sample sizes, along with reduced interpretability compared to parametric approaches.
+
+Targeted maximum likelihood estimation provides a more efficient alternative to standard G-computation by incorporating information from both the outcome and treatment models. This approach updates initial model-based estimates using clever weighting schemes that reduce bias and improve precision. The method has gained traction in epidemiology and biostatistics for settings where optimal efficiency matters, though implementation complexity exceeds standard G-computation.
+
+Mediation analysis represents a natural application for G-computation, as the method's explicit modeling of intermediate variables enables decomposition of total effects into direct and indirect pathways. For hypertension management, we might decompose the treatment effect into a direct effect not mediated by blood pressure reduction and an indirect effect operating through blood pressure control. Such decompositions provide mechanistic insights about how treatments produce their effects, guiding development of more effective interventions.
+
+## Conclusion: Integrating G-Computation into Practice
+
+G-computation provides a powerful and flexible framework for causal inference from observational data, particularly excelling in longitudinal settings with time-varying treatments and confounders where traditional methods struggle. The method's explicit modeling of the data-generating process enables estimation of effects under complex treatment regimes while providing interpretable insights about how treatments affect outcomes over time.
+
+Our hypertension case study demonstrates practical implementation using the `gfoRmula` package, showing how to specify appropriate models, simulate counterfactual trajectories, and interpret results in clinically meaningful terms. The ability to compare static and dynamic treatment regimes enables answering questions directly relevant to clinical decision-making about when and how intensively to treat patients with evolving risk profiles.
+
+Successful application requires careful attention to model specification, adequate sample sizes, and validation of modeling assumptions through diagnostic procedures. The method works best when researchers possess substantive knowledge about the causal structure underlying their data and can specify models that capture essential relationships between treatments, confounders, and outcomes. While G-computation demands more upfront modeling effort than some alternatives, it rewards that investment with estimates of causal effects under realistic treatment strategies that match how clinicians actually make decisions in practice.
+
+The integration of G-computation with modern computational tools and machine learning methods continues expanding the frontier of what's possible in causal inference from complex longitudinal data. As healthcare increasingly relies on observational electronic health records and registry data to inform treatment decisions, methods like G-computation that can extract valid causal conclusions from such data become essential tools for evidence-based medicine and precision healthcare delivery.

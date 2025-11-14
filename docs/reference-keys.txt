@@ -106,7 +106,6 @@ introduction-8
 case-study-hypertension-management-over-time
 fitting-the-g-formula-model
 interpreting-results-and-model-diagnostics
-advanced-applications-dynamic-treatment-regimes
 practical-considerations-and-limitations
 conclusion-integrating-g-computation-into-practice
 structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways
