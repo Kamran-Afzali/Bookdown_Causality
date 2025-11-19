@@ -113,3 +113,12 @@ introduction-9
 a-mediation-analysis-physical-activity-mental-health-and-diabetes-control
 clinical-interpretation-and-limitations
 conclusion-8
+directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions
+introduction-10
+implementing-dag-analysis-in-healthcare-research
+comparing-analytical-strategies
+visualizing-causal-structures-for-communication
+sensitivity-analysis-and-unmeasured-confounding
+testable-implications-and-dag-validation
+practical-guidance-for-healthcare-applications
+conclusion-dags-as-foundation-for-rigorous-causal-inference

@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 13 Directed Acyclic Graphs: Mapping the Causal Architecture of Healthcare Decisions | Causal Inference in R</title>
+  <meta name="description" content="Chapter 13 Directed Acyclic Graphs: Mapping the Causal Architecture of Healthcare Decisions | Causal Inference in R" />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 13 Directed Acyclic Graphs: Mapping the Causal Architecture of Healthcare Decisions | Causal Inference in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 13 Directed Acyclic Graphs: Mapping the Causal Architecture of Healthcare Decisions | Causal Inference in R" />
+  
+  
+  
+
+<meta name="author" content="Kamran Afzali" />
+
+
+<meta name="date" content="2025-11-19" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Causality analysis in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Foundations of Causal Statistical Analysis</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#summary-table-techniques-for-causal-statistical-analysis"><i class="fa fa-check"></i><b>1.2</b> Summary Table: Techniques for Causal Statistical Analysis</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#methodological-deep-dive-with-practical-guidance"><i class="fa fa-check"></i><b>1.3</b> Methodological Deep Dive with Practical Guidance</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#discussion"><i class="fa fa-check"></i><b>1.4</b> Discussion</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><i class="fa fa-check"></i><b>2</b> Causal Inference in Practice I: Randomized Controlled Trials and Regression Adjustment</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#randomized-controlled-trials-design-and-analysis"><i class="fa fa-check"></i><b>2.2</b> 1. Randomized Controlled Trials: Design and Analysis</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#theoretical-foundations"><i class="fa fa-check"></i><b>2.2.1</b> Theoretical Foundations</a></li>
+<li class="chapter" data-level="2.2.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation"><i class="fa fa-check"></i><b>2.2.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.2.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#model-based-inference"><i class="fa fa-check"></i><b>2.2.3</b> Model-Based Inference</a></li>
+<li class="chapter" data-level="2.2.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#diagnostics-and-integrity"><i class="fa fa-check"></i><b>2.2.4</b> Diagnostics and Integrity</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#regression-adjustment-a-model-based-approach-to-causal-inference"><i class="fa fa-check"></i><b>2.3</b> 2. Regression Adjustment: A Model-Based Approach to Causal Inference</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conceptual-overview"><i class="fa fa-check"></i><b>2.3.1</b> Conceptual Overview</a></li>
+<li class="chapter" data-level="2.3.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation-1"><i class="fa fa-check"></i><b>2.3.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.3.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#limitations-and-diagnostics"><i class="fa fa-check"></i><b>2.3.3</b> Limitations and Diagnostics</a></li>
+<li class="chapter" data-level="2.3.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#causal-interpretation"><i class="fa fa-check"></i><b>2.3.4</b> Causal Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#toward-integrated-reasoning"><i class="fa fa-check"></i><b>2.4</b> Toward Integrated Reasoning</a></li>
+<li class="chapter" data-level="2.5" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conclusion"><i class="fa fa-check"></i><b>2.5</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><i class="fa fa-check"></i><b>3</b> Causal Inference in Practice II: Propensity Scores, Doubly Robust Estimators, and Inverse Probability Weighting</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#propensity-score-methods"><i class="fa fa-check"></i><b>3.1</b> Propensity Score Methods</a></li>
+<li class="chapter" data-level="3.2" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#inverse-probability-weighting-ipw"><i class="fa fa-check"></i><b>3.2</b> Inverse Probability Weighting (IPW)</a></li>
+<li class="chapter" data-level="3.3" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#doubly-robust-estimators"><i class="fa fa-check"></i><b>3.3</b> Doubly Robust Estimators</a></li>
+<li class="chapter" data-level="3.4" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#integrative-interpretation"><i class="fa fa-check"></i><b>3.4</b> Integrative Interpretation</a></li>
+<li class="chapter" data-level="3.5" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#summary-table"><i class="fa fa-check"></i><b>3.5</b> Summary Table</a></li>
+<li class="chapter" data-level="3.6" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#conclusion-1"><i class="fa fa-check"></i><b>3.6</b> Conclusion</a></li>
+<li class="chapter" data-level="3.7" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#references-1"><i class="fa fa-check"></i><b>3.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><i class="fa fa-check"></i><b>4</b> Causal Inference in Practice III: Difference-in-Differences with a Healthcare Application</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#introduction-2"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
+<li class="chapter" data-level="4.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#difference-in-differences-theoretical-framework"><i class="fa fa-check"></i><b>4.2</b> Difference-in-Differences: Theoretical Framework</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#core-concept"><i class="fa fa-check"></i><b>4.2.1</b> Core Concept</a></li>
+<li class="chapter" data-level="4.2.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#mathematical-formalism"><i class="fa fa-check"></i><b>4.2.2</b> Mathematical Formalism</a></li>
+<li class="chapter" data-level="4.2.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#key-assumption-parallel-trends"><i class="fa fa-check"></i><b>4.2.3</b> Key Assumption: Parallel Trends</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#application-evaluating-a-telemedicine-program-in-healthcare"><i class="fa fa-check"></i><b>4.3</b> Application: Evaluating a Telemedicine Program in Healthcare</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#r-implementation-2"><i class="fa fa-check"></i><b>4.3.1</b> R Implementation</a></li>
+<li class="chapter" data-level="4.3.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#limitations-and-takeaways"><i class="fa fa-check"></i><b>4.3.2</b> Limitations and takeaways</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#conclusion-2"><i class="fa fa-check"></i><b>4.4</b> Conclusion</a></li>
+<li class="chapter" data-level="4.5" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#references-2"><i class="fa fa-check"></i><b>4.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html"><i class="fa fa-check"></i><b>5</b> Causal Inference in Practice IV: Instrumental Variables</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#introduction-3"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#healthcare-case-study-hospital-quality-and-recovery-time"><i class="fa fa-check"></i><b>5.2</b> Healthcare Case Study: Hospital Quality and Recovery Time</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#r-implementation-3"><i class="fa fa-check"></i><b>5.2.1</b> R Implementation</a></li>
+<li class="chapter" data-level="5.2.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#interpreting-the-results"><i class="fa fa-check"></i><b>5.2.2</b> Interpreting the Results</a></li>
+<li class="chapter" data-level="5.2.3" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#robustness-checks"><i class="fa fa-check"></i><b>5.2.3</b> Robustness Checks</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#practical-considerations-and-extensions"><i class="fa fa-check"></i><b>5.3</b> Practical Considerations and Extensions</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#when-to-use-iv"><i class="fa fa-check"></i><b>5.3.1</b> When to Use IV</a></li>
+<li class="chapter" data-level="5.3.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#advanced-topics"><i class="fa fa-check"></i><b>5.3.2</b> Advanced Topics</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#conclusion-3"><i class="fa fa-check"></i><b>5.4</b> Conclusion</a></li>
+<li class="chapter" data-level="5.5" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#further-reading"><i class="fa fa-check"></i><b>5.5</b> Further Reading</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html"><i class="fa fa-check"></i><b>6</b> Causal Inference in Practice V: Regression Discontinuity Design</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#introduction-4"><i class="fa fa-check"></i><b>6.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#comparison-with-other-methods"><i class="fa fa-check"></i><b>6.1.1</b> Comparison with Other Methods</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#healthcare-application-icu-admission-and-mortality"><i class="fa fa-check"></i><b>6.2</b> Healthcare Application: ICU Admission and Mortality</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#scenario"><i class="fa fa-check"></i><b>6.2.1</b> Scenario</a></li>
+<li class="chapter" data-level="6.2.2" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#assumptions-and-validity"><i class="fa fa-check"></i><b>6.2.2</b> Assumptions and Validity</a></li>
+<li class="chapter" data-level="6.2.3" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#r-implementation-4"><i class="fa fa-check"></i><b>6.2.3</b> R Implementation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#interpretation-and-diagnostics"><i class="fa fa-check"></i><b>6.3</b> Interpretation and Diagnostics</a></li>
+<li class="chapter" data-level="6.4" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#extensions-and-robustness"><i class="fa fa-check"></i><b>6.4</b> Extensions and Robustness</a></li>
+<li class="chapter" data-level="6.5" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#limitations-and-considerations"><i class="fa fa-check"></i><b>6.5</b> Limitations and Considerations</a></li>
+<li class="chapter" data-level="6.6" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#conclusion-4"><i class="fa fa-check"></i><b>6.6</b> Conclusion</a></li>
+<li class="chapter" data-level="6.7" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#references-3"><i class="fa fa-check"></i><b>6.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="causal-forests.html"><a href="causal-forests.html"><i class="fa fa-check"></i><b>7</b> Causal Forests</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="causal-forests.html"><a href="causal-forests.html#introduction-5"><i class="fa fa-check"></i><b>7.1</b> Introduction</a></li>
+<li class="chapter" data-level="7.2" data-path="causal-forests.html"><a href="causal-forests.html#precision-medicine-case-study-personalized-diabetes-treatment"><i class="fa fa-check"></i><b>7.2</b> Precision Medicine Case Study: Personalized Diabetes Treatment</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="causal-forests.html"><a href="causal-forests.html#data-generation-and-setup"><i class="fa fa-check"></i><b>7.2.1</b> Data Generation and Setup</a></li>
+<li class="chapter" data-level="7.2.2" data-path="causal-forests.html"><a href="causal-forests.html#fitting-the-causal-forest"><i class="fa fa-check"></i><b>7.2.2</b> Fitting the Causal Forest</a></li>
+<li class="chapter" data-level="7.2.3" data-path="causal-forests.html"><a href="causal-forests.html#variable-importance-analysis"><i class="fa fa-check"></i><b>7.2.3</b> Variable Importance Analysis</a></li>
+<li class="chapter" data-level="7.2.4" data-path="causal-forests.html"><a href="causal-forests.html#statistical-testing-for-heterogeneity"><i class="fa fa-check"></i><b>7.2.4</b> Statistical Testing for Heterogeneity</a></li>
+<li class="chapter" data-level="7.2.5" data-path="causal-forests.html"><a href="causal-forests.html#visualization-and-pattern-discovery"><i class="fa fa-check"></i><b>7.2.5</b> Visualization and Pattern Discovery</a></li>
+<li class="chapter" data-level="7.2.6" data-path="causal-forests.html"><a href="causal-forests.html#personalized-treatment-strategy-development"><i class="fa fa-check"></i><b>7.2.6</b> Personalized Treatment Strategy Development</a></li>
+<li class="chapter" data-level="7.2.7" data-path="causal-forests.html"><a href="causal-forests.html#partial-dependence-analysis"><i class="fa fa-check"></i><b>7.2.7</b> Partial Dependence Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="causal-forests.html"><a href="causal-forests.html#clinical-insights-and-limitations"><i class="fa fa-check"></i><b>7.3</b> Clinical Insights and Limitations</a></li>
+<li class="chapter" data-level="7.4" data-path="causal-forests.html"><a href="causal-forests.html#conclusion-5"><i class="fa fa-check"></i><b>7.4</b> Conclusion</a></li>
+<li class="chapter" data-level="7.5" data-path="causal-forests.html"><a href="causal-forests.html#references-4"><i class="fa fa-check"></i><b>7.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html"><i class="fa fa-check"></i><b>8</b> Bayesian Structural Time Series for Causal Inference</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#introduction-6"><i class="fa fa-check"></i><b>8.1</b> Introduction</a></li>
+<li class="chapter" data-level="8.2" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#r-implementation-examples-healthcare"><i class="fa fa-check"></i><b>8.2</b> R Implementation examples Healthcare</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#tobacco-tax-policy"><i class="fa fa-check"></i><b>8.2.1</b> Tobacco Tax Policy</a></li>
+<li class="chapter" data-level="8.2.2" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#teletherapy-program-assessment"><i class="fa fa-check"></i><b>8.2.2</b> Teletherapy Program Assessment</a></li>
+<li class="chapter" data-level="8.2.3" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#implementation-guidelines-for-healthcare-applications"><i class="fa fa-check"></i><b>8.2.3</b> Implementation Guidelines for Healthcare Applications</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#conclusion-6"><i class="fa fa-check"></i><b>8.3</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html"><i class="fa fa-check"></i><b>9</b> Meta-Learners for Heterogeneous Treatment Effects</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#introduction-the-promise-and-peril-of-machine-learning-for-causal-inference"><i class="fa fa-check"></i><b>9.1</b> Introduction: The Promise and Peril of Machine Learning for Causal Inference</a></li>
+<li class="chapter" data-level="9.2" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#theoretical-foundation-from-prediction-to-causal-inference"><i class="fa fa-check"></i><b>9.2</b> Theoretical Foundation: From Prediction to Causal Inference</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#the-s-learner-simplicity-with-hidden-complexity"><i class="fa fa-check"></i><b>9.2.1</b> The S-Learner: Simplicity with Hidden Complexity</a></li>
+<li class="chapter" data-level="9.2.2" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#the-t-learner-divide-and-conquer"><i class="fa fa-check"></i><b>9.2.2</b> The T-Learner: Divide and Conquer</a></li>
+<li class="chapter" data-level="9.2.3" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#the-x-learner-sophisticated-synthesis"><i class="fa fa-check"></i><b>9.2.3</b> The X-Learner: Sophisticated Synthesis</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#practical-implementation-hypertension-treatment-optimization"><i class="fa fa-check"></i><b>9.3</b> Practical Implementation: Hypertension Treatment Optimization</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementing-the-s-learner"><i class="fa fa-check"></i><b>9.3.1</b> Implementing the S-Learner</a></li>
+<li class="chapter" data-level="9.3.2" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementing-the-t-learner"><i class="fa fa-check"></i><b>9.3.2</b> Implementing the T-Learner</a></li>
+<li class="chapter" data-level="9.3.3" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementing-the-x-learner"><i class="fa fa-check"></i><b>9.3.3</b> Implementing the X-Learner</a></li>
+<li class="chapter" data-level="9.3.4" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#comparative-analysis-and-model-selection"><i class="fa fa-check"></i><b>9.3.4</b> Comparative Analysis and Model Selection</a></li>
+<li class="chapter" data-level="9.3.5" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#clinical-pattern-discovery-and-interpretation"><i class="fa fa-check"></i><b>9.3.5</b> Clinical Pattern Discovery and Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementation-considerations-and-best-practices"><i class="fa fa-check"></i><b>9.4</b> Implementation Considerations and Best Practices</a></li>
+<li class="chapter" data-level="9.5" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#conclusion-democratizing-causal-machine-learning"><i class="fa fa-check"></i><b>9.5</b> Conclusion: Democratizing Causal Machine Learning</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><i class="fa fa-check"></i><b>10</b> Targeted Maximum Likelihood Estimation for Robust Causal Inference in Healthcare</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html#introduction-7"><i class="fa fa-check"></i><b>10.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="10.1.1" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html#double-robustness-and-tmle"><i class="fa fa-check"></i><b>10.1.1</b> Double Robustness and TMLE</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html#healthcare-application-comparative-effectiveness-of-hypertension-treatments"><i class="fa fa-check"></i><b>10.2</b> Healthcare Application: Comparative Effectiveness of Hypertension Treatments</a></li>
+<li class="chapter" data-level="10.3" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html#limitations-and-practical-implementation"><i class="fa fa-check"></i><b>10.3</b> Limitations and Practical Implementation</a></li>
+<li class="chapter" data-level="10.4" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html#conclusion-7"><i class="fa fa-check"></i><b>10.4</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html"><i class="fa fa-check"></i><b>11</b> G-Computation for Causal Inference</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#introduction-8"><i class="fa fa-check"></i><b>11.1</b> Introduction</a></li>
+<li class="chapter" data-level="11.2" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#case-study-hypertension-management-over-time"><i class="fa fa-check"></i><b>11.2</b> Case Study: Hypertension Management Over Time</a>
+<ul>
+<li class="chapter" data-level="11.2.1" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#fitting-the-g-formula-model"><i class="fa fa-check"></i><b>11.2.1</b> Fitting the G-Formula Model</a></li>
+<li class="chapter" data-level="11.2.2" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#interpreting-results-and-model-diagnostics"><i class="fa fa-check"></i><b>11.2.2</b> Interpreting Results and Model Diagnostics</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#practical-considerations-and-limitations"><i class="fa fa-check"></i><b>11.3</b> Practical Considerations and Limitations</a></li>
+<li class="chapter" data-level="11.4" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#conclusion-integrating-g-computation-into-practice"><i class="fa fa-check"></i><b>11.4</b> Conclusion: Integrating G-Computation into Practice</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><i class="fa fa-check"></i><b>12</b> Structural Equation Modeling for Healthcare Research: Unraveling Complex Causal Pathways</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html#introduction-9"><i class="fa fa-check"></i><b>12.1</b> Introduction</a></li>
+<li class="chapter" data-level="12.2" data-path="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html#a-mediation-analysis-physical-activity-mental-health-and-diabetes-control"><i class="fa fa-check"></i><b>12.2</b> A Mediation Analysis: Physical Activity, Mental Health, and Diabetes Control</a></li>
+<li class="chapter" data-level="12.3" data-path="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html#clinical-interpretation-and-limitations"><i class="fa fa-check"></i><b>12.3</b> Clinical Interpretation and Limitations</a></li>
+<li class="chapter" data-level="12.4" data-path="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html#conclusion-8"><i class="fa fa-check"></i><b>12.4</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><i class="fa fa-check"></i><b>13</b> Directed Acyclic Graphs: Mapping the Causal Architecture of Healthcare Decisions</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#introduction-10"><i class="fa fa-check"></i><b>13.1</b> Introduction</a></li>
+<li class="chapter" data-level="13.2" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#implementing-dag-analysis-in-healthcare-research"><i class="fa fa-check"></i><b>13.2</b> Implementing DAG Analysis in Healthcare Research</a></li>
+<li class="chapter" data-level="13.3" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#comparing-analytical-strategies"><i class="fa fa-check"></i><b>13.3</b> Comparing Analytical Strategies</a></li>
+<li class="chapter" data-level="13.4" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#visualizing-causal-structures-for-communication"><i class="fa fa-check"></i><b>13.4</b> Visualizing Causal Structures for Communication</a></li>
+<li class="chapter" data-level="13.5" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#sensitivity-analysis-and-unmeasured-confounding"><i class="fa fa-check"></i><b>13.5</b> Sensitivity Analysis and Unmeasured Confounding</a></li>
+<li class="chapter" data-level="13.6" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#testable-implications-and-dag-validation"><i class="fa fa-check"></i><b>13.6</b> Testable Implications and DAG Validation</a></li>
+<li class="chapter" data-level="13.7" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#practical-guidance-for-healthcare-applications"><i class="fa fa-check"></i><b>13.7</b> Practical Guidance for Healthcare Applications</a></li>
+<li class="chapter" data-level="13.8" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#conclusion-dags-as-foundation-for-rigorous-causal-inference"><i class="fa fa-check"></i><b>13.8</b> Conclusion: DAGs as Foundation for Rigorous Causal Inference</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Causal Inference in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions" class="section level1 hasAnchor" number="13">
+<h1><span class="header-section-number">Chapter 13</span> Directed Acyclic Graphs: Mapping the Causal Architecture of Healthcare Decisions<a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction-10" class="section level2 hasAnchor" number="13.1">
+<h2><span class="header-section-number">13.1</span> Introduction<a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#introduction-10" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Imagine you’re analyzing whether a new diabetes screening program reduces cardiovascular complications. Your observational data shows that screened patients have better outcomes, but is this because screening works or because healthier, more health-conscious patients are more likely to get screened? Perhaps socioeconomic status influences both screening uptake and health outcomes through access to preventive care and healthy lifestyles. Or maybe the relationship runs in reverse—patients experiencing early symptoms seek screening more actively, creating spurious associations between screening and outcomes.</p>
+<p>These questions reflect the fundamental challenge of causal inference: understanding the true causal structure underlying observed associations. A correlation between screening and outcomes could arise through multiple pathways, only some of which represent genuine causal effects. Without explicitly mapping these relationships, we risk drawing invalid conclusions that lead to ineffective interventions or wasted resources.</p>
+<p>Directed Acyclic Graphs (DAGs) provide a formal visual language for articulating our assumptions about causal relationships in a system. Unlike statistical models that describe associations in data, DAGs represent the underlying data-generating process itself—the actual causal mechanisms that produce the patterns we observe. This distinction proves crucial because the same statistical association can arise from fundamentally different causal structures, each requiring different analytical strategies to identify causal effects validly.</p>
+<p>The power of DAGs lies not in their ability to discover causal relationships from data—no purely statistical method can do this reliably without strong assumptions—but in their capacity to make our causal assumptions explicit, testable, and actionable. By forcing researchers to articulate what they believe about the causal structure before analyzing data, DAGs transform causal inference from an informal exercise in storytelling to a rigorous analytical framework with clear implications for study design and statistical adjustment.</p>
+<p>A directed acyclic graph consists of nodes representing variables and directed edges representing direct causal effects. The “directed” component means edges have arrows indicating causal directionality—if smoking causes lung cancer, we draw an arrow from smoking to lung cancer, not the reverse. The “acyclic” constraint prohibits feedback loops where a variable causes itself through any sequence of causal pathways, ensuring the graph represents a coherent temporal ordering of events.</p>
+<p>Consider a simple healthcare example relating medication adherence, health outcomes, and healthcare costs. We might hypothesize that adherence directly improves health outcomes, which in turn reduces healthcare costs. This translates to the DAG structure: Adherence → Outcomes → Costs. The absence of a direct arrow from adherence to costs represents our belief that adherence only affects costs through its impact on health outcomes, not through other mechanisms.</p>
+<p>The mathematical formalization of DAGs rests on the concept of structural causal models. Each variable <span class="math inline">\(V\)</span> in the DAG is determined by a structural equation <span class="math inline">\(V = f_V(Pa(V), U_V)\)</span> where <span class="math inline">\(Pa(V)\)</span> represents the set of parent nodes (direct causes) of <span class="math inline">\(V\)</span> in the graph and <span class="math inline">\(U_V\)</span> represents unobserved factors affecting <span class="math inline">\(V\)</span>. These equations describe how nature generates the data, not merely how variables correlate statistically.</p>
+<p>The causal Markov assumption forms the bridge between graph structure and probability distributions. It states that conditional on its parents, each variable is independent of all non-descendant variables. Formally, for any variable <span class="math inline">\(V\)</span> in the DAG, <span class="math inline">\(V \perp ND(V) | Pa(V)\)</span> where <span class="math inline">\(ND(V)\)</span> represents non-descendants of <span class="math inline">\(V\)</span>. This assumption allows us to factor the joint probability distribution according to the graph structure: <span class="math inline">\(P(V_1, \ldots, V_n) = \prod_{i=1}^{n} P(V_i | Pa(V_i))\)</span>.</p>
+<p>The fundamental insight enabling causal inference from DAGs is the do-calculus, which distinguishes between observing a variable and intervening to set it to a specific value. When we observe that a patient takes their medication (<span class="math inline">\(X = x\)</span>), we condition on naturally occurring adherence patterns influenced by all their parents in the causal graph. When we intervene to ensure medication adherence (<span class="math inline">\(do(X = x)\)</span>), we sever all incoming causal arrows to <span class="math inline">\(X\)</span> and force it to value <span class="math inline">\(x\)</span> regardless of what would naturally occur. The causal effect of adherence on outcomes is defined by the interventional distribution <span class="math inline">\(P(Y | do(X = x))\)</span>, not the observational distribution <span class="math inline">\(P(Y | X = x)\)</span>.</p>
+<p>Understanding how information flows through DAGs reveals which variables require statistical adjustment for valid causal inference. Three fundamental pathway structures determine information flow: chains, forks, and colliders. In a chain <span class="math inline">\(X \rightarrow M \rightarrow Y\)</span>, information flows from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span> through mediator <span class="math inline">\(M\)</span>. Conditioning on <span class="math inline">\(M\)</span> blocks this pathway, isolating the direct effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> while removing the indirect effect through <span class="math inline">\(M\)</span>. In a fork <span class="math inline">\(X \leftarrow C \rightarrow Y\)</span>, the common cause <span class="math inline">\(C\)</span> induces spurious association between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. Conditioning on <span class="math inline">\(C\)</span> blocks this non-causal pathway, revealing that <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent once we account for their common cause.</p>
+<p>The collider structure <span class="math inline">\(X \rightarrow C \leftarrow Y\)</span> behaves counterintuitively. Here <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are marginally independent—they share no causal connection—but conditioning on their common effect <span class="math inline">\(C\)</span> induces spurious association between them. This phenomenon, called collider bias or selection bias, represents one of the most common sources of bias in observational studies. If we restrict our analysis to patients who experienced complications (a collider caused by both treatment and underlying health status), we create artificial associations between treatment and health status that don’t exist in the full population.</p>
+<p>A path connecting treatment <span class="math inline">\(X\)</span> to outcome <span class="math inline">\(Y\)</span> is blocked if it contains a non-collider that we condition on, or if it contains a collider that we don’t condition on (nor any descendant of that collider). The backdoor criterion provides a formal test for whether a set of variables <span class="math inline">\(Z\)</span> suffices to identify the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>. The set <span class="math inline">\(Z\)</span> satisfies the backdoor criterion if it blocks all backdoor paths from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span> (paths entering <span class="math inline">\(X\)</span> through an arrow pointing into <span class="math inline">\(X\)</span>) and contains no descendants of <span class="math inline">\(X\)</span>. When the backdoor criterion is satisfied, we can estimate the causal effect through covariate adjustment: <span class="math inline">\(P(Y | do(X = x)) = \sum_z P(Y | X = x, Z = z) P(Z = z)\)</span>.</p>
+<p>Consider estimating the causal effect of a diabetes medication on cardiovascular events. The DAG might include medication <span class="math inline">\(X\)</span>, cardiovascular events <span class="math inline">\(Y\)</span>, disease severity <span class="math inline">\(S\)</span>, age <span class="math inline">\(A\)</span>, and socioeconomic status <span class="math inline">\(E\)</span>. We have causal arrows: <span class="math inline">\(A \rightarrow S\)</span>, <span class="math inline">\(A \rightarrow Y\)</span>, <span class="math inline">\(E \rightarrow X\)</span>, <span class="math inline">\(E \rightarrow Y\)</span>, <span class="math inline">\(S \rightarrow X\)</span>, and <span class="math inline">\(X \rightarrow Y\)</span>. Both age and socioeconomic status confound the medication-outcome relationship through backdoor paths. Disease severity creates a more complex structure—it confounds the relationship (patients with worse disease receive different medications) but also mediates the treatment effect if medication works by modifying disease progression. The backdoor criterion suggests adjusting for age and socioeconomic status, but careful consideration is needed for disease severity depending on whether we seek total or controlled direct effects.</p>
+</div>
+<div id="implementing-dag-analysis-in-healthcare-research" class="section level2 hasAnchor" number="13.2">
+<h2><span class="header-section-number">13.2</span> Implementing DAG Analysis in Healthcare Research<a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#implementing-dag-analysis-in-healthcare-research" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Modern software implementations make DAG analysis accessible through intuitive interfaces. The dagitty package provides comprehensive tools for DAG specification, analysis, and visualization, while ggdag offers elegant visualization building on ggplot2’s grammar of graphics. Let’s explore DAG analysis through a realistic healthcare application examining whether statins reduce mortality in heart disease patients.</p>
+<div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb467-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-1" tabindex="-1"></a><span class="co"># Load required libraries</span></span>
+<span id="cb467-2"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-2" tabindex="-1"></a><span class="fu">library</span>(dagitty)</span>
+<span id="cb467-3"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-3" tabindex="-1"></a><span class="fu">library</span>(ggdag)</span>
+<span id="cb467-4"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-4" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb467-5"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-5" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb467-6"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-6" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb467-7"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-7" tabindex="-1"></a></span>
+<span id="cb467-8"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-8" tabindex="-1"></a><span class="co"># Set random seed for reproducibility</span></span>
+<span id="cb467-9"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-9" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">456</span>)</span>
+<span id="cb467-10"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-10" tabindex="-1"></a></span>
+<span id="cb467-11"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-11" tabindex="-1"></a><span class="co"># Define the causal structure</span></span>
+<span id="cb467-12"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-12" tabindex="-1"></a><span class="co"># Variables: Statins (X), Mortality (Y), Age (A), Disease Severity (S), </span></span>
+<span id="cb467-13"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-13" tabindex="-1"></a><span class="co"># Cholesterol (C), Exercise (E), Socioeconomic Status (SES)</span></span>
+<span id="cb467-14"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-14" tabindex="-1"></a>dag <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(<span class="st">&#39;dag {</span></span>
+<span id="cb467-15"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-15" tabindex="-1"></a><span class="st">  Age [pos=&quot;0,0&quot;]</span></span>
+<span id="cb467-16"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-16" tabindex="-1"></a><span class="st">  SES [pos=&quot;0,2&quot;]</span></span>
+<span id="cb467-17"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-17" tabindex="-1"></a><span class="st">  Exercise [pos=&quot;1,2&quot;]</span></span>
+<span id="cb467-18"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-18" tabindex="-1"></a><span class="st">  Cholesterol [pos=&quot;2,1&quot;]</span></span>
+<span id="cb467-19"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-19" tabindex="-1"></a><span class="st">  Severity [pos=&quot;1,0&quot;]</span></span>
+<span id="cb467-20"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-20" tabindex="-1"></a><span class="st">  Statins [exposure,pos=&quot;3,1&quot;]</span></span>
+<span id="cb467-21"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-21" tabindex="-1"></a><span class="st">  Mortality [outcome,pos=&quot;5,1&quot;]</span></span>
+<span id="cb467-22"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-22" tabindex="-1"></a><span class="st">  </span></span>
+<span id="cb467-23"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-23" tabindex="-1"></a><span class="st">  Age -&gt; Severity</span></span>
+<span id="cb467-24"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-24" tabindex="-1"></a><span class="st">  Age -&gt; Mortality</span></span>
+<span id="cb467-25"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-25" tabindex="-1"></a><span class="st">  Age -&gt; Cholesterol</span></span>
+<span id="cb467-26"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-26" tabindex="-1"></a><span class="st">  SES -&gt; Exercise</span></span>
+<span id="cb467-27"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-27" tabindex="-1"></a><span class="st">  SES -&gt; Statins</span></span>
+<span id="cb467-28"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-28" tabindex="-1"></a><span class="st">  SES -&gt; Mortality</span></span>
+<span id="cb467-29"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-29" tabindex="-1"></a><span class="st">  Exercise -&gt; Cholesterol</span></span>
+<span id="cb467-30"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-30" tabindex="-1"></a><span class="st">  Exercise -&gt; Mortality</span></span>
+<span id="cb467-31"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-31" tabindex="-1"></a><span class="st">  Cholesterol -&gt; Severity</span></span>
+<span id="cb467-32"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-32" tabindex="-1"></a><span class="st">  Cholesterol -&gt; Statins</span></span>
+<span id="cb467-33"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-33" tabindex="-1"></a><span class="st">  Severity -&gt; Statins</span></span>
+<span id="cb467-34"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-34" tabindex="-1"></a><span class="st">  Severity -&gt; Mortality</span></span>
+<span id="cb467-35"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-35" tabindex="-1"></a><span class="st">  Statins -&gt; Mortality</span></span>
+<span id="cb467-36"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-36" tabindex="-1"></a><span class="st">  Statins -&gt; Cholesterol</span></span>
+<span id="cb467-37"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-37" tabindex="-1"></a><span class="st">}&#39;</span>)</span>
+<span id="cb467-38"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-38" tabindex="-1"></a></span>
+<span id="cb467-39"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-39" tabindex="-1"></a><span class="co"># Visualize the causal structure</span></span>
+<span id="cb467-40"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-40" tabindex="-1"></a><span class="fu">ggdag</span>(dag) <span class="sc">+</span></span>
+<span id="cb467-41"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-41" tabindex="-1"></a>  <span class="fu">theme_dag</span>() <span class="sc">+</span></span>
+<span id="cb467-42"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-42" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Causal Structure: Statin Treatment and Mortality&quot;</span>,</span>
+<span id="cb467-43"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb467-43" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">&quot;Nodes represent variables, arrows represent direct causal effects&quot;</span>)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-54-1.png" width="672" /></p>
+<div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb468-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb468-1" tabindex="-1"></a><span class="co"># Identify adjustment sets</span></span>
+<span id="cb468-2"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb468-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;=== Adjustment Set Analysis ===</span><span class="sc">\n\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## === Adjustment Set Analysis ===</code></pre>
+<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb470-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb470-1" tabindex="-1"></a><span class="co"># Find minimal sufficient adjustment sets</span></span>
+<span id="cb470-2"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb470-2" tabindex="-1"></a>adjustment_sets <span class="ot">&lt;-</span> <span class="fu">adjustmentSets</span>(dag, <span class="at">exposure =</span> <span class="st">&quot;Statins&quot;</span>, <span class="at">outcome =</span> <span class="st">&quot;Mortality&quot;</span>)</span>
+<span id="cb470-3"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb470-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Minimal sufficient adjustment sets:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Minimal sufficient adjustment sets:</code></pre>
+<div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb472-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb472-1" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_along</span>(adjustment_sets)) {</span>
+<span id="cb472-2"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb472-2" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;  Set %d: {%s}</span><span class="sc">\n</span><span class="st">&quot;</span>, i, <span class="fu">paste</span>(adjustment_sets[[i]], <span class="at">collapse =</span> <span class="st">&quot;, &quot;</span>)))</span>
+<span id="cb472-3"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb472-3" tabindex="-1"></a>}</span>
+<span id="cb472-4"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb472-4" tabindex="-1"></a></span>
+<span id="cb472-5"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb472-5" tabindex="-1"></a><span class="co"># Identify all paths between treatment and outcome</span></span>
+<span id="cb472-6"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb472-6" tabindex="-1"></a>all_paths <span class="ot">&lt;-</span> <span class="fu">paths</span>(dag, <span class="at">from =</span> <span class="st">&quot;Statins&quot;</span>, <span class="at">to =</span> <span class="st">&quot;Mortality&quot;</span>)</span>
+<span id="cb472-7"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb472-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">All paths from Statins to Mortality:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+## All paths from Statins to Mortality:</code></pre>
+<div class="sourceCode" id="cb474"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb474-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb474-1" tabindex="-1"></a><span class="fu">print</span>(all_paths)</span></code></pre></div>
+<pre><code>## $paths
+##  [1] &quot;Statins -&gt; Cholesterol -&gt; Severity -&gt; Mortality&quot;                          
+##  [2] &quot;Statins -&gt; Cholesterol -&gt; Severity &lt;- Age -&gt; Mortality&quot;                   
+##  [3] &quot;Statins -&gt; Cholesterol &lt;- Age -&gt; Mortality&quot;                               
+##  [4] &quot;Statins -&gt; Cholesterol &lt;- Age -&gt; Severity -&gt; Mortality&quot;                   
+##  [5] &quot;Statins -&gt; Cholesterol &lt;- Exercise -&gt; Mortality&quot;                          
+##  [6] &quot;Statins -&gt; Cholesterol &lt;- Exercise &lt;- SES -&gt; Mortality&quot;                   
+##  [7] &quot;Statins -&gt; Mortality&quot;                                                     
+##  [8] &quot;Statins &lt;- Cholesterol -&gt; Severity -&gt; Mortality&quot;                          
+##  [9] &quot;Statins &lt;- Cholesterol -&gt; Severity &lt;- Age -&gt; Mortality&quot;                   
+## [10] &quot;Statins &lt;- Cholesterol &lt;- Age -&gt; Mortality&quot;                               
+## [11] &quot;Statins &lt;- Cholesterol &lt;- Age -&gt; Severity -&gt; Mortality&quot;                   
+## [12] &quot;Statins &lt;- Cholesterol &lt;- Exercise -&gt; Mortality&quot;                          
+## [13] &quot;Statins &lt;- Cholesterol &lt;- Exercise &lt;- SES -&gt; Mortality&quot;                   
+## [14] &quot;Statins &lt;- SES -&gt; Exercise -&gt; Cholesterol -&gt; Severity -&gt; Mortality&quot;       
+## [15] &quot;Statins &lt;- SES -&gt; Exercise -&gt; Cholesterol -&gt; Severity &lt;- Age -&gt; Mortality&quot;
+## [16] &quot;Statins &lt;- SES -&gt; Exercise -&gt; Cholesterol &lt;- Age -&gt; Mortality&quot;            
+## [17] &quot;Statins &lt;- SES -&gt; Exercise -&gt; Cholesterol &lt;- Age -&gt; Severity -&gt; Mortality&quot;
+## [18] &quot;Statins &lt;- SES -&gt; Exercise -&gt; Mortality&quot;                                  
+## [19] &quot;Statins &lt;- SES -&gt; Mortality&quot;                                              
+## [20] &quot;Statins &lt;- Severity -&gt; Mortality&quot;                                         
+## [21] &quot;Statins &lt;- Severity &lt;- Age -&gt; Cholesterol &lt;- Exercise -&gt; Mortality&quot;       
+## [22] &quot;Statins &lt;- Severity &lt;- Age -&gt; Cholesterol &lt;- Exercise &lt;- SES -&gt; Mortality&quot;
+## [23] &quot;Statins &lt;- Severity &lt;- Age -&gt; Mortality&quot;                                  
+## [24] &quot;Statins &lt;- Severity &lt;- Cholesterol &lt;- Age -&gt; Mortality&quot;                   
+## [25] &quot;Statins &lt;- Severity &lt;- Cholesterol &lt;- Exercise -&gt; Mortality&quot;              
+## [26] &quot;Statins &lt;- Severity &lt;- Cholesterol &lt;- Exercise &lt;- SES -&gt; Mortality&quot;       
+## 
+## $open
+##  [1]  TRUE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE FALSE  TRUE
+## [24]  TRUE  TRUE  TRUE</code></pre>
+<div class="sourceCode" id="cb476"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb476-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb476-1" tabindex="-1"></a><span class="co"># Test conditional independencies implied by the DAG</span></span>
+<span id="cb476-2"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb476-2" tabindex="-1"></a>implications <span class="ot">&lt;-</span> <span class="fu">impliedConditionalIndependencies</span>(dag)</span>
+<span id="cb476-3"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb476-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Conditional independencies implied by the DAG:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+## Conditional independencies implied by the DAG:</code></pre>
+<div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb478-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb478-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;(These can be tested empirically to validate the DAG)</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## (These can be tested empirically to validate the DAG)</code></pre>
+<div class="sourceCode" id="cb480"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb480-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb480-1" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">min</span>(<span class="dv">5</span>, <span class="fu">length</span>(implications)))) {</span>
+<span id="cb480-2"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb480-2" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;  %s</span><span class="sc">\n</span><span class="st">&quot;</span>, implications[i]))</span>
+<span id="cb480-3"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb480-3" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>##   list(X = &quot;Age&quot;, Y = &quot;Exercise&quot;, Z = list())
+##   list(X = &quot;Age&quot;, Y = &quot;SES&quot;, Z = list())
+##   list(X = &quot;Cholesterol&quot;, Y = &quot;Mortality&quot;, Z = c(&quot;Age&quot;, &quot;Exercise&quot;, &quot;SES&quot;, &quot;Severity&quot;, &quot;Statins&quot;))
+##   list(X = &quot;Exercise&quot;, Y = &quot;Severity&quot;, Z = c(&quot;Age&quot;, &quot;Cholesterol&quot;, &quot;SES&quot;, &quot;Statins&quot;))</code></pre>
+<p>This analysis reveals the complex causal architecture underlying the statin-mortality relationship. Multiple backdoor paths create confounding that must be addressed through statistical adjustment. Age affects both treatment decisions (older patients receive different care) and mortality directly. Socioeconomic status influences treatment access, health behaviors, and mortality through multiple mechanisms. Disease severity acts as both a confounder (sicker patients receive more aggressive treatment) and a mediator (if statins work by reducing disease progression).</p>
+<p>The adjustment set analysis identifies which variables we must measure and control to estimate the causal effect validly. Different adjustment sets may satisfy the backdoor criterion, and researchers can choose among them based on measurement quality, missing data patterns, or other practical considerations. The key insight is that adjusting for the wrong variables—or failing to adjust for the right ones—produces biased causal estimates regardless of sample size or statistical sophistication.</p>
+<div class="sourceCode" id="cb482"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb482-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-1" tabindex="-1"></a><span class="co"># Simulate data consistent with the DAG structure</span></span>
+<span id="cb482-2"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-2" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
+<span id="cb482-3"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-3" tabindex="-1"></a></span>
+<span id="cb482-4"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-4" tabindex="-1"></a><span class="co"># Generate baseline characteristics</span></span>
+<span id="cb482-5"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-5" tabindex="-1"></a>age <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">65</span>, <span class="at">sd =</span> <span class="dv">10</span>)</span>
+<span id="cb482-6"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-6" tabindex="-1"></a>age <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">40</span>, <span class="fu">pmin</span>(<span class="dv">90</span>, age))  <span class="co"># Constrain to realistic range</span></span>
+<span id="cb482-7"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-7" tabindex="-1"></a></span>
+<span id="cb482-8"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-8" tabindex="-1"></a>ses <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb482-9"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-9" tabindex="-1"></a></span>
+<span id="cb482-10"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-10" tabindex="-1"></a><span class="co"># Exercise depends on SES</span></span>
+<span id="cb482-11"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-11" tabindex="-1"></a>exercise <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fu">plogis</span>(<span class="sc">-</span><span class="fl">0.5</span> <span class="sc">+</span> <span class="fl">0.6</span> <span class="sc">*</span> ses))</span>
+<span id="cb482-12"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-12" tabindex="-1"></a></span>
+<span id="cb482-13"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-13" tabindex="-1"></a><span class="co"># Cholesterol depends on age and exercise</span></span>
+<span id="cb482-14"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-14" tabindex="-1"></a>cholesterol <span class="ot">&lt;-</span> <span class="dv">200</span> <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> age <span class="sc">-</span> <span class="dv">20</span> <span class="sc">*</span> exercise <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">30</span>)</span>
+<span id="cb482-15"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-15" tabindex="-1"></a></span>
+<span id="cb482-16"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-16" tabindex="-1"></a><span class="co"># Disease severity depends on age and cholesterol</span></span>
+<span id="cb482-17"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-17" tabindex="-1"></a>severity <span class="ot">&lt;-</span> <span class="fu">plogis</span>(<span class="sc">-</span><span class="dv">5</span> <span class="sc">+</span> <span class="fl">0.04</span> <span class="sc">*</span> age <span class="sc">+</span> <span class="fl">0.01</span> <span class="sc">*</span> cholesterol)</span>
+<span id="cb482-18"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-18" tabindex="-1"></a></span>
+<span id="cb482-19"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-19" tabindex="-1"></a><span class="co"># Statin prescription depends on SES, cholesterol, and severity</span></span>
+<span id="cb482-20"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-20" tabindex="-1"></a>statin_prob <span class="ot">&lt;-</span> <span class="fu">plogis</span>(<span class="sc">-</span><span class="dv">2</span> <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> ses <span class="sc">+</span> <span class="fl">0.01</span> <span class="sc">*</span> cholesterol <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> severity)</span>
+<span id="cb482-21"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-21" tabindex="-1"></a>statins <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, statin_prob)</span>
+<span id="cb482-22"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-22" tabindex="-1"></a></span>
+<span id="cb482-23"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-23" tabindex="-1"></a><span class="co"># Cholesterol reduction from statins (feedback)</span></span>
+<span id="cb482-24"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-24" tabindex="-1"></a>cholesterol_treated <span class="ot">&lt;-</span> cholesterol <span class="sc">-</span> <span class="dv">40</span> <span class="sc">*</span> statins <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">10</span>)</span>
+<span id="cb482-25"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-25" tabindex="-1"></a></span>
+<span id="cb482-26"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-26" tabindex="-1"></a><span class="co"># Mortality depends on age, SES, exercise, severity, and statins</span></span>
+<span id="cb482-27"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-27" tabindex="-1"></a><span class="co"># True causal effect of statins: hazard ratio ~0.75 (25% reduction)</span></span>
+<span id="cb482-28"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-28" tabindex="-1"></a>mortality_prob <span class="ot">&lt;-</span> <span class="fu">plogis</span>(<span class="sc">-</span><span class="dv">3</span> <span class="sc">+</span> <span class="fl">0.04</span> <span class="sc">*</span> age <span class="sc">-</span> <span class="fl">0.3</span> <span class="sc">*</span> ses <span class="sc">-</span> <span class="fl">0.4</span> <span class="sc">*</span> exercise <span class="sc">+</span> </span>
+<span id="cb482-29"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-29" tabindex="-1"></a>                         <span class="dv">2</span> <span class="sc">*</span> severity <span class="sc">-</span> <span class="fl">0.6</span> <span class="sc">*</span> statins)</span>
+<span id="cb482-30"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-30" tabindex="-1"></a>mortality <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, mortality_prob)</span>
+<span id="cb482-31"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-31" tabindex="-1"></a></span>
+<span id="cb482-32"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-32" tabindex="-1"></a><span class="co"># Create dataset</span></span>
+<span id="cb482-33"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-33" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb482-34"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-34" tabindex="-1"></a>  <span class="at">age =</span> age,</span>
+<span id="cb482-35"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-35" tabindex="-1"></a>  <span class="at">ses =</span> ses,</span>
+<span id="cb482-36"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-36" tabindex="-1"></a>  <span class="at">exercise =</span> exercise,</span>
+<span id="cb482-37"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-37" tabindex="-1"></a>  <span class="at">cholesterol =</span> cholesterol_treated,</span>
+<span id="cb482-38"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-38" tabindex="-1"></a>  <span class="at">severity =</span> severity,</span>
+<span id="cb482-39"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-39" tabindex="-1"></a>  <span class="at">statins =</span> statins,</span>
+<span id="cb482-40"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-40" tabindex="-1"></a>  <span class="at">mortality =</span> mortality</span>
+<span id="cb482-41"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-41" tabindex="-1"></a>)</span>
+<span id="cb482-42"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-42" tabindex="-1"></a></span>
+<span id="cb482-43"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb482-43" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== Dataset Summary ===</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+## === Dataset Summary ===</code></pre>
+<div class="sourceCode" id="cb484"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb484-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb484-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Sample size: %d patients</span><span class="sc">\n</span><span class="st">&quot;</span>, n))</span></code></pre></div>
+<pre><code>## Sample size: 5000 patients</code></pre>
+<div class="sourceCode" id="cb486"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb486-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb486-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Statin users: %d (%.1f%%)</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="fu">sum</span>(statins), <span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(statins)))</span></code></pre></div>
+<pre><code>## Statin users: 3774 (75.5%)</code></pre>
+<div class="sourceCode" id="cb488"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb488-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb488-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Overall mortality: %d (%.1f%%)</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="fu">sum</span>(mortality), <span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(mortality)))</span></code></pre></div>
+<pre><code>## Overall mortality: 2380 (47.6%)</code></pre>
+<div class="sourceCode" id="cb490"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb490-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb490-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Mortality - Statin users: %.1f%%</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(mortality[statins <span class="sc">==</span> <span class="dv">1</span>])))</span></code></pre></div>
+<pre><code>## Mortality - Statin users: 45.5%</code></pre>
+<div class="sourceCode" id="cb492"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb492-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb492-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Mortality - Non-users: %.1f%%</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(mortality[statins <span class="sc">==</span> <span class="dv">0</span>])))</span></code></pre></div>
+<pre><code>## Mortality - Non-users: 54.2%</code></pre>
+<p>The simulated data reflects realistic patterns where statin users actually have higher observed mortality rates than non-users despite statins reducing mortality causally. This paradoxical pattern arises because sicker patients receive statins more frequently, and their elevated baseline risk overwhelms the protective treatment effect in crude comparisons. This illustrates why causal inference requires more than observing associations—we must account for the confounding structure revealed by the DAG.</p>
+</div>
+<div id="comparing-analytical-strategies" class="section level2 hasAnchor" number="13.3">
+<h2><span class="header-section-number">13.3</span> Comparing Analytical Strategies<a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#comparing-analytical-strategies" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>With the causal structure clarified, we can compare different estimation approaches and understand how they relate to the underlying causal graph. The naive comparison ignores confounding entirely, while properly specified models adjust for confounders identified through DAG analysis.</p>
+<div class="sourceCode" id="cb494"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb494-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb494-1" tabindex="-1"></a><span class="co"># Naive analysis (confounded)</span></span>
+<span id="cb494-2"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb494-2" tabindex="-1"></a>naive_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(mortality <span class="sc">~</span> statins, <span class="at">data =</span> data, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb494-3"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb494-3" tabindex="-1"></a>naive_or <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">coef</span>(naive_model)[<span class="st">&quot;statins&quot;</span>])</span>
+<span id="cb494-4"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb494-4" tabindex="-1"></a>naive_ci <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">confint</span>(naive_model)[<span class="st">&quot;statins&quot;</span>, ])</span></code></pre></div>
+<pre><code>## Waiting for profiling to be done...</code></pre>
+<div class="sourceCode" id="cb496"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb496-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb496-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;1. Naive Analysis (no adjustment):</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 1. Naive Analysis (no adjustment):</code></pre>
+<div class="sourceCode" id="cb498"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb498-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb498-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;   OR = %.3f [%.3f, %.3f]</span><span class="sc">\n</span><span class="st">&quot;</span>, naive_or, naive_ci[<span class="dv">1</span>], naive_ci[<span class="dv">2</span>]))</span></code></pre></div>
+<pre><code>##    OR = 0.706 [0.620, 0.803]</code></pre>
+<div class="sourceCode" id="cb500"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb500-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb500-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;   Interpretation: Confounded estimate</span><span class="sc">\n\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>##    Interpretation: Confounded estimate</code></pre>
+<div class="sourceCode" id="cb502"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb502-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb502-1" tabindex="-1"></a><span class="co"># Adjust for age only (insufficient)</span></span>
+<span id="cb502-2"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb502-2" tabindex="-1"></a>age_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(mortality <span class="sc">~</span> statins <span class="sc">+</span> age, <span class="at">data =</span> data, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb502-3"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb502-3" tabindex="-1"></a>age_or <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">coef</span>(age_model)[<span class="st">&quot;statins&quot;</span>])</span>
+<span id="cb502-4"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb502-4" tabindex="-1"></a>age_ci <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">confint</span>(age_model)[<span class="st">&quot;statins&quot;</span>, ])</span></code></pre></div>
+<pre><code>## Waiting for profiling to be done...</code></pre>
+<div class="sourceCode" id="cb504"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb504-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb504-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;2. Age-Adjusted Analysis:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 2. Age-Adjusted Analysis:</code></pre>
+<div class="sourceCode" id="cb506"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb506-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb506-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;   OR = %.3f [%.3f, %.3f]</span><span class="sc">\n</span><span class="st">&quot;</span>, age_or, age_ci[<span class="dv">1</span>], age_ci[<span class="dv">2</span>]))</span></code></pre></div>
+<pre><code>##    OR = 0.600 [0.523, 0.686]</code></pre>
+<div class="sourceCode" id="cb508"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb508-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb508-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;   Interpretation: Partially controls confounding</span><span class="sc">\n\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>##    Interpretation: Partially controls confounding</code></pre>
+<div class="sourceCode" id="cb510"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb510-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb510-1" tabindex="-1"></a><span class="co"># Minimal sufficient adjustment set</span></span>
+<span id="cb510-2"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb510-2" tabindex="-1"></a>minimal_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(mortality <span class="sc">~</span> statins <span class="sc">+</span> age <span class="sc">+</span> ses <span class="sc">+</span> severity, </span>
+<span id="cb510-3"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb510-3" tabindex="-1"></a>                     <span class="at">data =</span> data, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb510-4"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb510-4" tabindex="-1"></a>minimal_or <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">coef</span>(minimal_model)[<span class="st">&quot;statins&quot;</span>])</span>
+<span id="cb510-5"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb510-5" tabindex="-1"></a>minimal_ci <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">confint</span>(minimal_model)[<span class="st">&quot;statins&quot;</span>, ])</span></code></pre></div>
+<pre><code>## Waiting for profiling to be done...</code></pre>
+<div class="sourceCode" id="cb512"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb512-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb512-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;3. Minimal Sufficient Adjustment:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 3. Minimal Sufficient Adjustment:</code></pre>
+<div class="sourceCode" id="cb514"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb514-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb514-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;   OR = %.3f [%.3f, %.3f]</span><span class="sc">\n</span><span class="st">&quot;</span>, minimal_or, minimal_ci[<span class="dv">1</span>], minimal_ci[<span class="dv">2</span>]))</span></code></pre></div>
+<pre><code>##    OR = 0.567 [0.492, 0.653]</code></pre>
+<div class="sourceCode" id="cb516"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb516-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb516-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;   Interpretation: Valid causal estimate</span><span class="sc">\n\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>##    Interpretation: Valid causal estimate</code></pre>
+<div class="sourceCode" id="cb518"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb518-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb518-1" tabindex="-1"></a><span class="co"># Over-adjusted model (including mediator)</span></span>
+<span id="cb518-2"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb518-2" tabindex="-1"></a>overadjust_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(mortality <span class="sc">~</span> statins <span class="sc">+</span> age <span class="sc">+</span> ses <span class="sc">+</span> severity <span class="sc">+</span> cholesterol <span class="sc">+</span> exercise,</span>
+<span id="cb518-3"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb518-3" tabindex="-1"></a>                        <span class="at">data =</span> data, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb518-4"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb518-4" tabindex="-1"></a>overadjust_or <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">coef</span>(overadjust_model)[<span class="st">&quot;statins&quot;</span>])</span>
+<span id="cb518-5"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb518-5" tabindex="-1"></a>overadjust_ci <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">confint</span>(overadjust_model)[<span class="st">&quot;statins&quot;</span>, ])</span></code></pre></div>
+<pre><code>## Waiting for profiling to be done...</code></pre>
+<div class="sourceCode" id="cb520"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb520-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb520-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;4. Over-Adjusted Model (including post-treatment cholesterol):</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 4. Over-Adjusted Model (including post-treatment cholesterol):</code></pre>
+<div class="sourceCode" id="cb522"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb522-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb522-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;   OR = %.3f [%.3f, %.3f]</span><span class="sc">\n</span><span class="st">&quot;</span>, overadjust_or, overadjust_ci[<span class="dv">1</span>], overadjust_ci[<span class="dv">2</span>]))</span></code></pre></div>
+<pre><code>##    OR = 0.614 [0.469, 0.803]</code></pre>
+<div class="sourceCode" id="cb524"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb524-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb524-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;   Interpretation: Conditions on post-treatment variable</span><span class="sc">\n\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>##    Interpretation: Conditions on post-treatment variable</code></pre>
+<div class="sourceCode" id="cb526"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb526-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb526-1" tabindex="-1"></a><span class="co"># True causal effect (from simulation)</span></span>
+<span id="cb526-2"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb526-2" tabindex="-1"></a>true_or <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.6</span>)  <span class="co"># The coefficient we used in data generation</span></span>
+<span id="cb526-3"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb526-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;True Causal Effect: OR = %.3f</span><span class="sc">\n</span><span class="st">&quot;</span>, true_or))</span></code></pre></div>
+<pre><code>## True Causal Effect: OR = 0.549</code></pre>
+<div class="sourceCode" id="cb528"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb528-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb528-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Best estimate achieved by: Minimal Sufficient Adjustment (OR = %.3f)</span><span class="sc">\n</span><span class="st">&quot;</span>, minimal_or))</span></code></pre></div>
+<pre><code>## Best estimate achieved by: Minimal Sufficient Adjustment (OR = 0.567)</code></pre>
+<p>The comparison reveals how different analytical choices produce dramatically different estimates. The naive analysis suggests statins increase mortality—a spurious association arising from confounding by indication where sicker patients receive treatment. Adjusting only for age provides partial bias reduction but remains confounded by socioeconomic status and disease severity. The minimal sufficient adjustment set identified through DAG analysis successfully recovers an unbiased estimate close to the true causal effect. Over-adjustment by including post-treatment cholesterol levels introduces bias by conditioning on a mediator, blocking part of the causal pathway through which statins work.</p>
+</div>
+<div id="visualizing-causal-structures-for-communication" class="section level2 hasAnchor" number="13.4">
+<h2><span class="header-section-number">13.4</span> Visualizing Causal Structures for Communication<a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#visualizing-causal-structures-for-communication" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Effective visualization helps communicate causal assumptions to clinical collaborators, journal reviewers, and policymakers who may not be familiar with DAG formalism. The ggdag package provides extensive customization options for creating publication-ready diagrams.</p>
+<div class="sourceCode" id="cb530"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb530-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb530-1" tabindex="-1"></a>tidy_dag <span class="ot">&lt;-</span> dag <span class="sc">%&gt;%</span></span>
+<span id="cb530-2"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb530-2" tabindex="-1"></a>  <span class="fu">tidy_dagitty</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb530-3"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb530-3" tabindex="-1"></a>  <span class="fu">node_status</span>()</span>
+<span id="cb530-4"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb530-4" tabindex="-1"></a></span>
+<span id="cb530-5"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb530-5" tabindex="-1"></a><span class="co"># Visualize adjustment set</span></span>
+<span id="cb530-6"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb530-6" tabindex="-1"></a><span class="fu">ggdag_adjustment_set</span>(dag, <span class="at">exposure =</span> <span class="st">&quot;Statins&quot;</span>, <span class="at">outcome =</span> <span class="st">&quot;Mortality&quot;</span>,</span>
+<span id="cb530-7"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb530-7" tabindex="-1"></a>                     <span class="at">shadow =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb530-8"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb530-8" tabindex="-1"></a>  <span class="fu">theme_dag</span>() <span class="sc">+</span></span>
+<span id="cb530-9"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb530-9" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Variables Required for Valid Causal Inference&quot;</span>,</span>
+<span id="cb530-10"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb530-10" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">&quot;Green = must adjust, Red = exposure/outcome, Gray = not required&quot;</span>) <span class="sc">+</span></span>
+<span id="cb530-11"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb530-11" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
+<pre><code>## Warning in dag_adjustment_sets(., exposure = exposure, outcome = outcome, : Failed to close backdoor paths. Common reasons include:
+##             * graph is not acyclic
+##             * backdoor paths are not closeable with given set of variables
+##             * necessary variables are unmeasured (latent)</code></pre>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-57-1.png" width="672" /></p>
+<p>These visualizations transform abstract causal relationships into intuitive diagrams that facilitate discussion and critical evaluation. Clinical collaborators can identify whether the proposed causal structure aligns with domain knowledge, suggest additional pathways that researchers may have overlooked, or propose alternative structures that warrant sensitivity analysis.</p>
+</div>
+<div id="sensitivity-analysis-and-unmeasured-confounding" class="section level2 hasAnchor" number="13.5">
+<h2><span class="header-section-number">13.5</span> Sensitivity Analysis and Unmeasured Confounding<a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#sensitivity-analysis-and-unmeasured-confounding" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>No DAG includes all variables that truly exist in nature. The crucial question becomes whether unmeasured variables bias our causal estimates substantially. Sensitivity analysis quantifies how strong unmeasured confounding would need to be to overturn our conclusions.</p>
+<div class="sourceCode" id="cb532"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb532-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb532-1" tabindex="-1"></a>observed_or <span class="ot">&lt;-</span> minimal_or</span>
+<span id="cb532-2"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb532-2" tabindex="-1"></a>observed_rr <span class="ot">&lt;-</span> observed_or  <span class="co"># Approximate conversion for rare outcomes</span></span>
+<span id="cb532-3"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb532-3" tabindex="-1"></a></span>
+<span id="cb532-4"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb532-4" tabindex="-1"></a><span class="co"># E-value calculation</span></span>
+<span id="cb532-5"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb532-5" tabindex="-1"></a>e_value <span class="ot">&lt;-</span> observed_rr <span class="sc">+</span> <span class="fu">sqrt</span>(observed_rr <span class="sc">*</span> (observed_rr <span class="sc">-</span> <span class="dv">1</span>))</span></code></pre></div>
+<pre><code>## Warning in sqrt(observed_rr * (observed_rr - 1)): NaNs produced</code></pre>
+<div class="sourceCode" id="cb534"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb534-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb534-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Sensitivity to Unmeasured Confounding:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Sensitivity to Unmeasured Confounding:</code></pre>
+<div class="sourceCode" id="cb536"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb536-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb536-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;  Observed OR: %.3f</span><span class="sc">\n</span><span class="st">&quot;</span>, observed_or))</span></code></pre></div>
+<pre><code>##   Observed OR: 0.567</code></pre>
+<div class="sourceCode" id="cb538"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb538-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb538-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;  E-value: %.3f</span><span class="sc">\n</span><span class="st">&quot;</span>, e_value))</span></code></pre></div>
+<pre><code>##   E-value: NaN</code></pre>
+<div class="sourceCode" id="cb540"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb540-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb540-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Interpretation:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+## Interpretation:</code></pre>
+<div class="sourceCode" id="cb542"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb542-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb542-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;An unmeasured confounder would need to be associated with</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## An unmeasured confounder would need to be associated with</code></pre>
+<div class="sourceCode" id="cb544"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb544-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb544-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;both statin use and mortality by OR = %.2f (each)</span><span class="sc">\n</span><span class="st">&quot;</span>, e_value))</span></code></pre></div>
+<pre><code>## both statin use and mortality by OR = NaN (each)</code></pre>
+<div class="sourceCode" id="cb546"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb546-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb546-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;to fully explain away the observed effect.</span><span class="sc">\n\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## to fully explain away the observed effect.</code></pre>
+<div class="sourceCode" id="cb548"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb548-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb548-1" tabindex="-1"></a><span class="co"># Assess plausibility</span></span>
+<span id="cb548-2"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb548-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Is this plausible?</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Is this plausible?</code></pre>
+<div class="sourceCode" id="cb550"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb550-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb550-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Consider the strength of measured confounders:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Consider the strength of measured confounders:</code></pre>
+<div class="sourceCode" id="cb552"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb552-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb552-1" tabindex="-1"></a>measured_confounders <span class="ot">&lt;-</span> <span class="fu">glm</span>(statins <span class="sc">~</span> age <span class="sc">+</span> ses <span class="sc">+</span> severity, </span>
+<span id="cb552-2"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb552-2" tabindex="-1"></a>                           <span class="at">data =</span> data, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb552-3"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb552-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Association with Treatment (Statins):</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+## Association with Treatment (Statins):</code></pre>
+<div class="sourceCode" id="cb554"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb554-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb554-1" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">round</span>(<span class="fu">exp</span>(<span class="fu">coef</span>(measured_confounders)), <span class="dv">3</span>))</span></code></pre></div>
+<pre><code>## (Intercept)         age         ses    severity 
+##       2.516       0.960       1.337     581.309</code></pre>
+<div class="sourceCode" id="cb556"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb556-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb556-1" tabindex="-1"></a>measured_outcome <span class="ot">&lt;-</span> <span class="fu">glm</span>(mortality <span class="sc">~</span> age <span class="sc">+</span> ses <span class="sc">+</span> severity, </span>
+<span id="cb556-2"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb556-2" tabindex="-1"></a>                       <span class="at">data =</span> data, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb556-3"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb556-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Association with Outcome (Mortality):</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+## Association with Outcome (Mortality):</code></pre>
+<div class="sourceCode" id="cb558"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb558-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb558-1" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">round</span>(<span class="fu">exp</span>(<span class="fu">coef</span>(measured_outcome)), <span class="dv">3</span>))</span></code></pre></div>
+<pre><code>## (Intercept)         age         ses    severity 
+##       0.036       1.031       0.729      14.394</code></pre>
+<div class="sourceCode" id="cb560"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb560-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb560-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">If unmeasured confounding is weaker than measured confounding,</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+## If unmeasured confounding is weaker than measured confounding,</code></pre>
+<div class="sourceCode" id="cb562"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb562-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb562-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;our causal conclusion remains robust.</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## our causal conclusion remains robust.</code></pre>
+<p>Sensitivity analysis provides crucial context for interpreting causal claims. An E-value substantially larger than the associations observed for measured confounders suggests the causal estimate is relatively robust to unmeasured confounding. Conversely, small E-values indicate fragile conclusions that unmeasured confounding could easily overturn. This quantitative assessment of robustness helps researchers and clinicians evaluate the strength of causal evidence.</p>
+</div>
+<div id="testable-implications-and-dag-validation" class="section level2 hasAnchor" number="13.6">
+<h2><span class="header-section-number">13.6</span> Testable Implications and DAG Validation<a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#testable-implications-and-dag-validation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>A crucial advantage of DAGs over informal causal reasoning is that they generate testable conditional independence statements. If the proposed DAG accurately represents the causal structure, these independence relationships should hold empirically. Violations suggest model misspecification.</p>
+<div class="sourceCode" id="cb564"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb564-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb564-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== Testing DAG Implications ===</span><span class="sc">\n\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+## === Testing DAG Implications ===</code></pre>
+<div class="sourceCode" id="cb566"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb566-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb566-1" tabindex="-1"></a><span class="co"># The DAG implies specific conditional independencies</span></span>
+<span id="cb566-2"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb566-2" tabindex="-1"></a><span class="co"># Test a subset of these implications</span></span>
+<span id="cb566-3"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb566-3" tabindex="-1"></a></span>
+<span id="cb566-4"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb566-4" tabindex="-1"></a><span class="co"># Test 1: Exercise independent of Age given SES</span></span>
+<span id="cb566-5"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb566-5" tabindex="-1"></a>test1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(exercise <span class="sc">~</span> age <span class="sc">+</span> ses, <span class="at">data =</span> data, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb566-6"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb566-6" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(test1))[<span class="st">&quot;age&quot;</span>, <span class="st">&quot;Pr(&gt;|z|)&quot;</span>]</span>
+<span id="cb566-7"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb566-7" tabindex="-1"></a></span>
+<span id="cb566-8"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb566-8" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Test 1: Exercise ⊥ Age | SES</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Test 1: Exercise ⊥ Age | SES</code></pre>
+<div class="sourceCode" id="cb568"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb568-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb568-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;  p-value = %.4f</span><span class="sc">\n</span><span class="st">&quot;</span>, p1))</span></code></pre></div>
+<pre><code>##   p-value = 0.7356</code></pre>
+<div class="sourceCode" id="cb570"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb570-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb570-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;  Result: %s</span><span class="sc">\n\n</span><span class="st">&quot;</span>, <span class="fu">ifelse</span>(p1 <span class="sc">&gt;</span> <span class="fl">0.05</span>, <span class="st">&quot;PASS&quot;</span>, <span class="st">&quot;FAIL&quot;</span>)))</span></code></pre></div>
+<pre><code>##   Result: PASS</code></pre>
+<div class="sourceCode" id="cb572"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb572-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb572-1" tabindex="-1"></a><span class="co"># Test 2: Mortality independent of SES given Age, Severity, Statins, Exercise</span></span>
+<span id="cb572-2"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb572-2" tabindex="-1"></a>test2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(mortality <span class="sc">~</span> ses <span class="sc">+</span> age <span class="sc">+</span> severity <span class="sc">+</span> statins <span class="sc">+</span> exercise,</span>
+<span id="cb572-3"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb572-3" tabindex="-1"></a>             <span class="at">data =</span> data, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb572-4"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb572-4" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">summary</span>(test2))[<span class="st">&quot;ses&quot;</span>, <span class="st">&quot;Pr(&gt;|z|)&quot;</span>]</span>
+<span id="cb572-5"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb572-5" tabindex="-1"></a></span>
+<span id="cb572-6"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb572-6" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Test 2: Mortality ⊥ SES | {Age, Severity, Statins, Exercise}</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Test 2: Mortality ⊥ SES | {Age, Severity, Statins, Exercise}</code></pre>
+<div class="sourceCode" id="cb574"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb574-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb574-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;  p-value = %.4f</span><span class="sc">\n</span><span class="st">&quot;</span>, p2))</span></code></pre></div>
+<pre><code>##   p-value = 0.0000</code></pre>
+<div class="sourceCode" id="cb576"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb576-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb576-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;  Result: %s</span><span class="sc">\n\n</span><span class="st">&quot;</span>, <span class="fu">ifelse</span>(p2 <span class="sc">&gt;</span> <span class="fl">0.05</span>, <span class="st">&quot;PASS&quot;</span>, <span class="st">&quot;FAIL&quot;</span>)))</span></code></pre></div>
+<pre><code>##   Result: FAIL</code></pre>
+<div class="sourceCode" id="cb578"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb578-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb578-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Note: Test failures suggest the DAG may be misspecified.</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Note: Test failures suggest the DAG may be misspecified.</code></pre>
+<div class="sourceCode" id="cb580"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb580-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb580-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Consider:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Consider:</code></pre>
+<div class="sourceCode" id="cb582"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb582-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb582-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;  - Additional unmeasured confounders</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>##   - Additional unmeasured confounders</code></pre>
+<div class="sourceCode" id="cb584"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb584-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb584-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;  - Missing causal pathways</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>##   - Missing causal pathways</code></pre>
+<div class="sourceCode" id="cb586"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb586-1"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#cb586-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;  - Measurement error in variables</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>##   - Measurement error in variables</code></pre>
+<p>These empirical tests provide data-driven validation of the proposed causal structure. While passing all tests doesn’t prove the DAG is correct (multiple DAGs can imply the same independence statements), failures definitively indicate misspecification requiring careful reconsideration of assumed causal relationships.</p>
+</div>
+<div id="practical-guidance-for-healthcare-applications" class="section level2 hasAnchor" number="13.7">
+<h2><span class="header-section-number">13.7</span> Practical Guidance for Healthcare Applications<a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#practical-guidance-for-healthcare-applications" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Successful DAG implementation in healthcare research requires balancing theoretical ideals with practical realities. Begin by sketching the causal structure based on clinical knowledge before seeing data. This prevents data-driven modifications that capitalize on chance patterns. Engage clinical experts, epidemiologists, and subject matter specialists in iterative DAG refinement. Different perspectives often reveal assumptions or pathways that individual researchers overlook.</p>
+<p>Focus the DAG on variables relevant to the specific causal question rather than attempting comprehensive representation of all biological relationships. A DAG examining treatment effects need not include every physiological pathway if those mechanisms don’t confound the relationship of interest. Document and justify all causal assumptions explicitly. This transparency enables readers to evaluate whether they agree with the proposed structure and understand how alternative assumptions might affect conclusions.</p>
+<p>Consider multiple plausible DAG structures through sensitivity analysis. If different reasonable causal structures lead to similar conclusions, the findings gain robustness. If conclusions depend critically on contested causal assumptions, acknowledge this uncertainty explicitly and consider designs that directly test these assumptions. Use DAGs to identify opportunities for design improvements. If the DAG reveals that measuring an additional variable would substantially strengthen causal identification, prioritize its collection in future studies.</p>
+<p>Recognize that DAGs represent assumptions rather than discoveries. They make existing causal beliefs explicit and analyzable but cannot prove causal relationships from observational data alone. The value lies in clarifying what we must believe to interpret estimates causally, not in providing definitive causal proofs.</p>
+</div>
+<div id="conclusion-dags-as-foundation-for-rigorous-causal-inference" class="section level2 hasAnchor" number="13.8">
+<h2><span class="header-section-number">13.8</span> Conclusion: DAGs as Foundation for Rigorous Causal Inference<a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#conclusion-dags-as-foundation-for-rigorous-causal-inference" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Directed acyclic graphs transform causal inference from an informal exercise relying on unstated assumptions to a transparent analytical framework where causal claims rest on explicit, evaluable foundations. By forcing researchers to articulate their beliefs about underlying causal structure before analyzing data, DAGs prevent ad-hoc adjustments that capitalize on spurious patterns while providing clear guidance about which variables require measurement and control for valid causal inference.</p>
+<p>The healthcare applications we examined demonstrate DAGs’ practical value for study design and analysis. In the statin-mortality example, DAG analysis revealed why naive comparisons produce misleading conclusions, identified the minimal set of variables requiring adjustment, and explained why over-adjustment creates new biases. These insights directly inform both the design of new studies and the analysis of existing data, improving the reliability of causal claims that guide clinical decisions and health policy.</p>
+<p>The integration with modern statistical software through dagitty and ggdag makes rigorous DAG analysis accessible to applied researchers without requiring deep mathematical expertise. These tools automate the identification of adjustment sets, generate testable implications, and produce publication-ready visualizations that communicate causal assumptions effectively to diverse audiences including clinicians, policymakers, and journal reviewers.</p>
+<p>Perhaps most importantly, DAGs provide intellectual humility about causal claims by making assumptions visible and testable. When we explicitly acknowledge that causal conclusions depend on unmeasured confounding being weak or that certain causal pathways exist or don’t exist, we invite critical evaluation and sensitivity analysis rather than presenting spurious certainty. This transparency strengthens rather than weakens causal inference by focusing debate on substantive questions about causal structure rather than technical details of statistical methods.</p>
+<p>The future of healthcare research increasingly demands rigorous causal inference as we move from describing associations to recommending interventions. DAGs provide essential infrastructure for this transition, enabling researchers to design studies that credibly identify causal effects, analyze data in ways that respect underlying causal structure, and communicate findings with appropriate nuance about what we can and cannot conclude from available evidence. For researchers committed to generating actionable causal knowledge that improves patient care and population health, DAGs represent not an optional technical tool but a fundamental requirement for rigorous causal reasoning.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/edit/main/13-DAG.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/blob/main/13-DAG.Rmd",
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
