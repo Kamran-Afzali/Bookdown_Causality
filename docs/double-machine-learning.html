@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 14 Double Machine Learning | Causal Inference in R</title>
+  <meta name="description" content="Chapter 14 Double Machine Learning | Causal Inference in R" />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 14 Double Machine Learning | Causal Inference in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 14 Double Machine Learning | Causal Inference in R" />
+  
+  
+  
+
+<meta name="author" content="Kamran Afzali" />
+
+
+<meta name="date" content="2025-12-05" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Causality analysis in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Foundations of Causal Statistical Analysis</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#summary-table-techniques-for-causal-statistical-analysis"><i class="fa fa-check"></i><b>1.2</b> Summary Table: Techniques for Causal Statistical Analysis</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#methodological-deep-dive-with-practical-guidance"><i class="fa fa-check"></i><b>1.3</b> Methodological Deep Dive with Practical Guidance</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#discussion"><i class="fa fa-check"></i><b>1.4</b> Discussion</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><i class="fa fa-check"></i><b>2</b> Causal Inference in Practice I: Randomized Controlled Trials and Regression Adjustment</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#randomized-controlled-trials-design-and-analysis"><i class="fa fa-check"></i><b>2.2</b> 1. Randomized Controlled Trials: Design and Analysis</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#theoretical-foundations"><i class="fa fa-check"></i><b>2.2.1</b> Theoretical Foundations</a></li>
+<li class="chapter" data-level="2.2.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation"><i class="fa fa-check"></i><b>2.2.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.2.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#model-based-inference"><i class="fa fa-check"></i><b>2.2.3</b> Model-Based Inference</a></li>
+<li class="chapter" data-level="2.2.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#diagnostics-and-integrity"><i class="fa fa-check"></i><b>2.2.4</b> Diagnostics and Integrity</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#regression-adjustment-a-model-based-approach-to-causal-inference"><i class="fa fa-check"></i><b>2.3</b> 2. Regression Adjustment: A Model-Based Approach to Causal Inference</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conceptual-overview"><i class="fa fa-check"></i><b>2.3.1</b> Conceptual Overview</a></li>
+<li class="chapter" data-level="2.3.2" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#r-implementation-1"><i class="fa fa-check"></i><b>2.3.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.3.3" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#limitations-and-diagnostics"><i class="fa fa-check"></i><b>2.3.3</b> Limitations and Diagnostics</a></li>
+<li class="chapter" data-level="2.3.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#causal-interpretation"><i class="fa fa-check"></i><b>2.3.4</b> Causal Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#toward-integrated-reasoning"><i class="fa fa-check"></i><b>2.4</b> Toward Integrated Reasoning</a></li>
+<li class="chapter" data-level="2.5" data-path="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html"><a href="causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment.html#conclusion"><i class="fa fa-check"></i><b>2.5</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><i class="fa fa-check"></i><b>3</b> Causal Inference in Practice II: Propensity Scores, Doubly Robust Estimators, and Inverse Probability Weighting</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#propensity-score-methods"><i class="fa fa-check"></i><b>3.1</b> Propensity Score Methods</a></li>
+<li class="chapter" data-level="3.2" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#inverse-probability-weighting-ipw"><i class="fa fa-check"></i><b>3.2</b> Inverse Probability Weighting (IPW)</a></li>
+<li class="chapter" data-level="3.3" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#doubly-robust-estimators"><i class="fa fa-check"></i><b>3.3</b> Doubly Robust Estimators</a></li>
+<li class="chapter" data-level="3.4" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#integrative-interpretation"><i class="fa fa-check"></i><b>3.4</b> Integrative Interpretation</a></li>
+<li class="chapter" data-level="3.5" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#summary-table"><i class="fa fa-check"></i><b>3.5</b> Summary Table</a></li>
+<li class="chapter" data-level="3.6" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#conclusion-1"><i class="fa fa-check"></i><b>3.6</b> Conclusion</a></li>
+<li class="chapter" data-level="3.7" data-path="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#references-1"><i class="fa fa-check"></i><b>3.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><i class="fa fa-check"></i><b>4</b> Causal Inference in Practice III: Difference-in-Differences with a Healthcare Application</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#introduction-2"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
+<li class="chapter" data-level="4.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#difference-in-differences-theoretical-framework"><i class="fa fa-check"></i><b>4.2</b> Difference-in-Differences: Theoretical Framework</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#core-concept"><i class="fa fa-check"></i><b>4.2.1</b> Core Concept</a></li>
+<li class="chapter" data-level="4.2.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#mathematical-formalism"><i class="fa fa-check"></i><b>4.2.2</b> Mathematical Formalism</a></li>
+<li class="chapter" data-level="4.2.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#key-assumption-parallel-trends"><i class="fa fa-check"></i><b>4.2.3</b> Key Assumption: Parallel Trends</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#application-evaluating-a-telemedicine-program-in-healthcare"><i class="fa fa-check"></i><b>4.3</b> Application: Evaluating a Telemedicine Program in Healthcare</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#r-implementation-2"><i class="fa fa-check"></i><b>4.3.1</b> R Implementation</a></li>
+<li class="chapter" data-level="4.3.2" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#limitations-and-takeaways"><i class="fa fa-check"></i><b>4.3.2</b> Limitations and takeaways</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#conclusion-2"><i class="fa fa-check"></i><b>4.4</b> Conclusion</a></li>
+<li class="chapter" data-level="4.5" data-path="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html"><a href="causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application.html#references-2"><i class="fa fa-check"></i><b>4.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html"><i class="fa fa-check"></i><b>5</b> Causal Inference in Practice IV: Instrumental Variables</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#introduction-3"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#healthcare-case-study-hospital-quality-and-recovery-time"><i class="fa fa-check"></i><b>5.2</b> Healthcare Case Study: Hospital Quality and Recovery Time</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#r-implementation-3"><i class="fa fa-check"></i><b>5.2.1</b> R Implementation</a></li>
+<li class="chapter" data-level="5.2.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#interpreting-the-results"><i class="fa fa-check"></i><b>5.2.2</b> Interpreting the Results</a></li>
+<li class="chapter" data-level="5.2.3" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#robustness-checks"><i class="fa fa-check"></i><b>5.2.3</b> Robustness Checks</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#practical-considerations-and-extensions"><i class="fa fa-check"></i><b>5.3</b> Practical Considerations and Extensions</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#when-to-use-iv"><i class="fa fa-check"></i><b>5.3.1</b> When to Use IV</a></li>
+<li class="chapter" data-level="5.3.2" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#advanced-topics"><i class="fa fa-check"></i><b>5.3.2</b> Advanced Topics</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#conclusion-3"><i class="fa fa-check"></i><b>5.4</b> Conclusion</a></li>
+<li class="chapter" data-level="5.5" data-path="causal-inference-in-practice-iv-instrumental-variables.html"><a href="causal-inference-in-practice-iv-instrumental-variables.html#further-reading"><i class="fa fa-check"></i><b>5.5</b> Further Reading</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html"><i class="fa fa-check"></i><b>6</b> Causal Inference in Practice V: Regression Discontinuity Design</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#introduction-4"><i class="fa fa-check"></i><b>6.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#comparison-with-other-methods"><i class="fa fa-check"></i><b>6.1.1</b> Comparison with Other Methods</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#healthcare-application-icu-admission-and-mortality"><i class="fa fa-check"></i><b>6.2</b> Healthcare Application: ICU Admission and Mortality</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#scenario"><i class="fa fa-check"></i><b>6.2.1</b> Scenario</a></li>
+<li class="chapter" data-level="6.2.2" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#assumptions-and-validity"><i class="fa fa-check"></i><b>6.2.2</b> Assumptions and Validity</a></li>
+<li class="chapter" data-level="6.2.3" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#r-implementation-4"><i class="fa fa-check"></i><b>6.2.3</b> R Implementation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#interpretation-and-diagnostics"><i class="fa fa-check"></i><b>6.3</b> Interpretation and Diagnostics</a></li>
+<li class="chapter" data-level="6.4" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#extensions-and-robustness"><i class="fa fa-check"></i><b>6.4</b> Extensions and Robustness</a></li>
+<li class="chapter" data-level="6.5" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#limitations-and-considerations"><i class="fa fa-check"></i><b>6.5</b> Limitations and Considerations</a></li>
+<li class="chapter" data-level="6.6" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#conclusion-4"><i class="fa fa-check"></i><b>6.6</b> Conclusion</a></li>
+<li class="chapter" data-level="6.7" data-path="causal-inference-in-practice-v-regression-discontinuity-design.html"><a href="causal-inference-in-practice-v-regression-discontinuity-design.html#references-3"><i class="fa fa-check"></i><b>6.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="causal-forests.html"><a href="causal-forests.html"><i class="fa fa-check"></i><b>7</b> Causal Forests</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="causal-forests.html"><a href="causal-forests.html#introduction-5"><i class="fa fa-check"></i><b>7.1</b> Introduction</a></li>
+<li class="chapter" data-level="7.2" data-path="causal-forests.html"><a href="causal-forests.html#precision-medicine-case-study-personalized-diabetes-treatment"><i class="fa fa-check"></i><b>7.2</b> Precision Medicine Case Study: Personalized Diabetes Treatment</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="causal-forests.html"><a href="causal-forests.html#data-generation-and-setup"><i class="fa fa-check"></i><b>7.2.1</b> Data Generation and Setup</a></li>
+<li class="chapter" data-level="7.2.2" data-path="causal-forests.html"><a href="causal-forests.html#fitting-the-causal-forest"><i class="fa fa-check"></i><b>7.2.2</b> Fitting the Causal Forest</a></li>
+<li class="chapter" data-level="7.2.3" data-path="causal-forests.html"><a href="causal-forests.html#variable-importance-analysis"><i class="fa fa-check"></i><b>7.2.3</b> Variable Importance Analysis</a></li>
+<li class="chapter" data-level="7.2.4" data-path="causal-forests.html"><a href="causal-forests.html#statistical-testing-for-heterogeneity"><i class="fa fa-check"></i><b>7.2.4</b> Statistical Testing for Heterogeneity</a></li>
+<li class="chapter" data-level="7.2.5" data-path="causal-forests.html"><a href="causal-forests.html#visualization-and-pattern-discovery"><i class="fa fa-check"></i><b>7.2.5</b> Visualization and Pattern Discovery</a></li>
+<li class="chapter" data-level="7.2.6" data-path="causal-forests.html"><a href="causal-forests.html#personalized-treatment-strategy-development"><i class="fa fa-check"></i><b>7.2.6</b> Personalized Treatment Strategy Development</a></li>
+<li class="chapter" data-level="7.2.7" data-path="causal-forests.html"><a href="causal-forests.html#partial-dependence-analysis"><i class="fa fa-check"></i><b>7.2.7</b> Partial Dependence Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="causal-forests.html"><a href="causal-forests.html#clinical-insights-and-limitations"><i class="fa fa-check"></i><b>7.3</b> Clinical Insights and Limitations</a></li>
+<li class="chapter" data-level="7.4" data-path="causal-forests.html"><a href="causal-forests.html#conclusion-5"><i class="fa fa-check"></i><b>7.4</b> Conclusion</a></li>
+<li class="chapter" data-level="7.5" data-path="causal-forests.html"><a href="causal-forests.html#references-4"><i class="fa fa-check"></i><b>7.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html"><i class="fa fa-check"></i><b>8</b> Bayesian Structural Time Series for Causal Inference</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#introduction-6"><i class="fa fa-check"></i><b>8.1</b> Introduction</a></li>
+<li class="chapter" data-level="8.2" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#r-implementation-examples-healthcare"><i class="fa fa-check"></i><b>8.2</b> R Implementation examples Healthcare</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#tobacco-tax-policy"><i class="fa fa-check"></i><b>8.2.1</b> Tobacco Tax Policy</a></li>
+<li class="chapter" data-level="8.2.2" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#teletherapy-program-assessment"><i class="fa fa-check"></i><b>8.2.2</b> Teletherapy Program Assessment</a></li>
+<li class="chapter" data-level="8.2.3" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#implementation-guidelines-for-healthcare-applications"><i class="fa fa-check"></i><b>8.2.3</b> Implementation Guidelines for Healthcare Applications</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#conclusion-6"><i class="fa fa-check"></i><b>8.3</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html"><i class="fa fa-check"></i><b>9</b> Meta-Learners for Heterogeneous Treatment Effects</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#introduction-the-promise-and-peril-of-machine-learning-for-causal-inference"><i class="fa fa-check"></i><b>9.1</b> Introduction: The Promise and Peril of Machine Learning for Causal Inference</a></li>
+<li class="chapter" data-level="9.2" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#theoretical-foundation-from-prediction-to-causal-inference"><i class="fa fa-check"></i><b>9.2</b> Theoretical Foundation: From Prediction to Causal Inference</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#the-s-learner-simplicity-with-hidden-complexity"><i class="fa fa-check"></i><b>9.2.1</b> The S-Learner: Simplicity with Hidden Complexity</a></li>
+<li class="chapter" data-level="9.2.2" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#the-t-learner-divide-and-conquer"><i class="fa fa-check"></i><b>9.2.2</b> The T-Learner: Divide and Conquer</a></li>
+<li class="chapter" data-level="9.2.3" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#the-x-learner-sophisticated-synthesis"><i class="fa fa-check"></i><b>9.2.3</b> The X-Learner: Sophisticated Synthesis</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#practical-implementation-hypertension-treatment-optimization"><i class="fa fa-check"></i><b>9.3</b> Practical Implementation: Hypertension Treatment Optimization</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementing-the-s-learner"><i class="fa fa-check"></i><b>9.3.1</b> Implementing the S-Learner</a></li>
+<li class="chapter" data-level="9.3.2" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementing-the-t-learner"><i class="fa fa-check"></i><b>9.3.2</b> Implementing the T-Learner</a></li>
+<li class="chapter" data-level="9.3.3" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementing-the-x-learner"><i class="fa fa-check"></i><b>9.3.3</b> Implementing the X-Learner</a></li>
+<li class="chapter" data-level="9.3.4" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#comparative-analysis-and-model-selection"><i class="fa fa-check"></i><b>9.3.4</b> Comparative Analysis and Model Selection</a></li>
+<li class="chapter" data-level="9.3.5" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#clinical-pattern-discovery-and-interpretation"><i class="fa fa-check"></i><b>9.3.5</b> Clinical Pattern Discovery and Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementation-considerations-and-best-practices"><i class="fa fa-check"></i><b>9.4</b> Implementation Considerations and Best Practices</a></li>
+<li class="chapter" data-level="9.5" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#conclusion-democratizing-causal-machine-learning"><i class="fa fa-check"></i><b>9.5</b> Conclusion: Democratizing Causal Machine Learning</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><i class="fa fa-check"></i><b>10</b> Targeted Maximum Likelihood Estimation for Robust Causal Inference in Healthcare</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html#introduction-7"><i class="fa fa-check"></i><b>10.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="10.1.1" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html#double-robustness-and-tmle"><i class="fa fa-check"></i><b>10.1.1</b> Double Robustness and TMLE</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html#healthcare-application-comparative-effectiveness-of-hypertension-treatments"><i class="fa fa-check"></i><b>10.2</b> Healthcare Application: Comparative Effectiveness of Hypertension Treatments</a></li>
+<li class="chapter" data-level="10.3" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html#limitations-and-practical-implementation"><i class="fa fa-check"></i><b>10.3</b> Limitations and Practical Implementation</a></li>
+<li class="chapter" data-level="10.4" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html#conclusion-7"><i class="fa fa-check"></i><b>10.4</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html"><i class="fa fa-check"></i><b>11</b> G-Computation for Causal Inference</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#introduction-8"><i class="fa fa-check"></i><b>11.1</b> Introduction</a></li>
+<li class="chapter" data-level="11.2" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#case-study-hypertension-management-over-time"><i class="fa fa-check"></i><b>11.2</b> Case Study: Hypertension Management Over Time</a>
+<ul>
+<li class="chapter" data-level="11.2.1" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#fitting-the-g-formula-model"><i class="fa fa-check"></i><b>11.2.1</b> Fitting the G-Formula Model</a></li>
+<li class="chapter" data-level="11.2.2" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#interpreting-results-and-model-diagnostics"><i class="fa fa-check"></i><b>11.2.2</b> Interpreting Results and Model Diagnostics</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#practical-considerations-and-limitations"><i class="fa fa-check"></i><b>11.3</b> Practical Considerations and Limitations</a></li>
+<li class="chapter" data-level="11.4" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#conclusion-integrating-g-computation-into-practice"><i class="fa fa-check"></i><b>11.4</b> Conclusion: Integrating G-Computation into Practice</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><i class="fa fa-check"></i><b>12</b> Structural Equation Modeling for Healthcare Research: Unraveling Complex Causal Pathways</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html#introduction-9"><i class="fa fa-check"></i><b>12.1</b> Introduction</a></li>
+<li class="chapter" data-level="12.2" data-path="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html#a-mediation-analysis-physical-activity-mental-health-and-diabetes-control"><i class="fa fa-check"></i><b>12.2</b> A Mediation Analysis: Physical Activity, Mental Health, and Diabetes Control</a></li>
+<li class="chapter" data-level="12.3" data-path="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html#clinical-interpretation-and-limitations"><i class="fa fa-check"></i><b>12.3</b> Clinical Interpretation and Limitations</a></li>
+<li class="chapter" data-level="12.4" data-path="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html#conclusion-8"><i class="fa fa-check"></i><b>12.4</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><i class="fa fa-check"></i><b>13</b> Directed Acyclic Graphs: Mapping the Causal Architecture of Healthcare Decisions</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#introduction-10"><i class="fa fa-check"></i><b>13.1</b> Introduction</a></li>
+<li class="chapter" data-level="13.2" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#implementing-dag-analysis-in-healthcare-research"><i class="fa fa-check"></i><b>13.2</b> Implementing DAG Analysis in Healthcare Research</a></li>
+<li class="chapter" data-level="13.3" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#comparing-analytical-strategies"><i class="fa fa-check"></i><b>13.3</b> Comparing Analytical Strategies</a></li>
+<li class="chapter" data-level="13.4" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#visualizing-causal-structures-for-communication"><i class="fa fa-check"></i><b>13.4</b> Visualizing Causal Structures for Communication</a></li>
+<li class="chapter" data-level="13.5" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#sensitivity-analysis-and-unmeasured-confounding"><i class="fa fa-check"></i><b>13.5</b> Sensitivity Analysis and Unmeasured Confounding</a></li>
+<li class="chapter" data-level="13.6" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#testable-implications-and-dag-validation"><i class="fa fa-check"></i><b>13.6</b> Testable Implications and DAG Validation</a></li>
+<li class="chapter" data-level="13.7" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#practical-guidance-for-healthcare-applications"><i class="fa fa-check"></i><b>13.7</b> Practical Guidance for Healthcare Applications</a></li>
+<li class="chapter" data-level="13.8" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#conclusion-dags-as-foundation-for-rigorous-causal-inference"><i class="fa fa-check"></i><b>13.8</b> Conclusion: DAGs as Foundation for Rigorous Causal Inference</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="double-machine-learning.html"><a href="double-machine-learning.html"><i class="fa fa-check"></i><b>14</b> Double Machine Learning</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="double-machine-learning.html"><a href="double-machine-learning.html#introduction-11"><i class="fa fa-check"></i><b>14.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="14.1.1" data-path="double-machine-learning.html"><a href="double-machine-learning.html#theoretical-framework-understanding-the-double-machine-learning-approach"><i class="fa fa-check"></i><b>14.1.1</b> Theoretical Framework: Understanding the Double Machine Learning Approach</a></li>
+</ul></li>
+<li class="chapter" data-level="14.2" data-path="double-machine-learning.html"><a href="double-machine-learning.html#cardiovascular-disease-prevention-a-dml-case-study"><i class="fa fa-check"></i><b>14.2</b> Cardiovascular Disease Prevention: A DML Case Study</a></li>
+<li class="chapter" data-level="14.3" data-path="double-machine-learning.html"><a href="double-machine-learning.html#clinical-interpretation-and-implementation"><i class="fa fa-check"></i><b>14.3</b> Clinical Interpretation and Implementation</a></li>
+<li class="chapter" data-level="14.4" data-path="double-machine-learning.html"><a href="double-machine-learning.html#understanding-assumptions-and-potential-violations"><i class="fa fa-check"></i><b>14.4</b> Understanding Assumptions and Potential Violations</a></li>
+<li class="chapter" data-level="14.5" data-path="double-machine-learning.html"><a href="double-machine-learning.html#extensions-and-advanced-applications"><i class="fa fa-check"></i><b>14.5</b> Extensions and Advanced Applications</a></li>
+<li class="chapter" data-level="14.6" data-path="double-machine-learning.html"><a href="double-machine-learning.html#conclusion-9"><i class="fa fa-check"></i><b>14.6</b> Conclusion</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Causal Inference in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="double-machine-learning" class="section level1 hasAnchor" number="14">
+<h1><span class="header-section-number">Chapter 14</span> Double Machine Learning<a href="double-machine-learning.html#double-machine-learning" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction-11" class="section level2 hasAnchor" number="14.1">
+<h2><span class="header-section-number">14.1</span> Introduction<a href="double-machine-learning.html#introduction-11" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Imagine analyzing electronic health records to determine whether a particular antihypertensive medication reduces cardiovascular events. Your dataset contains thousands of patients with hundreds of potential confounders—demographics, comorbidities, laboratory values, prior medications, and lifestyle factors. Traditional regression approaches force you into an uncomfortable choice: either include all potential confounders and risk overfitting with unreliable estimates, or select a small subset based on clinical judgment and risk omitting important confounders that bias your results.</p>
+<p>This dilemma pervades modern healthcare research where rich observational data enables causal questions at unprecedented scale, but high dimensionality threatens the validity of conventional statistical methods. Including too many variables causes model instability and poor out-of-sample performance, while including too few invites confounding bias that invalidates causal conclusions. The tension between bias and variance that characterizes all of statistical learning becomes particularly acute in causal inference where getting the answer wrong can mislead clinical practice and harm patients.</p>
+<p>Double machine learning (DML) resolves this tension through a principled framework that harnesses machine learning’s predictive power while preserving the statistical rigor necessary for valid causal inference. The method enables researchers to flexibly model complex relationships between treatments, outcomes, and high-dimensional confounders without sacrificing the ability to conduct hypothesis tests and construct confidence intervals. By carefully separating the roles of prediction and inference, DML achieves robustness to model misspecification that makes causal conclusions reliable even when individual predictive models are imperfect.</p>
+<p>The core insight underlying DML is deceptively simple yet profound: we can use flexible machine learning methods to remove confounding, but we must do so carefully to preserve the statistical properties needed for valid inference. Traditional approaches that simply plug machine learning predictions into causal estimators fail because the bias introduced by regularization and model selection propagates into treatment effect estimates in ways that invalidate standard errors and confidence intervals. DML addresses this through three key innovations that work together to deliver robust causal inference in high-dimensional settings.</p>
+<p>First, the method employs orthogonal score functions that make treatment effect estimation insensitive to small mistakes in nuisance parameter estimation. This Neyman orthogonality property ensures that even when machine learning models for outcomes and treatment propensities are slightly wrong, the bias in treatment effect estimates remains negligible. Second, DML uses cross-fitting to eliminate overfitting bias that would otherwise contaminate inference. By training prediction models on different data than used for treatment effect estimation, the method prevents the optimistic bias that machine learning algorithms naturally introduce through adaptive model selection. Third, the framework provides honest uncertainty quantification through asymptotic normality guarantees that enable valid hypothesis tests and confidence intervals despite using adaptive, data-driven procedures.</p>
+<p>These technical innovations translate into practical advantages for healthcare researchers grappling with the reality of modern observational data. DML handles high-dimensional confounders that would overwhelm traditional parametric approaches, remains robust when the functional form relating confounders to treatments and outcomes is complex and unknown, and delivers treatment effect estimates with valid standard errors and confidence intervals that support rigorous inference. The method works particularly well in settings where researchers have access to rich covariate information but limited understanding of the precise functional relationships governing the data generating process.</p>
+<div id="theoretical-framework-understanding-the-double-machine-learning-approach" class="section level3 hasAnchor" number="14.1.1">
+<h3><span class="header-section-number">14.1.1</span> Theoretical Framework: Understanding the Double Machine Learning Approach<a href="double-machine-learning.html#theoretical-framework-understanding-the-double-machine-learning-approach" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The mathematical foundation of DML rests on the potential outcomes framework familiar from our causal forests discussion, but extends it to handle estimation challenges posed by high-dimensional confounders. Consider a patient <span class="math inline">\(i\)</span> with high-dimensional characteristics <span class="math inline">\(X_i \in \mathbb{R}^p\)</span> where <span class="math inline">\(p\)</span> might be hundreds or thousands, binary treatment <span class="math inline">\(W_i \in \{0,1\}\)</span> indicating medication use, and continuous outcome <span class="math inline">\(Y_i\)</span> representing a clinical endpoint like blood pressure reduction or time to cardiovascular event.</p>
+<p>Under the potential outcomes framework, each patient has two potential outcomes <span class="math inline">\(Y_i(0)\)</span> and <span class="math inline">\(Y_i(1)\)</span> representing what would occur under control and treatment respectively. The causal estimand of interest is the average treatment effect <span class="math inline">\(\theta_0 = \mathbb{E}[Y_i(1) - Y_i(0)]\)</span>, but we face the fundamental problem that we observe only one potential outcome for each patient. Identification of the average treatment effect from observational data requires the unconfoundedness assumption <span class="math inline">\(\{Y_i(0), Y_i(1)\} \perp W_i | X_i\)</span> stating that conditional on observed characteristics, treatment assignment is effectively random. This assumption rules out unmeasured confounding where hidden variables influence both treatment decisions and outcomes.</p>
+<p>The overlap assumption <span class="math inline">\(0 &lt; \mathbb{P}(W_i = 1 | X_i = x) &lt; 0\)</span> for all <span class="math inline">\(x\)</span> in the support of <span class="math inline">\(X\)</span> ensures that patients with similar characteristics have positive probability of receiving either treatment or control. Without overlap, some regions of the covariate space contain only treated or only control patients, making causal comparisons impossible. Together, these assumptions enable identification of causal effects from observational data, though estimation remains challenging when <span class="math inline">\(X_i\)</span> is high-dimensional.</p>
+<p>Traditional regression approaches estimate the average treatment effect by fitting the outcome model <span class="math inline">\(\mathbb{E}[Y_i | W_i, X_i] = \alpha + \theta W_i + \beta^\top X_i\)</span> and interpreting <span class="math inline">\(\theta\)</span> as the treatment effect. This approach works well when <span class="math inline">\(p\)</span> is small relative to sample size <span class="math inline">\(n\)</span> and the linear functional form is correctly specified, but breaks down in high-dimensional settings where flexible modeling is needed. Simply replacing linear regression with machine learning methods like random forests or neural networks introduces bias that invalidates inference because these methods trade unbiasedness for improved prediction through regularization and model selection.</p>
+<p>The DML framework addresses this challenge through the partially linear regression model <span class="math inline">\(Y_i = \theta_0 W_i + g_0(X_i) + U_i\)</span> where <span class="math inline">\(g_0(X_i) = \mathbb{E}[Y_i | X_i]\)</span> represents the conditional mean of outcomes as an unknown function of confounders, <span class="math inline">\(\theta_0\)</span> represents the treatment effect of interest, and <span class="math inline">\(U_i\)</span> is a mean-zero error term. Crucially, this model does not assume any particular functional form for <span class="math inline">\(g_0(\cdot)\)</span>, allowing arbitrarily complex relationships between confounders and outcomes. The treatment effect <span class="math inline">\(\theta_0\)</span> retains its causal interpretation under unconfoundedness, and the function <span class="math inline">\(g_0(\cdot)\)</span> serves as a nuisance parameter that must be estimated to remove confounding but is not itself of primary interest.</p>
+<p>A naive approach would estimate <span class="math inline">\(g_0(\cdot)\)</span> using machine learning, subtract these predictions from outcomes to create residuals <span class="math inline">\(\tilde{Y}_i = Y_i - \hat{g}(X_i)\)</span>, and regress residuals on treatment to obtain <span class="math inline">\(\hat{\theta}\)</span>. This procedure fails because the bias in <span class="math inline">\(\hat{g}(X_i)\)</span> propagates into <span class="math inline">\(\hat{\theta}\)</span> in ways that invalidate inference, particularly when <span class="math inline">\(p\)</span> is large relative to <span class="math inline">\(n\)</span>. The problem is that machine learning estimators are typically biased even as <span class="math inline">\(n \to \infty\)</span> due to regularization, and this bias contaminates the treatment effect estimate.</p>
+<p>DML solves this problem through orthogonal moment conditions that make treatment effect estimation approximately insensitive to errors in nuisance parameter estimation. The key insight is that we need to also model the treatment mechanism through the propensity score <span class="math inline">\(m_0(X_i) = \mathbb{E}[W_i | X_i]\)</span> representing the probability of treatment conditional on confounders. The orthogonal score function takes the form <span class="math inline">\(\psi(W_i, Y_i, X_i; \theta, g, m) = (W_i - m(X_i))(Y_i - g(X_i) - \theta W_i)\)</span>, which has the crucial Neyman orthogonality property that its derivative with respect to nuisance parameters <span class="math inline">\((g, m)\)</span> evaluated at the truth equals zero.</p>
+<p>This orthogonality means that first-order errors in estimating <span class="math inline">\(g_0\)</span> and <span class="math inline">\(m_0\)</span> do not affect the treatment effect estimate to first order, providing robustness to model misspecification. Intuitively, we remove confounding by modeling both how confounders predict outcomes and how confounders predict treatment, creating a doubly robust estimator that remains consistent if either model is correctly specified. This double robustness represents a major advantage over traditional approaches that require correct specification of both models simultaneously.</p>
+<p>The DML algorithm proceeds through sample splitting and cross-fitting to eliminate overfitting bias. We randomly partition the data into <span class="math inline">\(K\)</span> folds, typically <span class="math inline">\(K=5\)</span> or <span class="math inline">\(K=10\)</span>, and for each fold <span class="math inline">\(k\)</span> we use the remaining <span class="math inline">\(K-1\)</span> folds to train machine learning models <span class="math inline">\(\hat{g}^{(-k)}\)</span> and <span class="math inline">\(\hat{m}^{(-k)}\)</span> for the outcome and propensity score respectively. We then use these models to create predictions for the held-out fold <span class="math inline">\(k\)</span>, ensuring that predictions are never made on the same data used for training. This cross-fitting procedure eliminates the overfitting bias that would arise if we used the same data for both model training and treatment effect estimation.</p>
+<p>For each observation <span class="math inline">\(i\)</span> in fold <span class="math inline">\(k\)</span>, we compute the orthogonal score <span class="math inline">\(\hat{\psi}_i = (W_i - \hat{m}^{(-k)}(X_i))(Y_i - \hat{g}^{(-k)}(X_i) - \theta W_i)\)</span> using the machine learning models trained on other folds. The treatment effect estimate solves <span class="math inline">\(\frac{1}{n}\sum_{i=1}^n \hat{\psi}_i = 0\)</span>, which yields the closed-form solution <span class="math inline">\(\hat{\theta} = \frac{\sum_{i=1}^n (W_i - \hat{m}^{(-k)}(X_i))(Y_i - \hat{g}^{(-k)}(X_i))}{\sum_{i=1}^n W_i(W_i - \hat{m}^{(-k)}(X_i))}\)</span> where each observation uses predictions from models trained without that observation.</p>
+<p>The theoretical guarantees underlying DML ensure that <span class="math inline">\(\sqrt{n}(\hat{\theta} - \theta_0)\)</span> converges in distribution to a normal distribution with variance that can be consistently estimated, enabling construction of valid confidence intervals and hypothesis tests. This asymptotic normality holds under relatively weak conditions on the machine learning estimators—they need only converge to the truth at rate <span class="math inline">\(o_p(n^{-1/4})\)</span>, which is substantially slower than the <span class="math inline">\(n^{-1/2}\)</span> rate required for <span class="math inline">\(\hat{\theta}\)</span> itself. This rate condition is satisfied by many modern machine learning methods including random forests, boosted trees, neural networks, and penalized regression when used appropriately.</p>
+<p>The robustness to model misspecification represents perhaps the most important practical advantage of DML. Even when both the outcome model <span class="math inline">\(g_0(\cdot)\)</span> and the propensity score model <span class="math inline">\(m_0(\cdot)\)</span> are misspecified, the treatment effect estimate <span class="math inline">\(\hat{\theta}\)</span> remains approximately unbiased and asymptotically normal provided the product of the errors in the two models converges to zero sufficiently fast. This double robustness means that getting either model approximately right suffices for valid inference, dramatically reducing the risk of misleading conclusions from model misspecification that plagues traditional approaches.</p>
+</div>
+</div>
+<div id="cardiovascular-disease-prevention-a-dml-case-study" class="section level2 hasAnchor" number="14.2">
+<h2><span class="header-section-number">14.2</span> Cardiovascular Disease Prevention: A DML Case Study<a href="double-machine-learning.html#cardiovascular-disease-prevention-a-dml-case-study" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>We demonstrate DML through a realistic observational study examining whether aggressive blood pressure management reduces cardiovascular events. Our analysis uses electronic health records containing rich patient information including demographics, comorbidities, laboratory values, vital signs, and prior medication use. The treatment of interest is intensive blood pressure control defined as target systolic blood pressure below 120 mmHg versus standard control below 140 mmHg, and the outcome is five-year cardiovascular event risk measured as a continuous risk score.</p>
+<p>The high-dimensional confounding structure reflects the reality that treatment decisions depend on numerous patient characteristics in complex ways. Physicians prescribe intensive blood pressure control based on cardiovascular risk profiles, contraindications, patient preferences, and clinical judgment that involves nonlinear combinations of many factors. Traditional regression approaches that assume linear relationships or require researchers to specify interaction terms would struggle to adequately control for confounding in this setting, while DML can flexibly adapt to the true functional form.</p>
+<div class="sourceCode" id="cb593"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb593-1"><a href="double-machine-learning.html#cb593-1" tabindex="-1"></a><span class="co"># Load required libraries</span></span>
+<span id="cb593-2"><a href="double-machine-learning.html#cb593-2" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;DoubleML&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;DoubleML&quot;</span>)</span>
+<span id="cb593-3"><a href="double-machine-learning.html#cb593-3" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;mlr3&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;mlr3&quot;</span>)</span>
+<span id="cb593-4"><a href="double-machine-learning.html#cb593-4" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;mlr3learners&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;mlr3learners&quot;</span>)</span>
+<span id="cb593-5"><a href="double-machine-learning.html#cb593-5" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;data.table&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;data.table&quot;</span>)</span>
+<span id="cb593-6"><a href="double-machine-learning.html#cb593-6" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;ggplot2&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;ggplot2&quot;</span>)</span>
+<span id="cb593-7"><a href="double-machine-learning.html#cb593-7" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;ranger&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;ranger&quot;</span>)</span>
+<span id="cb593-8"><a href="double-machine-learning.html#cb593-8" tabindex="-1"></a></span>
+<span id="cb593-9"><a href="double-machine-learning.html#cb593-9" tabindex="-1"></a><span class="fu">library</span>(DoubleML)</span>
+<span id="cb593-10"><a href="double-machine-learning.html#cb593-10" tabindex="-1"></a><span class="fu">library</span>(mlr3)</span></code></pre></div>
+<pre><code>## Warning: package &#39;mlr3&#39; was built under R version 4.5.1</code></pre>
+<div class="sourceCode" id="cb595"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb595-1"><a href="double-machine-learning.html#cb595-1" tabindex="-1"></a><span class="fu">library</span>(mlr3learners)</span></code></pre></div>
+<pre><code>## Warning: package &#39;mlr3learners&#39; was built under R version 4.5.1</code></pre>
+<div class="sourceCode" id="cb597"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb597-1"><a href="double-machine-learning.html#cb597-1" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb597-2"><a href="double-machine-learning.html#cb597-2" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb597-3"><a href="double-machine-learning.html#cb597-3" tabindex="-1"></a><span class="fu">library</span>(ranger)</span></code></pre></div>
+<pre><code>## ranger 0.17.0 using 2 threads (default). Change with num.threads in ranger() and predict(), options(Ncpus = N), options(ranger.num.threads = N) or environment variable R_RANGER_NUM_THREADS.</code></pre>
+<pre><code>## 
+## Attaching package: &#39;ranger&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:randomForest&#39;:
+## 
+##     importance</code></pre>
+<div class="sourceCode" id="cb601"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb601-1"><a href="double-machine-learning.html#cb601-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2024</span>)</span>
+<span id="cb601-2"><a href="double-machine-learning.html#cb601-2" tabindex="-1"></a></span>
+<span id="cb601-3"><a href="double-machine-learning.html#cb601-3" tabindex="-1"></a><span class="co"># Simulate realistic observational healthcare data</span></span>
+<span id="cb601-4"><a href="double-machine-learning.html#cb601-4" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">3000</span></span>
+<span id="cb601-5"><a href="double-machine-learning.html#cb601-5" tabindex="-1"></a></span>
+<span id="cb601-6"><a href="double-machine-learning.html#cb601-6" tabindex="-1"></a><span class="co"># Generate high-dimensional patient characteristics</span></span>
+<span id="cb601-7"><a href="double-machine-learning.html#cb601-7" tabindex="-1"></a>age <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">40</span>, <span class="fu">pmin</span>(<span class="dv">85</span>, <span class="fu">rnorm</span>(n, <span class="dv">65</span>, <span class="dv">10</span>)))</span>
+<span id="cb601-8"><a href="double-machine-learning.html#cb601-8" tabindex="-1"></a>bmi <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">18</span>, <span class="fu">pmin</span>(<span class="dv">45</span>, <span class="fu">rnorm</span>(n, <span class="dv">28</span>, <span class="dv">5</span>)))</span>
+<span id="cb601-9"><a href="double-machine-learning.html#cb601-9" tabindex="-1"></a>diabetes <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fu">plogis</span>(<span class="sc">-</span><span class="dv">2</span> <span class="sc">+</span> <span class="fl">0.03</span> <span class="sc">*</span> age <span class="sc">+</span> <span class="fl">0.05</span> <span class="sc">*</span> (bmi <span class="sc">-</span> <span class="dv">28</span>)))</span>
+<span id="cb601-10"><a href="double-machine-learning.html#cb601-10" tabindex="-1"></a>smoking <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fu">plogis</span>(<span class="sc">-</span><span class="fl">1.5</span> <span class="sc">+</span> <span class="fl">0.02</span> <span class="sc">*</span> age <span class="sc">-</span> <span class="fl">0.3</span> <span class="sc">*</span> diabetes))</span>
+<span id="cb601-11"><a href="double-machine-learning.html#cb601-11" tabindex="-1"></a>kidney_disease <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fu">plogis</span>(<span class="sc">-</span><span class="dv">3</span> <span class="sc">+</span> <span class="fl">0.04</span> <span class="sc">*</span> age <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> diabetes))</span>
+<span id="cb601-12"><a href="double-machine-learning.html#cb601-12" tabindex="-1"></a>prior_cvd <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fu">plogis</span>(<span class="sc">-</span><span class="fl">2.5</span> <span class="sc">+</span> <span class="fl">0.05</span> <span class="sc">*</span> age <span class="sc">+</span> <span class="fl">0.4</span> <span class="sc">*</span> diabetes <span class="sc">+</span> <span class="fl">0.6</span> <span class="sc">*</span> smoking))</span>
+<span id="cb601-13"><a href="double-machine-learning.html#cb601-13" tabindex="-1"></a></span>
+<span id="cb601-14"><a href="double-machine-learning.html#cb601-14" tabindex="-1"></a><span class="co"># Laboratory values with realistic correlations</span></span>
+<span id="cb601-15"><a href="double-machine-learning.html#cb601-15" tabindex="-1"></a>cholesterol <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">120</span>, <span class="fu">pmin</span>(<span class="dv">300</span>, <span class="fu">rnorm</span>(n, <span class="dv">200</span> <span class="sc">+</span> <span class="dv">20</span> <span class="sc">*</span> diabetes, <span class="dv">35</span>)))</span>
+<span id="cb601-16"><a href="double-machine-learning.html#cb601-16" tabindex="-1"></a>hdl <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">20</span>, <span class="fu">pmin</span>(<span class="dv">100</span>, <span class="fu">rnorm</span>(n, <span class="dv">50</span> <span class="sc">-</span> <span class="dv">5</span> <span class="sc">*</span> bmi<span class="sc">/</span><span class="dv">28</span>, <span class="dv">12</span>)))</span>
+<span id="cb601-17"><a href="double-machine-learning.html#cb601-17" tabindex="-1"></a>creatinine <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="fl">0.5</span>, <span class="fu">pmin</span>(<span class="fl">3.0</span>, <span class="fu">rnorm</span>(n, <span class="fl">1.0</span> <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> kidney_disease <span class="sc">+</span> <span class="fl">0.01</span> <span class="sc">*</span> age, <span class="fl">0.3</span>)))</span>
+<span id="cb601-18"><a href="double-machine-learning.html#cb601-18" tabindex="-1"></a>hba1c <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="fl">4.5</span>, <span class="fu">pmin</span>(<span class="fl">12.0</span>, <span class="fu">rnorm</span>(n, <span class="fl">5.5</span> <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> diabetes, <span class="fl">1.2</span>)))</span>
+<span id="cb601-19"><a href="double-machine-learning.html#cb601-19" tabindex="-1"></a></span>
+<span id="cb601-20"><a href="double-machine-learning.html#cb601-20" tabindex="-1"></a><span class="co"># Baseline systolic blood pressure with nonlinear relationships</span></span>
+<span id="cb601-21"><a href="double-machine-learning.html#cb601-21" tabindex="-1"></a>baseline_sbp <span class="ot">&lt;-</span> <span class="dv">120</span> <span class="sc">+</span> <span class="dv">15</span> <span class="sc">*</span> (age <span class="sc">-</span> <span class="dv">65</span>)<span class="sc">/</span><span class="dv">20</span> <span class="sc">+</span> <span class="dv">8</span> <span class="sc">*</span> (bmi <span class="sc">-</span> <span class="dv">28</span>)<span class="sc">/</span><span class="dv">5</span> <span class="sc">+</span> </span>
+<span id="cb601-22"><a href="double-machine-learning.html#cb601-22" tabindex="-1"></a>  <span class="dv">10</span> <span class="sc">*</span> diabetes <span class="sc">+</span> <span class="dv">5</span> <span class="sc">*</span> smoking <span class="sc">+</span> <span class="dv">12</span> <span class="sc">*</span> kidney_disease <span class="sc">+</span> <span class="dv">8</span> <span class="sc">*</span> prior_cvd <span class="sc">+</span></span>
+<span id="cb601-23"><a href="double-machine-learning.html#cb601-23" tabindex="-1"></a>  <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">12</span>)</span>
+<span id="cb601-24"><a href="double-machine-learning.html#cb601-24" tabindex="-1"></a>baseline_sbp <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">110</span>, <span class="fu">pmin</span>(<span class="dv">180</span>, baseline_sbp))</span>
+<span id="cb601-25"><a href="double-machine-learning.html#cb601-25" tabindex="-1"></a></span>
+<span id="cb601-26"><a href="double-machine-learning.html#cb601-26" tabindex="-1"></a><span class="co"># Additional confounders to increase dimensionality</span></span>
+<span id="cb601-27"><a href="double-machine-learning.html#cb601-27" tabindex="-1"></a>education_years <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">8</span>, <span class="fu">pmin</span>(<span class="dv">20</span>, <span class="fu">rnorm</span>(n, <span class="dv">14</span>, <span class="dv">3</span>)))</span>
+<span id="cb601-28"><a href="double-machine-learning.html#cb601-28" tabindex="-1"></a>exercise_hours <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">0</span>, <span class="fu">pmin</span>(<span class="dv">20</span>, <span class="fu">rnorm</span>(n, <span class="dv">3</span> <span class="sc">-</span> <span class="fl">0.5</span> <span class="sc">*</span> bmi<span class="sc">/</span><span class="dv">28</span>, <span class="dv">2</span>)))</span>
+<span id="cb601-29"><a href="double-machine-learning.html#cb601-29" tabindex="-1"></a>medications_count <span class="ot">&lt;-</span> <span class="fu">rpois</span>(n, <span class="at">lambda =</span> <span class="dv">1</span> <span class="sc">+</span> prior_cvd <span class="sc">+</span> diabetes <span class="sc">+</span> kidney_disease)</span>
+<span id="cb601-30"><a href="double-machine-learning.html#cb601-30" tabindex="-1"></a>family_history <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.3</span> <span class="sc">+</span> <span class="fl">0.2</span> <span class="sc">*</span> prior_cvd)</span>
+<span id="cb601-31"><a href="double-machine-learning.html#cb601-31" tabindex="-1"></a></span>
+<span id="cb601-32"><a href="double-machine-learning.html#cb601-32" tabindex="-1"></a><span class="co"># Create interaction features that add complexity</span></span>
+<span id="cb601-33"><a href="double-machine-learning.html#cb601-33" tabindex="-1"></a>age_bmi_interaction <span class="ot">&lt;-</span> <span class="fu">scale</span>(age <span class="sc">*</span> bmi)</span>
+<span id="cb601-34"><a href="double-machine-learning.html#cb601-34" tabindex="-1"></a>diabetes_smoking_interaction <span class="ot">&lt;-</span> diabetes <span class="sc">*</span> smoking</span>
+<span id="cb601-35"><a href="double-machine-learning.html#cb601-35" tabindex="-1"></a></span>
+<span id="cb601-36"><a href="double-machine-learning.html#cb601-36" tabindex="-1"></a><span class="co"># Combine all covariates</span></span>
+<span id="cb601-37"><a href="double-machine-learning.html#cb601-37" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb601-38"><a href="double-machine-learning.html#cb601-38" tabindex="-1"></a>  age, bmi, diabetes, smoking, kidney_disease, prior_cvd,</span>
+<span id="cb601-39"><a href="double-machine-learning.html#cb601-39" tabindex="-1"></a>  cholesterol, hdl, creatinine, hba1c, baseline_sbp,</span>
+<span id="cb601-40"><a href="double-machine-learning.html#cb601-40" tabindex="-1"></a>  education_years, exercise_hours, medications_count, family_history,</span>
+<span id="cb601-41"><a href="double-machine-learning.html#cb601-41" tabindex="-1"></a>  age_bmi_interaction, diabetes_smoking_interaction</span>
+<span id="cb601-42"><a href="double-machine-learning.html#cb601-42" tabindex="-1"></a>)</span>
+<span id="cb601-43"><a href="double-machine-learning.html#cb601-43" tabindex="-1"></a></span>
+<span id="cb601-44"><a href="double-machine-learning.html#cb601-44" tabindex="-1"></a><span class="co"># Complex treatment assignment mechanism reflecting clinical decision making</span></span>
+<span id="cb601-45"><a href="double-machine-learning.html#cb601-45" tabindex="-1"></a>propensity_score <span class="ot">&lt;-</span> <span class="fu">plogis</span>(</span>
+<span id="cb601-46"><a href="double-machine-learning.html#cb601-46" tabindex="-1"></a>  <span class="sc">-</span><span class="fl">2.5</span> <span class="sc">+</span> <span class="fl">0.04</span> <span class="sc">*</span> age <span class="sc">+</span> <span class="fl">0.05</span> <span class="sc">*</span> (baseline_sbp <span class="sc">-</span> <span class="dv">140</span>)<span class="sc">/</span><span class="dv">10</span> <span class="sc">+</span></span>
+<span id="cb601-47"><a href="double-machine-learning.html#cb601-47" tabindex="-1"></a>  <span class="fl">0.6</span> <span class="sc">*</span> prior_cvd <span class="sc">+</span> <span class="fl">0.4</span> <span class="sc">*</span> diabetes <span class="sc">-</span> <span class="fl">0.3</span> <span class="sc">*</span> kidney_disease <span class="sc">+</span></span>
+<span id="cb601-48"><a href="double-machine-learning.html#cb601-48" tabindex="-1"></a>  <span class="fl">0.02</span> <span class="sc">*</span> cholesterol<span class="sc">/</span><span class="dv">10</span> <span class="sc">-</span> <span class="fl">0.02</span> <span class="sc">*</span> hdl<span class="sc">/</span><span class="dv">10</span> <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> smoking <span class="sc">+</span></span>
+<span id="cb601-49"><a href="double-machine-learning.html#cb601-49" tabindex="-1"></a>  <span class="fl">0.15</span> <span class="sc">*</span> age_bmi_interaction <span class="sc">-</span> <span class="fl">0.2</span> <span class="sc">*</span> (medications_count <span class="sc">&gt;</span> <span class="dv">3</span>)</span>
+<span id="cb601-50"><a href="double-machine-learning.html#cb601-50" tabindex="-1"></a>)</span>
+<span id="cb601-51"><a href="double-machine-learning.html#cb601-51" tabindex="-1"></a></span>
+<span id="cb601-52"><a href="double-machine-learning.html#cb601-52" tabindex="-1"></a>W <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, propensity_score)</span>
+<span id="cb601-53"><a href="double-machine-learning.html#cb601-53" tabindex="-1"></a></span>
+<span id="cb601-54"><a href="double-machine-learning.html#cb601-54" tabindex="-1"></a><span class="co"># Heterogeneous treatment effects with complex functional form</span></span>
+<span id="cb601-55"><a href="double-machine-learning.html#cb601-55" tabindex="-1"></a>true_ate <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">3.5</span></span>
+<span id="cb601-56"><a href="double-machine-learning.html#cb601-56" tabindex="-1"></a>individual_effects <span class="ot">&lt;-</span> true_ate <span class="sc">+</span> </span>
+<span id="cb601-57"><a href="double-machine-learning.html#cb601-57" tabindex="-1"></a>  <span class="fl">0.8</span> <span class="sc">*</span> (baseline_sbp <span class="sc">-</span> <span class="dv">140</span>)<span class="sc">/</span><span class="dv">10</span> <span class="sc">-</span> <span class="fl">0.5</span> <span class="sc">*</span> (age <span class="sc">&gt;</span> <span class="dv">70</span>) <span class="sc">+</span></span>
+<span id="cb601-58"><a href="double-machine-learning.html#cb601-58" tabindex="-1"></a>  <span class="fl">0.6</span> <span class="sc">*</span> prior_cvd <span class="sc">-</span> <span class="fl">0.4</span> <span class="sc">*</span> kidney_disease <span class="sc">+</span></span>
+<span id="cb601-59"><a href="double-machine-learning.html#cb601-59" tabindex="-1"></a>  <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">1.5</span>)</span>
+<span id="cb601-60"><a href="double-machine-learning.html#cb601-60" tabindex="-1"></a></span>
+<span id="cb601-61"><a href="double-machine-learning.html#cb601-61" tabindex="-1"></a><span class="co"># Generate potential outcomes</span></span>
+<span id="cb601-62"><a href="double-machine-learning.html#cb601-62" tabindex="-1"></a>Y0 <span class="ot">&lt;-</span> <span class="dv">15</span> <span class="sc">+</span> <span class="fl">0.15</span> <span class="sc">*</span> (age <span class="sc">-</span> <span class="dv">65</span>) <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> (bmi <span class="sc">-</span> <span class="dv">28</span>) <span class="sc">+</span> </span>
+<span id="cb601-63"><a href="double-machine-learning.html#cb601-63" tabindex="-1"></a>  <span class="dv">3</span> <span class="sc">*</span> diabetes <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> smoking <span class="sc">+</span> <span class="dv">4</span> <span class="sc">*</span> kidney_disease <span class="sc">+</span> </span>
+<span id="cb601-64"><a href="double-machine-learning.html#cb601-64" tabindex="-1"></a>  <span class="dv">5</span> <span class="sc">*</span> prior_cvd <span class="sc">+</span> <span class="fl">0.08</span> <span class="sc">*</span> (baseline_sbp <span class="sc">-</span> <span class="dv">140</span>) <span class="sc">+</span></span>
+<span id="cb601-65"><a href="double-machine-learning.html#cb601-65" tabindex="-1"></a>  <span class="fl">0.02</span> <span class="sc">*</span> cholesterol <span class="sc">-</span> <span class="fl">0.03</span> <span class="sc">*</span> hdl <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> creatinine <span class="sc">+</span></span>
+<span id="cb601-66"><a href="double-machine-learning.html#cb601-66" tabindex="-1"></a>  <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">3.5</span>)</span>
+<span id="cb601-67"><a href="double-machine-learning.html#cb601-67" tabindex="-1"></a></span>
+<span id="cb601-68"><a href="double-machine-learning.html#cb601-68" tabindex="-1"></a>Y1 <span class="ot">&lt;-</span> Y0 <span class="sc">+</span> individual_effects</span>
+<span id="cb601-69"><a href="double-machine-learning.html#cb601-69" tabindex="-1"></a></span>
+<span id="cb601-70"><a href="double-machine-learning.html#cb601-70" tabindex="-1"></a><span class="co"># Observed outcomes</span></span>
+<span id="cb601-71"><a href="double-machine-learning.html#cb601-71" tabindex="-1"></a>Y <span class="ot">&lt;-</span> W <span class="sc">*</span> Y1 <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> W) <span class="sc">*</span> Y0</span>
+<span id="cb601-72"><a href="double-machine-learning.html#cb601-72" tabindex="-1"></a></span>
+<span id="cb601-73"><a href="double-machine-learning.html#cb601-73" tabindex="-1"></a><span class="co"># Create data structure for DoubleML</span></span>
+<span id="cb601-74"><a href="double-machine-learning.html#cb601-74" tabindex="-1"></a>data_dml <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">Y =</span> Y, <span class="at">W =</span> W, X)</span>
+<span id="cb601-75"><a href="double-machine-learning.html#cb601-75" tabindex="-1"></a></span>
+<span id="cb601-76"><a href="double-machine-learning.html#cb601-76" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Observational Study Summary:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Observational Study Summary:</code></pre>
+<div class="sourceCode" id="cb603"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb603-1"><a href="double-machine-learning.html#cb603-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Total patients:&quot;</span>, n, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Total patients: 3000</code></pre>
+<div class="sourceCode" id="cb605"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb605-1"><a href="double-machine-learning.html#cb605-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Control group:&quot;</span>, <span class="fu">sum</span>(W <span class="sc">==</span> <span class="dv">0</span>), <span class="st">&quot;patients</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Control group: 835 patients</code></pre>
+<div class="sourceCode" id="cb607"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb607-1"><a href="double-machine-learning.html#cb607-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Treatment group:&quot;</span>, <span class="fu">sum</span>(W <span class="sc">==</span> <span class="dv">1</span>), <span class="st">&quot;patients</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Treatment group: 2165 patients</code></pre>
+<div class="sourceCode" id="cb609"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb609-1"><a href="double-machine-learning.html#cb609-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Mean propensity score:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(propensity_score), <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Mean propensity score: 0.708</code></pre>
+<div class="sourceCode" id="cb611"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb611-1"><a href="double-machine-learning.html#cb611-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Propensity score range: [&quot;</span>, <span class="fu">round</span>(<span class="fu">min</span>(propensity_score), <span class="dv">3</span>), </span>
+<span id="cb611-2"><a href="double-machine-learning.html#cb611-2" tabindex="-1"></a>    <span class="st">&quot;,&quot;</span>, <span class="fu">round</span>(<span class="fu">max</span>(propensity_score), <span class="dv">3</span>), <span class="st">&quot;]</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Propensity score range: [ 0.176 , 0.96 ]</code></pre>
+<div class="sourceCode" id="cb613"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb613-1"><a href="double-machine-learning.html#cb613-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Naive difference in means:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(Y[W <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(Y[W <span class="sc">==</span> <span class="dv">0</span>]), <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+## Naive difference in means: -0.334</code></pre>
+<div class="sourceCode" id="cb615"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb615-1"><a href="double-machine-learning.html#cb615-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;True average treatment effect:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(individual_effects), <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## True average treatment effect: -3.472</code></pre>
+<div class="sourceCode" id="cb617"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb617-1"><a href="double-machine-learning.html#cb617-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Confounding bias:&quot;</span>, <span class="fu">round</span>((<span class="fu">mean</span>(Y[W <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(Y[W <span class="sc">==</span> <span class="dv">0</span>])) <span class="sc">-</span> <span class="fu">mean</span>(individual_effects), <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Confounding bias: 3.138</code></pre>
+<p>The simulation demonstrates substantial confounding bias where the naive difference in means differs meaningfully from the true causal effect. This occurs because patients receiving intensive blood pressure control differ systematically from those receiving standard care in ways that affect cardiovascular outcomes independently of treatment. Simply comparing outcomes between treatment groups conflates the causal effect of treatment with selection bias from these baseline differences.</p>
+<div class="sourceCode" id="cb619"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb619-1"><a href="double-machine-learning.html#cb619-1" tabindex="-1"></a><span class="co"># Initialize DoubleML data object</span></span>
+<span id="cb619-2"><a href="double-machine-learning.html#cb619-2" tabindex="-1"></a>obj_dml_data <span class="ot">&lt;-</span> DoubleMLData<span class="sc">$</span><span class="fu">new</span>(data_dml, <span class="at">y_col =</span> <span class="st">&quot;Y&quot;</span>, <span class="at">d_cols =</span> <span class="st">&quot;W&quot;</span>)</span>
+<span id="cb619-3"><a href="double-machine-learning.html#cb619-3" tabindex="-1"></a></span>
+<span id="cb619-4"><a href="double-machine-learning.html#cb619-4" tabindex="-1"></a><span class="co"># Configure machine learning methods for nuisance parameters</span></span>
+<span id="cb619-5"><a href="double-machine-learning.html#cb619-5" tabindex="-1"></a><span class="co"># Use random forests for flexible nonparametric estimation</span></span>
+<span id="cb619-6"><a href="double-machine-learning.html#cb619-6" tabindex="-1"></a>learner_g <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">&quot;regr.ranger&quot;</span>, <span class="at">num.trees =</span> <span class="dv">500</span>, <span class="at">max.depth =</span> <span class="dv">8</span>, </span>
+<span id="cb619-7"><a href="double-machine-learning.html#cb619-7" tabindex="-1"></a>                 <span class="at">min.node.size =</span> <span class="dv">20</span>, <span class="at">mtry =</span> <span class="dv">5</span>)</span>
+<span id="cb619-8"><a href="double-machine-learning.html#cb619-8" tabindex="-1"></a>learner_m <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">&quot;classif.ranger&quot;</span>, <span class="at">num.trees =</span> <span class="dv">500</span>, <span class="at">max.depth =</span> <span class="dv">8</span>,</span>
+<span id="cb619-9"><a href="double-machine-learning.html#cb619-9" tabindex="-1"></a>                 <span class="at">min.node.size =</span> <span class="dv">20</span>, <span class="at">mtry =</span> <span class="dv">5</span>)</span>
+<span id="cb619-10"><a href="double-machine-learning.html#cb619-10" tabindex="-1"></a></span>
+<span id="cb619-11"><a href="double-machine-learning.html#cb619-11" tabindex="-1"></a><span class="co"># Initialize partially linear regression model</span></span>
+<span id="cb619-12"><a href="double-machine-learning.html#cb619-12" tabindex="-1"></a>dml_plr <span class="ot">&lt;-</span> DoubleMLPLR<span class="sc">$</span><span class="fu">new</span>(obj_dml_data, </span>
+<span id="cb619-13"><a href="double-machine-learning.html#cb619-13" tabindex="-1"></a>                           <span class="at">ml_g =</span> learner_g,</span>
+<span id="cb619-14"><a href="double-machine-learning.html#cb619-14" tabindex="-1"></a>                           <span class="at">ml_m =</span> learner_m,</span>
+<span id="cb619-15"><a href="double-machine-learning.html#cb619-15" tabindex="-1"></a>                           <span class="at">n_folds =</span> <span class="dv">5</span>,</span>
+<span id="cb619-16"><a href="double-machine-learning.html#cb619-16" tabindex="-1"></a>                           <span class="at">score =</span> <span class="st">&quot;partialling out&quot;</span>)</span></code></pre></div>
+<pre><code>## Warning: The argument ml_g was renamed to ml_l. Please adapt the argument name accordingly. ml_g is redirected to ml_l.
+## The redirection will be removed in a future version.</code></pre>
+<div class="sourceCode" id="cb621"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb621-1"><a href="double-machine-learning.html#cb621-1" tabindex="-1"></a><span class="co"># Fit the model using cross-fitting</span></span>
+<span id="cb621-2"><a href="double-machine-learning.html#cb621-2" tabindex="-1"></a>dml_plr<span class="sc">$</span><span class="fu">fit</span>()</span>
+<span id="cb621-3"><a href="double-machine-learning.html#cb621-3" tabindex="-1"></a></span>
+<span id="cb621-4"><a href="double-machine-learning.html#cb621-4" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== Double Machine Learning Results ===</span><span class="sc">\n\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+## === Double Machine Learning Results ===</code></pre>
+<div class="sourceCode" id="cb623"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb623-1"><a href="double-machine-learning.html#cb623-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Average Treatment Effect Estimate:&quot;</span>, <span class="fu">round</span>(dml_plr<span class="sc">$</span>coef, <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Average Treatment Effect Estimate: -3.433</code></pre>
+<div class="sourceCode" id="cb625"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb625-1"><a href="double-machine-learning.html#cb625-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Standard Error:&quot;</span>, <span class="fu">round</span>(dml_plr<span class="sc">$</span>se, <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Standard Error: 0.159</code></pre>
+<div class="sourceCode" id="cb627"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb627-1"><a href="double-machine-learning.html#cb627-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;95% Confidence Interval: [&quot;</span>, </span>
+<span id="cb627-2"><a href="double-machine-learning.html#cb627-2" tabindex="-1"></a>    <span class="fu">round</span>(dml_plr<span class="sc">$</span>coef <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> dml_plr<span class="sc">$</span>se, <span class="dv">3</span>), <span class="st">&quot;,&quot;</span>,</span>
+<span id="cb627-3"><a href="double-machine-learning.html#cb627-3" tabindex="-1"></a>    <span class="fu">round</span>(dml_plr<span class="sc">$</span>coef <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> dml_plr<span class="sc">$</span>se, <span class="dv">3</span>), <span class="st">&quot;]</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 95% Confidence Interval: [ -3.744 , -3.122 ]</code></pre>
+<div class="sourceCode" id="cb629"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb629-1"><a href="double-machine-learning.html#cb629-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;P-value:&quot;</span>, <span class="fu">format</span>(dml_plr<span class="sc">$</span>pval, <span class="at">scientific =</span> <span class="cn">TRUE</span>, <span class="at">digits =</span> <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## P-value: 1.12e-103</code></pre>
+<div class="sourceCode" id="cb631"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb631-1"><a href="double-machine-learning.html#cb631-1" tabindex="-1"></a><span class="co"># Compare with true effect</span></span>
+<span id="cb631-2"><a href="double-machine-learning.html#cb631-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">True ATE:&quot;</span>, <span class="fu">round</span>(<span class="fu">mean</span>(individual_effects), <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+## True ATE: -3.472</code></pre>
+<div class="sourceCode" id="cb633"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb633-1"><a href="double-machine-learning.html#cb633-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Estimation error:&quot;</span>, <span class="fu">round</span>(dml_plr<span class="sc">$</span>coef <span class="sc">-</span> <span class="fu">mean</span>(individual_effects), <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Estimation error: 0.039</code></pre>
+<p>The DML estimate successfully recovers the true average treatment effect within sampling error, demonstrating the method’s ability to control for high-dimensional confounding through flexible machine learning models. The confidence interval appropriately covers the true parameter, validating the theoretical guarantees about asymptotic normality despite using adaptive machine learning procedures for nuisance estimation.</p>
+<p>The propensity score distributions demonstrate good overlap between treatment and control groups across most of the covariate space, supporting the plausibility of the overlap assumption. Regions with minimal overlap at the extremes suggest some patients had very high or very low treatment probabilities based on their characteristics, but the bulk of the distribution shows substantial overlap where causal comparisons are well-identified.</p>
+<div class="sourceCode" id="cb635"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb635-1"><a href="double-machine-learning.html#cb635-1" tabindex="-1"></a><span class="co"># Sensitivity analysis using alternative machine learning methods</span></span>
+<span id="cb635-2"><a href="double-machine-learning.html#cb635-2" tabindex="-1"></a><span class="co"># Gradient boosting for comparison</span></span>
+<span id="cb635-3"><a href="double-machine-learning.html#cb635-3" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;xgboost&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;xgboost&quot;</span>)</span>
+<span id="cb635-4"><a href="double-machine-learning.html#cb635-4" tabindex="-1"></a></span>
+<span id="cb635-5"><a href="double-machine-learning.html#cb635-5" tabindex="-1"></a>learner_g_boost <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">&quot;regr.xgboost&quot;</span>, <span class="at">nrounds =</span> <span class="dv">100</span>, <span class="at">max_depth =</span> <span class="dv">6</span>, </span>
+<span id="cb635-6"><a href="double-machine-learning.html#cb635-6" tabindex="-1"></a>                       <span class="at">eta =</span> <span class="fl">0.1</span>, <span class="at">objective =</span> <span class="st">&quot;reg:squarederror&quot;</span>)</span>
+<span id="cb635-7"><a href="double-machine-learning.html#cb635-7" tabindex="-1"></a>learner_m_boost <span class="ot">&lt;-</span> <span class="fu">lrn</span>(<span class="st">&quot;classif.xgboost&quot;</span>, <span class="at">nrounds =</span> <span class="dv">100</span>, <span class="at">max_depth =</span> <span class="dv">6</span>,</span>
+<span id="cb635-8"><a href="double-machine-learning.html#cb635-8" tabindex="-1"></a>                       <span class="at">eta =</span> <span class="fl">0.1</span>, <span class="at">objective =</span> <span class="st">&quot;binary:logistic&quot;</span>)</span>
+<span id="cb635-9"><a href="double-machine-learning.html#cb635-9" tabindex="-1"></a></span>
+<span id="cb635-10"><a href="double-machine-learning.html#cb635-10" tabindex="-1"></a>dml_plr_boost <span class="ot">&lt;-</span> DoubleMLPLR<span class="sc">$</span><span class="fu">new</span>(obj_dml_data,</span>
+<span id="cb635-11"><a href="double-machine-learning.html#cb635-11" tabindex="-1"></a>                                 <span class="at">ml_g =</span> learner_g_boost,</span>
+<span id="cb635-12"><a href="double-machine-learning.html#cb635-12" tabindex="-1"></a>                                 <span class="at">ml_m =</span> learner_m_boost,</span>
+<span id="cb635-13"><a href="double-machine-learning.html#cb635-13" tabindex="-1"></a>                                 <span class="at">n_folds =</span> <span class="dv">5</span>,</span>
+<span id="cb635-14"><a href="double-machine-learning.html#cb635-14" tabindex="-1"></a>                                 <span class="at">score =</span> <span class="st">&quot;partialling out&quot;</span>)</span></code></pre></div>
+<pre><code>## Warning: The argument ml_g was renamed to ml_l. Please adapt the argument name accordingly. ml_g is redirected to ml_l.
+## The redirection will be removed in a future version.</code></pre>
+<div class="sourceCode" id="cb637"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb637-1"><a href="double-machine-learning.html#cb637-1" tabindex="-1"></a>dml_plr_boost<span class="sc">$</span><span class="fu">fit</span>()</span>
+<span id="cb637-2"><a href="double-machine-learning.html#cb637-2" tabindex="-1"></a></span>
+<span id="cb637-3"><a href="double-machine-learning.html#cb637-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== Sensitivity Analysis: Alternative ML Methods ===</span><span class="sc">\n\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+## === Sensitivity Analysis: Alternative ML Methods ===</code></pre>
+<div class="sourceCode" id="cb639"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb639-1"><a href="double-machine-learning.html#cb639-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Random Forest Estimate:&quot;</span>, <span class="fu">round</span>(dml_plr<span class="sc">$</span>coef, <span class="dv">3</span>), </span>
+<span id="cb639-2"><a href="double-machine-learning.html#cb639-2" tabindex="-1"></a>    <span class="st">&quot;(&quot;</span>, <span class="fu">round</span>(dml_plr<span class="sc">$</span>se, <span class="dv">3</span>), <span class="st">&quot;)</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Random Forest Estimate: -3.433 ( 0.159 )</code></pre>
+<div class="sourceCode" id="cb641"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb641-1"><a href="double-machine-learning.html#cb641-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Gradient Boosting Estimate:&quot;</span>, <span class="fu">round</span>(dml_plr_boost<span class="sc">$</span>coef, <span class="dv">3</span>),</span>
+<span id="cb641-2"><a href="double-machine-learning.html#cb641-2" tabindex="-1"></a>    <span class="st">&quot;(&quot;</span>, <span class="fu">round</span>(dml_plr_boost<span class="sc">$</span>se, <span class="dv">3</span>), <span class="st">&quot;)</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Gradient Boosting Estimate: -3.43 ( 0.159 )</code></pre>
+<div class="sourceCode" id="cb643"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb643-1"><a href="double-machine-learning.html#cb643-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Difference:&quot;</span>, <span class="fu">round</span>(<span class="fu">abs</span>(dml_plr<span class="sc">$</span>coef <span class="sc">-</span> dml_plr_boost<span class="sc">$</span>coef), <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Difference: 0.003</code></pre>
+<div class="sourceCode" id="cb645"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb645-1"><a href="double-machine-learning.html#cb645-1" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">abs</span>(dml_plr<span class="sc">$</span>coef <span class="sc">-</span> dml_plr_boost<span class="sc">$</span>coef) <span class="sc">&lt;</span> <span class="fl">0.5</span>) {</span>
+<span id="cb645-2"><a href="double-machine-learning.html#cb645-2" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Interpretation: Estimates stable across methods, suggesting robust results</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb645-3"><a href="double-machine-learning.html#cb645-3" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb645-4"><a href="double-machine-learning.html#cb645-4" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Interpretation: Substantial sensitivity to ML method choice</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb645-5"><a href="double-machine-learning.html#cb645-5" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>## 
+## Interpretation: Estimates stable across methods, suggesting robust results</code></pre>
+<p>The sensitivity analysis reveals that treatment effect estimates remain stable across different machine learning methods, providing reassurance about the robustness of conclusions. When estimates vary substantially with method choice, this suggests either inadequate sample size, poor overlap, or violation of identification assumptions that warrant further investigation. Stability across methods indicates that the double robustness property is providing protection against model misspecification.</p>
+<p>The orthogonalized regression visualization demonstrates how DML removes confounding by first predicting both outcomes and treatment from confounders, then examining the relationship between residuals. The residuals represent variation in outcomes and treatment that cannot be explained by measured confounders, and the slope of their relationship estimates the treatment effect purged of confounding bias. The slight difference between this manual calculation and the DML estimate arises from cross-fitting that prevents overfitting bias.</p>
+<div class="sourceCode" id="cb647"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb647-1"><a href="double-machine-learning.html#cb647-1" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb647-2"><a href="double-machine-learning.html#cb647-2" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb647-3"><a href="double-machine-learning.html#cb647-3" tabindex="-1"></a><span class="fu">library</span>(gridExtra)</span></code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;gridExtra&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:randomForest&#39;:
+## 
+##     combine</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     combine</code></pre>
+<div class="sourceCode" id="cb651"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb651-1"><a href="double-machine-learning.html#cb651-1" tabindex="-1"></a><span class="co"># Assumes the objects from your simulation exist in the global environment:</span></span>
+<span id="cb651-2"><a href="double-machine-learning.html#cb651-2" tabindex="-1"></a><span class="co"># data_dml (data.table with columns Y, W and covariates), propensity_score,</span></span>
+<span id="cb651-3"><a href="double-machine-learning.html#cb651-3" tabindex="-1"></a><span class="co"># dml_plr (fitted DoubleMLPLR object), true individual_effects, Y0, Y1</span></span>
+<span id="cb651-4"><a href="double-machine-learning.html#cb651-4" tabindex="-1"></a></span>
+<span id="cb651-5"><a href="double-machine-learning.html#cb651-5" tabindex="-1"></a><span class="co"># 1) Propensity score density by treatment</span></span>
+<span id="cb651-6"><a href="double-machine-learning.html#cb651-6" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> <span class="fu">as.data.frame</span>(data_dml)) <span class="sc">+</span></span>
+<span id="cb651-7"><a href="double-machine-learning.html#cb651-7" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">x =</span> propensity_score, <span class="at">fill =</span> <span class="fu">factor</span>(W)), <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb651-8"><a href="double-machine-learning.html#cb651-8" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Propensity score&quot;</span>, <span class="at">fill =</span> <span class="st">&quot;Treatment&quot;</span>,</span>
+<span id="cb651-9"><a href="double-machine-learning.html#cb651-9" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Propensity score distribution by treatment group&quot;</span>) <span class="sc">+</span></span>
+<span id="cb651-10"><a href="double-machine-learning.html#cb651-10" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb651-11"><a href="double-machine-learning.html#cb651-11" tabindex="-1"></a></span>
+<span id="cb651-12"><a href="double-machine-learning.html#cb651-12" tabindex="-1"></a><span class="co"># 2) Key covariate distributions by treatment: age and baseline_sbp</span></span>
+<span id="cb651-13"><a href="double-machine-learning.html#cb651-13" tabindex="-1"></a>p2a <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="fu">as.data.frame</span>(data_dml)) <span class="sc">+</span></span>
+<span id="cb651-14"><a href="double-machine-learning.html#cb651-14" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">color =</span> <span class="fu">factor</span>(W)), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb651-15"><a href="double-machine-learning.html#cb651-15" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Age&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Treatment&quot;</span>, <span class="at">title =</span> <span class="st">&quot;Age distribution by treatment&quot;</span>) <span class="sc">+</span></span>
+<span id="cb651-16"><a href="double-machine-learning.html#cb651-16" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb651-17"><a href="double-machine-learning.html#cb651-17" tabindex="-1"></a></span>
+<span id="cb651-18"><a href="double-machine-learning.html#cb651-18" tabindex="-1"></a>p2b <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="fu">as.data.frame</span>(data_dml)) <span class="sc">+</span></span>
+<span id="cb651-19"><a href="double-machine-learning.html#cb651-19" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">x =</span> baseline_sbp, <span class="at">color =</span> <span class="fu">factor</span>(W)), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb651-20"><a href="double-machine-learning.html#cb651-20" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Baseline SBP&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Treatment&quot;</span>, <span class="at">title =</span> <span class="st">&quot;Baseline SBP distribution by treatment&quot;</span>) <span class="sc">+</span></span>
+<span id="cb651-21"><a href="double-machine-learning.html#cb651-21" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb651-22"><a href="double-machine-learning.html#cb651-22" tabindex="-1"></a></span>
+<span id="cb651-23"><a href="double-machine-learning.html#cb651-23" tabindex="-1"></a><span class="co"># 3) Standardized Mean Differences (SMD) before and after IPW weighting</span></span>
+<span id="cb651-24"><a href="double-machine-learning.html#cb651-24" tabindex="-1"></a><span class="co"># Function to compute SMD</span></span>
+<span id="cb651-25"><a href="double-machine-learning.html#cb651-25" tabindex="-1"></a>compute_smd <span class="ot">&lt;-</span> <span class="cf">function</span>(x, w, treat) {</span>
+<span id="cb651-26"><a href="double-machine-learning.html#cb651-26" tabindex="-1"></a>  <span class="co"># x: numeric vector</span></span>
+<span id="cb651-27"><a href="double-machine-learning.html#cb651-27" tabindex="-1"></a>  <span class="co"># w: weights for observations (use 1 for unweighted)</span></span>
+<span id="cb651-28"><a href="double-machine-learning.html#cb651-28" tabindex="-1"></a>  <span class="co"># treat: binary treatment indicator 0/1</span></span>
+<span id="cb651-29"><a href="double-machine-learning.html#cb651-29" tabindex="-1"></a>  x0 <span class="ot">&lt;-</span> x[treat <span class="sc">==</span> <span class="dv">0</span>]</span>
+<span id="cb651-30"><a href="double-machine-learning.html#cb651-30" tabindex="-1"></a>  x1 <span class="ot">&lt;-</span> x[treat <span class="sc">==</span> <span class="dv">1</span>]</span>
+<span id="cb651-31"><a href="double-machine-learning.html#cb651-31" tabindex="-1"></a>  w0 <span class="ot">&lt;-</span> w[treat <span class="sc">==</span> <span class="dv">0</span>]</span>
+<span id="cb651-32"><a href="double-machine-learning.html#cb651-32" tabindex="-1"></a>  w1 <span class="ot">&lt;-</span> w[treat <span class="sc">==</span> <span class="dv">1</span>]</span>
+<span id="cb651-33"><a href="double-machine-learning.html#cb651-33" tabindex="-1"></a>  mean0 <span class="ot">&lt;-</span> <span class="fu">sum</span>(w0 <span class="sc">*</span> x0)<span class="sc">/</span><span class="fu">sum</span>(w0)</span>
+<span id="cb651-34"><a href="double-machine-learning.html#cb651-34" tabindex="-1"></a>  mean1 <span class="ot">&lt;-</span> <span class="fu">sum</span>(w1 <span class="sc">*</span> x1)<span class="sc">/</span><span class="fu">sum</span>(w1)</span>
+<span id="cb651-35"><a href="double-machine-learning.html#cb651-35" tabindex="-1"></a>  var0 <span class="ot">&lt;-</span> <span class="fu">sum</span>(w0 <span class="sc">*</span> (x0 <span class="sc">-</span> mean0)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="fu">sum</span>(w0)</span>
+<span id="cb651-36"><a href="double-machine-learning.html#cb651-36" tabindex="-1"></a>  var1 <span class="ot">&lt;-</span> <span class="fu">sum</span>(w1 <span class="sc">*</span> (x1 <span class="sc">-</span> mean1)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="fu">sum</span>(w1)</span>
+<span id="cb651-37"><a href="double-machine-learning.html#cb651-37" tabindex="-1"></a>  pooled_sd <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((var0 <span class="sc">+</span> var1)<span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb651-38"><a href="double-machine-learning.html#cb651-38" tabindex="-1"></a>  (mean1 <span class="sc">-</span> mean0)<span class="sc">/</span>pooled_sd</span>
+<span id="cb651-39"><a href="double-machine-learning.html#cb651-39" tabindex="-1"></a>}</span>
+<span id="cb651-40"><a href="double-machine-learning.html#cb651-40" tabindex="-1"></a></span>
+<span id="cb651-41"><a href="double-machine-learning.html#cb651-41" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(data_dml)</span>
+<span id="cb651-42"><a href="double-machine-learning.html#cb651-42" tabindex="-1"></a>vars_for_balance <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&#39;age&#39;</span>,<span class="st">&#39;bmi&#39;</span>,<span class="st">&#39;baseline_sbp&#39;</span>,<span class="st">&#39;cholesterol&#39;</span>,<span class="st">&#39;hdl&#39;</span>,<span class="st">&#39;creatinine&#39;</span>,<span class="st">&#39;hba1c&#39;</span>)</span>
+<span id="cb651-43"><a href="double-machine-learning.html#cb651-43" tabindex="-1"></a></span>
+<span id="cb651-44"><a href="double-machine-learning.html#cb651-44" tabindex="-1"></a><span class="co"># Unweighted SMDs</span></span>
+<span id="cb651-45"><a href="double-machine-learning.html#cb651-45" tabindex="-1"></a>smd_unw <span class="ot">&lt;-</span> <span class="fu">sapply</span>(vars_for_balance, <span class="cf">function</span>(v) <span class="fu">compute_smd</span>(df[[v]], <span class="fu">rep</span>(<span class="dv">1</span>,<span class="fu">nrow</span>(df)), df<span class="sc">$</span>W))</span>
+<span id="cb651-46"><a href="double-machine-learning.html#cb651-46" tabindex="-1"></a></span>
+<span id="cb651-47"><a href="double-machine-learning.html#cb651-47" tabindex="-1"></a><span class="co"># IPW weights from propensity_score</span></span>
+<span id="cb651-48"><a href="double-machine-learning.html#cb651-48" tabindex="-1"></a>ipw <span class="ot">&lt;-</span> <span class="fu">with</span>(df, <span class="fu">ifelse</span>(W<span class="sc">==</span><span class="dv">1</span>, <span class="dv">1</span><span class="sc">/</span>propensity_score, <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>propensity_score)))</span>
+<span id="cb651-49"><a href="double-machine-learning.html#cb651-49" tabindex="-1"></a><span class="co"># Stabilize weights to reduce influence of extreme values</span></span>
+<span id="cb651-50"><a href="double-machine-learning.html#cb651-50" tabindex="-1"></a>ipw <span class="ot">&lt;-</span> ipw <span class="sc">/</span> <span class="fu">mean</span>(ipw)</span>
+<span id="cb651-51"><a href="double-machine-learning.html#cb651-51" tabindex="-1"></a></span>
+<span id="cb651-52"><a href="double-machine-learning.html#cb651-52" tabindex="-1"></a>smd_ipw <span class="ot">&lt;-</span> <span class="fu">sapply</span>(vars_for_balance, <span class="cf">function</span>(v) <span class="fu">compute_smd</span>(df[[v]], ipw, df<span class="sc">$</span>W))</span>
+<span id="cb651-53"><a href="double-machine-learning.html#cb651-53" tabindex="-1"></a></span>
+<span id="cb651-54"><a href="double-machine-learning.html#cb651-54" tabindex="-1"></a>smd_dt <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb651-55"><a href="double-machine-learning.html#cb651-55" tabindex="-1"></a>  <span class="at">variable =</span> vars_for_balance,</span>
+<span id="cb651-56"><a href="double-machine-learning.html#cb651-56" tabindex="-1"></a>  <span class="at">unweighted =</span> <span class="fu">as.numeric</span>(smd_unw),</span>
+<span id="cb651-57"><a href="double-machine-learning.html#cb651-57" tabindex="-1"></a>  <span class="at">ipw =</span> <span class="fu">as.numeric</span>(smd_ipw)</span>
+<span id="cb651-58"><a href="double-machine-learning.html#cb651-58" tabindex="-1"></a>)</span>
+<span id="cb651-59"><a href="double-machine-learning.html#cb651-59" tabindex="-1"></a></span>
+<span id="cb651-60"><a href="double-machine-learning.html#cb651-60" tabindex="-1"></a>smd_long <span class="ot">&lt;-</span> reshape2<span class="sc">::</span><span class="fu">melt</span>(smd_dt, <span class="at">id.vars =</span> <span class="st">&#39;variable&#39;</span>, <span class="at">variable.name =</span> <span class="st">&#39;method&#39;</span>, <span class="at">value.name =</span> <span class="st">&#39;smd&#39;</span>)</span>
+<span id="cb651-61"><a href="double-machine-learning.html#cb651-61" tabindex="-1"></a></span>
+<span id="cb651-62"><a href="double-machine-learning.html#cb651-62" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(smd_long, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(variable, <span class="fu">abs</span>(smd)), <span class="at">y =</span> smd, <span class="at">fill =</span> method)) <span class="sc">+</span></span>
+<span id="cb651-63"><a href="double-machine-learning.html#cb651-63" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.8</span>)) <span class="sc">+</span></span>
+<span id="cb651-64"><a href="double-machine-learning.html#cb651-64" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb651-65"><a href="double-machine-learning.html#cb651-65" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&#39;&#39;</span>, <span class="at">y =</span> <span class="st">&#39;Standardized Mean Difference (SMD)&#39;</span>,</span>
+<span id="cb651-66"><a href="double-machine-learning.html#cb651-66" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&#39;Covariate balance: unweighted vs IPW-weighted&#39;</span>) <span class="sc">+</span></span>
+<span id="cb651-67"><a href="double-machine-learning.html#cb651-67" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.1</span>, <span class="at">linetype =</span> <span class="st">&#39;dashed&#39;</span>, <span class="at">color =</span> <span class="st">&#39;darkred&#39;</span>) <span class="sc">+</span></span>
+<span id="cb651-68"><a href="double-machine-learning.html#cb651-68" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb651-69"><a href="double-machine-learning.html#cb651-69" tabindex="-1"></a></span>
+<span id="cb651-70"><a href="double-machine-learning.html#cb651-70" tabindex="-1"></a><span class="co"># 4) Residual-on-residual plot to illustrate orthogonalization</span></span>
+<span id="cb651-71"><a href="double-machine-learning.html#cb651-71" tabindex="-1"></a><span class="co"># For visualization we&#39;ll train nuisance models on the full sample (</span><span class="al">WARNING</span><span class="co">: not cross-fit)</span></span>
+<span id="cb651-72"><a href="double-machine-learning.html#cb651-72" tabindex="-1"></a><span class="co"># This is only to create an intelligible plot; DML uses cross-fitting for estimation.</span></span>
+<span id="cb651-73"><a href="double-machine-learning.html#cb651-73" tabindex="-1"></a></span>
+<span id="cb651-74"><a href="double-machine-learning.html#cb651-74" tabindex="-1"></a><span class="co"># Fit flexible regressors for outcome (g) and treatment (m)</span></span>
+<span id="cb651-75"><a href="double-machine-learning.html#cb651-75" tabindex="-1"></a><span class="co"># Use ranger and glm for demonstration</span></span>
+<span id="cb651-76"><a href="double-machine-learning.html#cb651-76" tabindex="-1"></a><span class="fu">library</span>(ranger)</span>
+<span id="cb651-77"><a href="double-machine-learning.html#cb651-77" tabindex="-1"></a>fit_g <span class="ot">&lt;-</span> <span class="fu">ranger</span>(Y <span class="sc">~</span> . <span class="sc">-</span> W, <span class="at">data =</span> df, <span class="at">num.trees =</span> <span class="dv">500</span>)</span>
+<span id="cb651-78"><a href="double-machine-learning.html#cb651-78" tabindex="-1"></a>pred_g <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_g, <span class="at">data =</span> df)<span class="sc">$</span>predictions</span>
+<span id="cb651-79"><a href="double-machine-learning.html#cb651-79" tabindex="-1"></a></span>
+<span id="cb651-80"><a href="double-machine-learning.html#cb651-80" tabindex="-1"></a>fit_m <span class="ot">&lt;-</span> <span class="fu">glm</span>(W <span class="sc">~</span> . <span class="sc">-</span> Y, <span class="at">data =</span> df, <span class="at">family =</span> binomial)</span>
+<span id="cb651-81"><a href="double-machine-learning.html#cb651-81" tabindex="-1"></a>m_pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_m, <span class="at">newdata =</span> df, <span class="at">type =</span> <span class="st">&#39;response&#39;</span>)</span>
+<span id="cb651-82"><a href="double-machine-learning.html#cb651-82" tabindex="-1"></a></span>
+<span id="cb651-83"><a href="double-machine-learning.html#cb651-83" tabindex="-1"></a><span class="co"># Residuals</span></span>
+<span id="cb651-84"><a href="double-machine-learning.html#cb651-84" tabindex="-1"></a>res_y <span class="ot">&lt;-</span> df<span class="sc">$</span>Y <span class="sc">-</span> pred_g</span>
+<span id="cb651-85"><a href="double-machine-learning.html#cb651-85" tabindex="-1"></a>res_w <span class="ot">&lt;-</span> df<span class="sc">$</span>W <span class="sc">-</span> m_pred</span>
+<span id="cb651-86"><a href="double-machine-learning.html#cb651-86" tabindex="-1"></a></span>
+<span id="cb651-87"><a href="double-machine-learning.html#cb651-87" tabindex="-1"></a>res_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">res_y =</span> res_y, <span class="at">res_w =</span> res_w, <span class="at">baseline_sbp =</span> df<span class="sc">$</span>baseline_sbp, <span class="at">age =</span> df<span class="sc">$</span>age)</span>
+<span id="cb651-88"><a href="double-machine-learning.html#cb651-88" tabindex="-1"></a></span>
+<span id="cb651-89"><a href="double-machine-learning.html#cb651-89" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(res_df, <span class="fu">aes</span>(<span class="at">x =</span> res_w, <span class="at">y =</span> res_y)) <span class="sc">+</span></span>
+<span id="cb651-90"><a href="double-machine-learning.html#cb651-90" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb651-91"><a href="double-machine-learning.html#cb651-91" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">&#39;lm&#39;</span>, <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb651-92"><a href="double-machine-learning.html#cb651-92" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&#39;Residualized treatment (W - m_hat)&#39;</span>,</span>
+<span id="cb651-93"><a href="double-machine-learning.html#cb651-93" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&#39;Residualized outcome (Y - g_hat)&#39;</span>,</span>
+<span id="cb651-94"><a href="double-machine-learning.html#cb651-94" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&#39;Residual-on-residual plot (illustrating orthogonalization)&#39;</span>) <span class="sc">+</span></span>
+<span id="cb651-95"><a href="double-machine-learning.html#cb651-95" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb651-96"><a href="double-machine-learning.html#cb651-96" tabindex="-1"></a></span>
+<span id="cb651-97"><a href="double-machine-learning.html#cb651-97" tabindex="-1"></a><span class="co"># Annotate with DML estimate</span></span>
+<span id="cb651-98"><a href="double-machine-learning.html#cb651-98" tabindex="-1"></a>dml_coef <span class="ot">&lt;-</span> dml_plr<span class="sc">$</span>coef</span>
+<span id="cb651-99"><a href="double-machine-learning.html#cb651-99" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> p4 <span class="sc">+</span> <span class="fu">annotate</span>(<span class="st">&#39;text&#39;</span>, <span class="at">x =</span> <span class="fu">min</span>(res_df<span class="sc">$</span>res_w, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb651-100"><a href="double-machine-learning.html#cb651-100" tabindex="-1"></a>                    <span class="at">y =</span> <span class="fu">max</span>(res_df<span class="sc">$</span>res_y, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb651-101"><a href="double-machine-learning.html#cb651-101" tabindex="-1"></a>                    <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">&#39;DML ATE = &#39;</span>, <span class="fu">round</span>(dml_coef, <span class="dv">3</span>)), <span class="at">hjust =</span> <span class="dv">0</span>)</span>
+<span id="cb651-102"><a href="double-machine-learning.html#cb651-102" tabindex="-1"></a></span>
+<span id="cb651-103"><a href="double-machine-learning.html#cb651-103" tabindex="-1"></a><span class="co"># 5) Heterogeneous effects visual: residualized outcome vs baseline_sbp with loess</span></span>
+<span id="cb651-104"><a href="double-machine-learning.html#cb651-104" tabindex="-1"></a>p5 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(res_df, <span class="fu">aes</span>(<span class="at">x =</span> baseline_sbp, <span class="at">y =</span> res_y<span class="sc">/</span>res_w)) <span class="sc">+</span></span>
+<span id="cb651-105"><a href="double-machine-learning.html#cb651-105" tabindex="-1"></a>  <span class="co"># Because dividing by res_w is unstable, we use a stabilized pseudo-effect: local slope estimate via loess</span></span>
+<span id="cb651-106"><a href="double-machine-learning.html#cb651-106" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb651-107"><a href="double-machine-learning.html#cb651-107" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="fu">aes</span>(<span class="at">y =</span> res_y), <span class="at">method =</span> <span class="st">&#39;loess&#39;</span>, <span class="at">se =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb651-108"><a href="double-machine-learning.html#cb651-108" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&#39;Baseline SBP&#39;</span>, <span class="at">y =</span> <span class="st">&#39;Residualized outcome (Y - g_hat)&#39;</span>,</span>
+<span id="cb651-109"><a href="double-machine-learning.html#cb651-109" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&#39;Smoothed residual outcome by baseline SBP (visual for heterogeneity)&#39;</span>) <span class="sc">+</span></span>
+<span id="cb651-110"><a href="double-machine-learning.html#cb651-110" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb651-111"><a href="double-machine-learning.html#cb651-111" tabindex="-1"></a></span>
+<span id="cb651-112"><a href="double-machine-learning.html#cb651-112" tabindex="-1"></a><span class="co"># 6) Compare naive difference-in-means, DML estimate, and true ATE</span></span>
+<span id="cb651-113"><a href="double-machine-learning.html#cb651-113" tabindex="-1"></a>naive <span class="ot">&lt;-</span> <span class="fu">mean</span>(df<span class="sc">$</span>Y[df<span class="sc">$</span>W<span class="sc">==</span><span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(df<span class="sc">$</span>Y[df<span class="sc">$</span>W<span class="sc">==</span><span class="dv">0</span>])</span>
+<span id="cb651-114"><a href="double-machine-learning.html#cb651-114" tabindex="-1"></a>true_ate <span class="ot">&lt;-</span> <span class="fu">mean</span>(individual_effects)</span>
+<span id="cb651-115"><a href="double-machine-learning.html#cb651-115" tabindex="-1"></a></span>
+<span id="cb651-116"><a href="double-machine-learning.html#cb651-116" tabindex="-1"></a>est_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb651-117"><a href="double-machine-learning.html#cb651-117" tabindex="-1"></a>  <span class="at">method =</span> <span class="fu">c</span>(<span class="st">&#39;Naive diff&#39;</span>, <span class="st">&#39;DML estimate&#39;</span>, <span class="st">&#39;True ATE&#39;</span>),</span>
+<span id="cb651-118"><a href="double-machine-learning.html#cb651-118" tabindex="-1"></a>  <span class="at">estimate =</span> <span class="fu">c</span>(naive, dml_plr<span class="sc">$</span>coef, true_ate),</span>
+<span id="cb651-119"><a href="double-machine-learning.html#cb651-119" tabindex="-1"></a>  <span class="at">se =</span> <span class="fu">c</span>(<span class="cn">NA</span>, dml_plr<span class="sc">$</span>se, <span class="cn">NA</span>)</span>
+<span id="cb651-120"><a href="double-machine-learning.html#cb651-120" tabindex="-1"></a>)</span>
+<span id="cb651-121"><a href="double-machine-learning.html#cb651-121" tabindex="-1"></a></span>
+<span id="cb651-122"><a href="double-machine-learning.html#cb651-122" tabindex="-1"></a>p6 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(est_df, <span class="fu">aes</span>(<span class="at">x =</span> method, <span class="at">y =</span> estimate, <span class="at">ymin =</span> estimate <span class="sc">-</span> <span class="fl">1.96</span><span class="sc">*</span>se, <span class="at">ymax =</span> estimate <span class="sc">+</span> <span class="fl">1.96</span><span class="sc">*</span>se)) <span class="sc">+</span></span>
+<span id="cb651-123"><a href="double-machine-learning.html#cb651-123" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb651-124"><a href="double-machine-learning.html#cb651-124" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb651-125"><a href="double-machine-learning.html#cb651-125" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&#39;Comparison of estimates&#39;</span>, <span class="at">y =</span> <span class="st">&#39;Estimate (change in 5-year risk score)&#39;</span>) <span class="sc">+</span></span>
+<span id="cb651-126"><a href="double-machine-learning.html#cb651-126" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb651-127"><a href="double-machine-learning.html#cb651-127" tabindex="-1"></a></span>
+<span id="cb651-128"><a href="double-machine-learning.html#cb651-128" tabindex="-1"></a><span class="co"># Arrange and save plots</span></span>
+<span id="cb651-129"><a href="double-machine-learning.html#cb651-129" tabindex="-1"></a></span>
+<span id="cb651-130"><a href="double-machine-learning.html#cb651-130" tabindex="-1"></a><span class="co"># Display a grid in RStudio / interactive session</span></span>
+<span id="cb651-131"><a href="double-machine-learning.html#cb651-131" tabindex="-1"></a><span class="fu">grid.arrange</span>(p1, p3, p4, p6, <span class="at">ncol =</span> <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-52-1.png" width="672" /></p>
+</div>
+<div id="clinical-interpretation-and-implementation" class="section level2 hasAnchor" number="14.3">
+<h2><span class="header-section-number">14.3</span> Clinical Interpretation and Implementation<a href="double-machine-learning.html#clinical-interpretation-and-implementation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The DML analysis reveals that intensive blood pressure control reduces five-year cardiovascular risk by approximately 3.5 percentage points on average compared to standard control. This estimate accounts for the complex confounding structure where patients receiving intensive treatment differ systematically from those receiving standard care across numerous characteristics. Traditional regression analyses that assume linear relationships or require pre-specification of relevant confounders would likely yield biased estimates given the high-dimensional, nonlinear confounding present in this observational setting.</p>
+<p>The confidence interval provides clinically meaningful precision that supports decision-making, with the 95% interval excluding zero and indicating statistically significant benefit. The p-value offers formal hypothesis testing evidence against the null hypothesis of no treatment effect, though the magnitude and clinical significance of the effect matter more than statistical significance alone. Physicians can use this evidence alongside clinical judgment, patient preferences, and consideration of treatment burdens to inform blood pressure management strategies.</p>
+<p>The sensitivity analysis demonstrating stability across machine learning methods strengthens confidence in the findings by showing that conclusions do not hinge on arbitrary algorithmic choices. When applied to real healthcare data, researchers should routinely conduct such sensitivity analyses to assess robustness and identify potential weaknesses in causal conclusions. Substantial sensitivity to method choice signals the need for additional investigation rather than blind acceptance of any single estimate.</p>
+<p>Implementation in clinical practice requires integration with electronic health record systems where patient characteristics automatically populate prediction models for outcomes and treatment propensities. The computational demands remain modest compared to training complex deep learning models, making DML feasible for routine use in health systems with adequate data infrastructure. The method works particularly well when combined with clinical expertise that guides variable selection, identifies potential confounders, and interprets findings within medical knowledge.</p>
+<p>The double robustness property provides practical insurance against model misspecification that inevitably occurs when applying statistical methods to messy real-world data. Even if either the outcome model or the propensity score model is substantially wrong, DML often produces reasonable treatment effect estimates provided one model captures the confounding structure adequately. This robustness makes the method more reliable than traditional approaches that fail completely when key modeling assumptions are violated.</p>
+</div>
+<div id="understanding-assumptions-and-potential-violations" class="section level2 hasAnchor" number="14.4">
+<h2><span class="header-section-number">14.4</span> Understanding Assumptions and Potential Violations<a href="double-machine-learning.html#understanding-assumptions-and-potential-violations" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The validity of DML conclusions depends critically on the unconfoundedness assumption that treatment assignment is effectively random conditional on observed characteristics. In observational healthcare data, this assumption requires that all variables influencing both treatment decisions and outcomes are measured and included in the analysis. Unmeasured confounding remains the Achilles heel of observational causal inference, and DML provides no protection against bias from hidden confounders that affect both treatment and outcomes.</p>
+<p>Researchers should carefully consider potential unmeasured confounders through clinical knowledge and sensitivity analyses that assess how strong unmeasured confounding would need to be to overturn conclusions. If important confounders like patient preferences, physician skill, or organizational characteristics are not captured in available data, causal estimates may be biased regardless of sophisticated methodology. Instrumental variable approaches or other identification strategies may be needed when unconfoundedness is implausible.</p>
+<p>The overlap assumption requires that patients with similar observed characteristics have positive probability of receiving each treatment level. Violations occur when certain patient types deterministically receive or avoid treatment based on contraindications, guidelines, or clinical practice patterns. DML estimates become unstable and potentially biased in regions of poor overlap where few comparable patients provide evidence for causal contrasts.</p>
+<p>Examining propensity score distributions helps diagnose overlap violations, with long tails or poor overlap suggesting regions where causal identification is weak. Trimming extreme propensity scores or restricting analysis to regions of good overlap can improve reliability at the cost of reduced generalizability. Researchers must carefully communicate when estimates apply only to subpopulations where overlap is adequate rather than the entire patient population.</p>
+<p>The method assumes that machine learning algorithms can adequately estimate nuisance parameters at sufficient convergence rates. When sample sizes are small relative to covariate dimensionality or when true functional forms are extremely complex, even flexible machine learning methods may fail to achieve necessary convergence rates. Practical assessment involves examining prediction performance of outcome and propensity score models, with poor predictive accuracy suggesting potential problems.</p>
+<p>Sensitivity to hyperparameter choices and instability across different machine learning methods signal potential violations of convergence rate assumptions. In such cases, researchers might need larger samples, dimension reduction through domain knowledge-guided variable selection, or alternative identification strategies that rely on different assumptions. The method works best when sample sizes are large enough that machine learning can reliably predict both outcomes and treatment propensities from observed confounders.</p>
+</div>
+<div id="extensions-and-advanced-applications" class="section level2 hasAnchor" number="14.5">
+<h2><span class="header-section-number">14.5</span> Extensions and Advanced Applications<a href="double-machine-learning.html#extensions-and-advanced-applications" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The partially linear model represents just one application of the DML framework, with extensions handling diverse causal questions that arise in healthcare research. The interactive regression model allows treatment effects to vary with observed characteristics by specifying <span class="math inline">\(Y_i = g_0(X_i) + X_i^\top \theta_0 W_i + U_i\)</span>, enabling estimation of heterogeneous treatment effects similar to causal forests but with different underlying assumptions and methods. This formulation supports precision medicine applications where treatment benefits depend on patient characteristics.</p>
+<p>Local average treatment effect estimation using instrumental variables extends DML to settings where unmeasured confounding prevents identification of causal effects from observational data alone. When valid instruments are available, DML provides efficient estimation of complier average causal effects while using machine learning to flexibly control for measured confounders. This combination addresses both measured and unmeasured confounding simultaneously, though finding valid instruments remains challenging in most healthcare applications.</p>
+<p>Mediation analysis using DML decomposes total treatment effects into direct and indirect pathways operating through measured mediators. This enables researchers to understand mechanisms through which treatments affect outcomes, supporting development of more effective interventions that target key causal pathways. The method requires additional identification assumptions about confounding of mediator-outcome relationships that must be carefully justified.</p>
+<p>Dynamic treatment regime estimation applies DML to longitudinal settings where treatment decisions occur sequentially over time. These applications require careful modeling of time-varying confounding where past outcomes influence future treatment decisions, creating feedback loops that complicate causal inference. DML combined with inverse probability weighting or g-computation methods can estimate optimal dynamic treatment strategies that adapt to evolving patient states.</p>
+<p>Multiple treatment comparisons extend the framework to settings with more than two treatment options, enabling simultaneous estimation of effects for multiple treatment contrasts. This supports comparative effectiveness research that informs choices among several competing therapies. The method can incorporate constraints that improve precision when treatments share common features or when some treatment comparisons are more reliable than others.</p>
+</div>
+<div id="conclusion-9" class="section level2 hasAnchor" number="14.6">
+<h2><span class="header-section-number">14.6</span> Conclusion<a href="double-machine-learning.html#conclusion-9" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Double machine learning represents a fundamental advance in our ability to draw valid causal inferences from high-dimensional observational healthcare data. By carefully separating the roles of prediction and inference through orthogonal score functions and cross-fitting, the method harnesses machine learning’s flexibility while preserving the statistical rigor necessary for hypothesis testing and confidence intervals. The framework enables robust treatment effect estimation that remains valid even when individual nuisance parameter models are misspecified, provided their product converges sufficiently fast.</p>
+<p>Our cardiovascular disease prevention application demonstrates the method’s practical value for addressing real-world causal questions where rich observational data enables investigation of treatment effects but traditional parametric approaches struggle with high-dimensional confounding. The analysis successfully recovered the true treatment effect despite complex nonlinear relationships between confounders, treatments, and outcomes that would have overwhelmed conventional regression approaches.</p>
+<p>The double robustness property provides critical insurance against model misspecification that inevitably occurs when applying statistical methods to messy healthcare data. This robustness, combined with asymptotic normality guarantees that enable valid inference despite using adaptive procedures, establishes DML as an essential tool for modern causal inference. The method works particularly well when researchers have access to rich covariate information but limited understanding of functional forms governing relationships in the data.</p>
+<p>Successful implementation requires adequate sample sizes relative to covariate dimensionality, careful consideration of identification assumptions including unconfoundedness and overlap, and validation through sensitivity analyses that assess robustness to methodological choices. The framework complements rather than replaces clinical expertise, working best when combined with domain knowledge that guides variable selection, identifies potential confounders, and interprets findings within medical context. Future research continues extending the framework to handle more complex settings including time-varying treatments, multiple outcomes, and violations of standard identification assumptions.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/edit/main/14-DML.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/blob/main/14-DML.Rmd",
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

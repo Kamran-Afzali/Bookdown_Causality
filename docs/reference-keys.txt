@@ -122,3 +122,11 @@ sensitivity-analysis-and-unmeasured-confounding
 testable-implications-and-dag-validation
 practical-guidance-for-healthcare-applications
 conclusion-dags-as-foundation-for-rigorous-causal-inference
+double-machine-learning
+introduction-11
+theoretical-framework-understanding-the-double-machine-learning-approach
+cardiovascular-disease-prevention-a-dml-case-study
+clinical-interpretation-and-implementation
+understanding-assumptions-and-potential-violations
+extensions-and-advanced-applications
+conclusion-9
