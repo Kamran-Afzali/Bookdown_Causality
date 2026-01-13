@@ -364,7 +364,7 @@ grid.arrange(p1, p3, p4, p6, ncol = 2)
 ```
 
 
-## Clinical Interpretation and Implementation
+### Clinical Interpretation and Implementation
 
 The DML analysis reveals that intensive blood pressure control reduces five-year cardiovascular risk by approximately 3.5 percentage points on average compared to standard control. This estimate accounts for the complex confounding structure where patients receiving intensive treatment differ systematically from those receiving standard care across numerous characteristics. Traditional regression analyses that assume linear relationships or require pre-specification of relevant confounders would likely yield biased estimates given the high-dimensional, nonlinear confounding present in this observational setting.
 
@@ -376,7 +376,7 @@ Implementation in clinical practice requires integration with electronic health 
 
 The double robustness property provides practical insurance against model misspecification that inevitably occurs when applying statistical methods to messy real-world data. Even if either the outcome model or the propensity score model is substantially wrong, DML often produces reasonable treatment effect estimates provided one model captures the confounding structure adequately. This robustness makes the method more reliable than traditional approaches that fail completely when key modeling assumptions are violated.
 
-## Understanding Assumptions and Potential Violations
+### Assumptions and Potential Violations
 
 The validity of DML conclusions depends critically on the unconfoundedness assumption that treatment assignment is effectively random conditional on observed characteristics. In observational healthcare data, this assumption requires that all variables influencing both treatment decisions and outcomes are measured and included in the analysis. Unmeasured confounding remains the Achilles heel of observational causal inference, and DML provides no protection against bias from hidden confounders that affect both treatment and outcomes.
 
