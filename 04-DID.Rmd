@@ -1,4 +1,4 @@
-# Causal Inference in Practice III: Difference-in-Differences with a Healthcare Application
+# Difference-in-Differences with a Healthcare Application
 
 ## Introduction
 

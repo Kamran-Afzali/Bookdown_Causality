@@ -1,4 +1,4 @@
-# Causal Inference in Practice IV: Instrumental Variables 
+# Instrumental Variables 
 
 ## Introduction
 

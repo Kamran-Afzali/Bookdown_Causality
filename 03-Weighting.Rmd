@@ -1,4 +1,4 @@
-# Causal Inference in Practice II: Propensity Scores, Doubly Robust Estimators, and Inverse Probability Weighting
+# Propensity Scores, Doubly Robust Estimators, and Inverse Probability Weighting
 The previous post investigated the foundations of Randomized Controlled Trials and Regression Adjustment. In real-world observational data, achieving balance on covariates is challenging, and simple regression models rely heavily on conditional independence and correct model specification. Propensity score–based methods, including matching, Inverse Probability Weighting (IPW), and doubly robust estimation, offer suitable alternatives. These methods alleviate some assumptions but introduce others such as positivity and model correctness. In this essay, we articulate their theoretical motivations, derive formal estimators, and demonstrate implementation in R.
 
 ## Propensity Score Methods

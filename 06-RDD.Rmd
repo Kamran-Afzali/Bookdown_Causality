@@ -1,4 +1,4 @@
-# Causal Inference in Practice V: Regression Discontinuity Design
+# Regression Discontinuity Design
 
 ## Introduction
 

@@ -1,4 +1,4 @@
-# Causal Inference in Practice I: Randomized Controlled Trials and Regression Adjustment
+# Randomized Controlled Trials and Regression Adjustment
 
 ## Introduction
 
