@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 5 Instrumental Variables | Causal Inference in R</title>
+  <meta name="description" content="Chapter 5 Instrumental Variables | Causal Inference in R" />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 5 Instrumental Variables | Causal Inference in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 5 Instrumental Variables | Causal Inference in R" />
+  
+  
+  
+
+<meta name="author" content="Kamran Afzali" />
+
+
+<meta name="date" content="2026-01-17" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="difference-in-differences-with-a-healthcare-application.html"/>
+<link rel="next" href="regression-discontinuity-design.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Causality analysis in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Foundations of Causal Statistical Analysis</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#summary-table-techniques-for-causal-statistical-analysis"><i class="fa fa-check"></i><b>1.2</b> Summary Table: Techniques for Causal Statistical Analysis</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#methodological-deep-dive-with-practical-guidance"><i class="fa fa-check"></i><b>1.3</b> Methodological Deep Dive with Practical Guidance</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#discussion"><i class="fa fa-check"></i><b>1.4</b> Discussion</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html"><i class="fa fa-check"></i><b>2</b> Randomized Controlled Trials and Regression Adjustment</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#randomized-controlled-trials-design-and-analysis"><i class="fa fa-check"></i><b>2.2</b> 1. Randomized Controlled Trials: Design and Analysis</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#theoretical-foundations"><i class="fa fa-check"></i><b>2.2.1</b> Theoretical Foundations</a></li>
+<li class="chapter" data-level="2.2.2" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#r-implementation"><i class="fa fa-check"></i><b>2.2.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.2.3" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#model-based-inference"><i class="fa fa-check"></i><b>2.2.3</b> Model-Based Inference</a></li>
+<li class="chapter" data-level="2.2.4" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#diagnostics-and-integrity"><i class="fa fa-check"></i><b>2.2.4</b> Diagnostics and Integrity</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#regression-adjustment-a-model-based-approach-to-causal-inference"><i class="fa fa-check"></i><b>2.3</b> 2. Regression Adjustment: A Model-Based Approach to Causal Inference</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#conceptual-overview"><i class="fa fa-check"></i><b>2.3.1</b> Conceptual Overview</a></li>
+<li class="chapter" data-level="2.3.2" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#r-implementation-1"><i class="fa fa-check"></i><b>2.3.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.3.3" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#limitations-and-diagnostics"><i class="fa fa-check"></i><b>2.3.3</b> Limitations and Diagnostics</a></li>
+<li class="chapter" data-level="2.3.4" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#causal-interpretation"><i class="fa fa-check"></i><b>2.3.4</b> Causal Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#toward-integrated-reasoning"><i class="fa fa-check"></i><b>2.4</b> Toward Integrated Reasoning</a></li>
+<li class="chapter" data-level="2.5" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#conclusion"><i class="fa fa-check"></i><b>2.5</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><i class="fa fa-check"></i><b>3</b> Propensity Scores, Doubly Robust Estimators, and Inverse Probability Weighting</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#propensity-score-methods"><i class="fa fa-check"></i><b>3.1</b> Propensity Score Methods</a></li>
+<li class="chapter" data-level="3.2" data-path="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#inverse-probability-weighting-ipw"><i class="fa fa-check"></i><b>3.2</b> Inverse Probability Weighting (IPW)</a></li>
+<li class="chapter" data-level="3.3" data-path="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#doubly-robust-estimators"><i class="fa fa-check"></i><b>3.3</b> Doubly Robust Estimators</a></li>
+<li class="chapter" data-level="3.4" data-path="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#integrative-interpretation"><i class="fa fa-check"></i><b>3.4</b> Integrative Interpretation</a></li>
+<li class="chapter" data-level="3.5" data-path="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#summary-table"><i class="fa fa-check"></i><b>3.5</b> Summary Table</a></li>
+<li class="chapter" data-level="3.6" data-path="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#conclusion-1"><i class="fa fa-check"></i><b>3.6</b> Conclusion</a></li>
+<li class="chapter" data-level="3.7" data-path="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#references-1"><i class="fa fa-check"></i><b>3.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html"><i class="fa fa-check"></i><b>4</b> Difference-in-Differences with a Healthcare Application</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html#introduction-2"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
+<li class="chapter" data-level="4.2" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html#difference-in-differences-theoretical-framework"><i class="fa fa-check"></i><b>4.2</b> Difference-in-Differences: Theoretical Framework</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html#core-concept"><i class="fa fa-check"></i><b>4.2.1</b> Core Concept</a></li>
+<li class="chapter" data-level="4.2.2" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html#mathematical-formalism"><i class="fa fa-check"></i><b>4.2.2</b> Mathematical Formalism</a></li>
+<li class="chapter" data-level="4.2.3" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html#key-assumption-parallel-trends"><i class="fa fa-check"></i><b>4.2.3</b> Key Assumption: Parallel Trends</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html#application-evaluating-a-telemedicine-program-in-healthcare"><i class="fa fa-check"></i><b>4.3</b> Application: Evaluating a Telemedicine Program in Healthcare</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html#r-implementation-2"><i class="fa fa-check"></i><b>4.3.1</b> R Implementation</a></li>
+<li class="chapter" data-level="4.3.2" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html#limitations-and-takeaways"><i class="fa fa-check"></i><b>4.3.2</b> Limitations and takeaways</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html#conclusion-2"><i class="fa fa-check"></i><b>4.4</b> Conclusion</a></li>
+<li class="chapter" data-level="4.5" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html#references-2"><i class="fa fa-check"></i><b>4.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="instrumental-variables.html"><a href="instrumental-variables.html"><i class="fa fa-check"></i><b>5</b> Instrumental Variables</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="instrumental-variables.html"><a href="instrumental-variables.html#introduction-3"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="instrumental-variables.html"><a href="instrumental-variables.html#healthcare-case-study-hospital-quality-and-recovery-time"><i class="fa fa-check"></i><b>5.2</b> Healthcare Case Study: Hospital Quality and Recovery Time</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="instrumental-variables.html"><a href="instrumental-variables.html#r-implementation-3"><i class="fa fa-check"></i><b>5.2.1</b> R Implementation</a></li>
+<li class="chapter" data-level="5.2.2" data-path="instrumental-variables.html"><a href="instrumental-variables.html#interpreting-the-results"><i class="fa fa-check"></i><b>5.2.2</b> Interpreting the Results</a></li>
+<li class="chapter" data-level="5.2.3" data-path="instrumental-variables.html"><a href="instrumental-variables.html#robustness-checks"><i class="fa fa-check"></i><b>5.2.3</b> Robustness Checks</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="instrumental-variables.html"><a href="instrumental-variables.html#practical-considerations-and-extensions"><i class="fa fa-check"></i><b>5.3</b> Practical Considerations and Extensions</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="instrumental-variables.html"><a href="instrumental-variables.html#when-to-use-iv"><i class="fa fa-check"></i><b>5.3.1</b> When to Use IV</a></li>
+<li class="chapter" data-level="5.3.2" data-path="instrumental-variables.html"><a href="instrumental-variables.html#advanced-topics"><i class="fa fa-check"></i><b>5.3.2</b> Advanced Topics</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="instrumental-variables.html"><a href="instrumental-variables.html#conclusion-3"><i class="fa fa-check"></i><b>5.4</b> Conclusion</a></li>
+<li class="chapter" data-level="5.5" data-path="instrumental-variables.html"><a href="instrumental-variables.html#further-reading"><i class="fa fa-check"></i><b>5.5</b> Further Reading</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html"><i class="fa fa-check"></i><b>6</b> Regression Discontinuity Design</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#introduction-4"><i class="fa fa-check"></i><b>6.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#comparison-with-other-methods"><i class="fa fa-check"></i><b>6.1.1</b> Comparison with Other Methods</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#healthcare-application-icu-admission-and-mortality"><i class="fa fa-check"></i><b>6.2</b> Healthcare Application: ICU Admission and Mortality</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#scenario"><i class="fa fa-check"></i><b>6.2.1</b> Scenario</a></li>
+<li class="chapter" data-level="6.2.2" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#assumptions-and-validity"><i class="fa fa-check"></i><b>6.2.2</b> Assumptions and Validity</a></li>
+<li class="chapter" data-level="6.2.3" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#r-implementation-4"><i class="fa fa-check"></i><b>6.2.3</b> R Implementation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#interpretation-and-diagnostics"><i class="fa fa-check"></i><b>6.3</b> Interpretation and Diagnostics</a></li>
+<li class="chapter" data-level="6.4" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#extensions-and-robustness"><i class="fa fa-check"></i><b>6.4</b> Extensions and Robustness</a></li>
+<li class="chapter" data-level="6.5" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#limitations-and-considerations"><i class="fa fa-check"></i><b>6.5</b> Limitations and Considerations</a></li>
+<li class="chapter" data-level="6.6" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#conclusion-4"><i class="fa fa-check"></i><b>6.6</b> Conclusion</a></li>
+<li class="chapter" data-level="6.7" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#references-3"><i class="fa fa-check"></i><b>6.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="causal-forests.html"><a href="causal-forests.html"><i class="fa fa-check"></i><b>7</b> Causal Forests</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="causal-forests.html"><a href="causal-forests.html#introduction-5"><i class="fa fa-check"></i><b>7.1</b> Introduction</a></li>
+<li class="chapter" data-level="7.2" data-path="causal-forests.html"><a href="causal-forests.html#precision-medicine-case-study-personalized-diabetes-treatment"><i class="fa fa-check"></i><b>7.2</b> Precision Medicine Case Study: Personalized Diabetes Treatment</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="causal-forests.html"><a href="causal-forests.html#data-generation-and-setup"><i class="fa fa-check"></i><b>7.2.1</b> Data Generation and Setup</a></li>
+<li class="chapter" data-level="7.2.2" data-path="causal-forests.html"><a href="causal-forests.html#fitting-the-causal-forest"><i class="fa fa-check"></i><b>7.2.2</b> Fitting the Causal Forest</a></li>
+<li class="chapter" data-level="7.2.3" data-path="causal-forests.html"><a href="causal-forests.html#variable-importance-analysis"><i class="fa fa-check"></i><b>7.2.3</b> Variable Importance Analysis</a></li>
+<li class="chapter" data-level="7.2.4" data-path="causal-forests.html"><a href="causal-forests.html#statistical-testing-for-heterogeneity"><i class="fa fa-check"></i><b>7.2.4</b> Statistical Testing for Heterogeneity</a></li>
+<li class="chapter" data-level="7.2.5" data-path="causal-forests.html"><a href="causal-forests.html#visualization-and-pattern-discovery"><i class="fa fa-check"></i><b>7.2.5</b> Visualization and Pattern Discovery</a></li>
+<li class="chapter" data-level="7.2.6" data-path="causal-forests.html"><a href="causal-forests.html#personalized-treatment-strategy-development"><i class="fa fa-check"></i><b>7.2.6</b> Personalized Treatment Strategy Development</a></li>
+<li class="chapter" data-level="7.2.7" data-path="causal-forests.html"><a href="causal-forests.html#partial-dependence-analysis"><i class="fa fa-check"></i><b>7.2.7</b> Partial Dependence Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="causal-forests.html"><a href="causal-forests.html#clinical-insights-and-limitations"><i class="fa fa-check"></i><b>7.3</b> Clinical Insights and Limitations</a></li>
+<li class="chapter" data-level="7.4" data-path="causal-forests.html"><a href="causal-forests.html#conclusion-5"><i class="fa fa-check"></i><b>7.4</b> Conclusion</a></li>
+<li class="chapter" data-level="7.5" data-path="causal-forests.html"><a href="causal-forests.html#references-4"><i class="fa fa-check"></i><b>7.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html"><i class="fa fa-check"></i><b>8</b> Bayesian Structural Time Series for Causal Inference</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#introduction-6"><i class="fa fa-check"></i><b>8.1</b> Introduction</a></li>
+<li class="chapter" data-level="8.2" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#r-implementation-examples-healthcare"><i class="fa fa-check"></i><b>8.2</b> R Implementation examples Healthcare</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#tobacco-tax-policy"><i class="fa fa-check"></i><b>8.2.1</b> Tobacco Tax Policy</a></li>
+<li class="chapter" data-level="8.2.2" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#teletherapy-program-assessment"><i class="fa fa-check"></i><b>8.2.2</b> Teletherapy Program Assessment</a></li>
+<li class="chapter" data-level="8.2.3" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#implementation-guidelines-for-healthcare-applications"><i class="fa fa-check"></i><b>8.2.3</b> Implementation Guidelines for Healthcare Applications</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#conclusion-6"><i class="fa fa-check"></i><b>8.3</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html"><i class="fa fa-check"></i><b>9</b> Meta-Learners for Heterogeneous Treatment Effects</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#introduction-the-promise-and-peril-of-machine-learning-for-causal-inference"><i class="fa fa-check"></i><b>9.1</b> Introduction: The Promise and Peril of Machine Learning for Causal Inference</a></li>
+<li class="chapter" data-level="9.2" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#theoretical-foundation-from-prediction-to-causal-inference"><i class="fa fa-check"></i><b>9.2</b> Theoretical Foundation: From Prediction to Causal Inference</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#the-s-learner-simplicity-with-hidden-complexity"><i class="fa fa-check"></i><b>9.2.1</b> The S-Learner: Simplicity with Hidden Complexity</a></li>
+<li class="chapter" data-level="9.2.2" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#the-t-learner-divide-and-conquer"><i class="fa fa-check"></i><b>9.2.2</b> The T-Learner: Divide and Conquer</a></li>
+<li class="chapter" data-level="9.2.3" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#the-x-learner-sophisticated-synthesis"><i class="fa fa-check"></i><b>9.2.3</b> The X-Learner: Sophisticated Synthesis</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#practical-implementation-hypertension-treatment-optimization"><i class="fa fa-check"></i><b>9.3</b> Practical Implementation: Hypertension Treatment Optimization</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementing-the-s-learner"><i class="fa fa-check"></i><b>9.3.1</b> Implementing the S-Learner</a></li>
+<li class="chapter" data-level="9.3.2" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementing-the-t-learner"><i class="fa fa-check"></i><b>9.3.2</b> Implementing the T-Learner</a></li>
+<li class="chapter" data-level="9.3.3" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementing-the-x-learner"><i class="fa fa-check"></i><b>9.3.3</b> Implementing the X-Learner</a></li>
+<li class="chapter" data-level="9.3.4" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#comparative-analysis-and-model-selection"><i class="fa fa-check"></i><b>9.3.4</b> Comparative Analysis and Model Selection</a></li>
+<li class="chapter" data-level="9.3.5" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#clinical-pattern-discovery-and-interpretation"><i class="fa fa-check"></i><b>9.3.5</b> Clinical Pattern Discovery and Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementation-considerations-and-best-practices"><i class="fa fa-check"></i><b>9.4</b> Implementation Considerations and Best Practices</a></li>
+<li class="chapter" data-level="9.5" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#conclusion-democratizing-causal-machine-learning"><i class="fa fa-check"></i><b>9.5</b> Conclusion: Democratizing Causal Machine Learning</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><i class="fa fa-check"></i><b>10</b> Targeted Maximum Likelihood Estimation for Robust Causal Inference in Healthcare</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html#introduction-7"><i class="fa fa-check"></i><b>10.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="10.1.1" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html#double-robustness-and-tmle"><i class="fa fa-check"></i><b>10.1.1</b> Double Robustness and TMLE</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html#healthcare-application-comparative-effectiveness-of-hypertension-treatments"><i class="fa fa-check"></i><b>10.2</b> Healthcare Application: Comparative Effectiveness of Hypertension Treatments</a></li>
+<li class="chapter" data-level="10.3" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html#limitations-and-practical-implementation"><i class="fa fa-check"></i><b>10.3</b> Limitations and Practical Implementation</a></li>
+<li class="chapter" data-level="10.4" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html#conclusion-7"><i class="fa fa-check"></i><b>10.4</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html"><i class="fa fa-check"></i><b>11</b> G-Computation for Causal Inference</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#introduction-8"><i class="fa fa-check"></i><b>11.1</b> Introduction</a></li>
+<li class="chapter" data-level="11.2" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#case-study-hypertension-management-over-time"><i class="fa fa-check"></i><b>11.2</b> Case Study: Hypertension Management Over Time</a>
+<ul>
+<li class="chapter" data-level="11.2.1" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#fitting-the-g-formula-model"><i class="fa fa-check"></i><b>11.2.1</b> Fitting the G-Formula Model</a></li>
+<li class="chapter" data-level="11.2.2" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#interpreting-results-and-model-diagnostics"><i class="fa fa-check"></i><b>11.2.2</b> Interpreting Results and Model Diagnostics</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#practical-considerations-and-limitations"><i class="fa fa-check"></i><b>11.3</b> Practical Considerations and Limitations</a></li>
+<li class="chapter" data-level="11.4" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#conclusion-integrating-g-computation-into-practice"><i class="fa fa-check"></i><b>11.4</b> Conclusion: Integrating G-Computation into Practice</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><i class="fa fa-check"></i><b>12</b> Structural Equation Modeling for Healthcare Research: Unraveling Complex Causal Pathways</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html#introduction-9"><i class="fa fa-check"></i><b>12.1</b> Introduction</a></li>
+<li class="chapter" data-level="12.2" data-path="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html#a-mediation-analysis-physical-activity-mental-health-and-diabetes-control"><i class="fa fa-check"></i><b>12.2</b> A Mediation Analysis: Physical Activity, Mental Health, and Diabetes Control</a></li>
+<li class="chapter" data-level="12.3" data-path="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html#clinical-interpretation-and-limitations"><i class="fa fa-check"></i><b>12.3</b> Clinical Interpretation and Limitations</a></li>
+<li class="chapter" data-level="12.4" data-path="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html#conclusion-8"><i class="fa fa-check"></i><b>12.4</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><i class="fa fa-check"></i><b>13</b> Directed Acyclic Graphs: Mapping the Causal Architecture of Healthcare Decisions</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#introduction-10"><i class="fa fa-check"></i><b>13.1</b> Introduction</a></li>
+<li class="chapter" data-level="13.2" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#implementing-dag-analysis-in-healthcare-research"><i class="fa fa-check"></i><b>13.2</b> Implementing DAG Analysis in Healthcare Research</a></li>
+<li class="chapter" data-level="13.3" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#comparing-analytical-strategies"><i class="fa fa-check"></i><b>13.3</b> Comparing Analytical Strategies</a></li>
+<li class="chapter" data-level="13.4" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#visualizing-causal-structures-for-communication"><i class="fa fa-check"></i><b>13.4</b> Visualizing Causal Structures for Communication</a></li>
+<li class="chapter" data-level="13.5" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#sensitivity-analysis-and-unmeasured-confounding"><i class="fa fa-check"></i><b>13.5</b> Sensitivity Analysis and Unmeasured Confounding</a></li>
+<li class="chapter" data-level="13.6" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#testable-implications-and-dag-validation"><i class="fa fa-check"></i><b>13.6</b> Testable Implications and DAG Validation</a></li>
+<li class="chapter" data-level="13.7" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#practical-guidance-for-healthcare-applications"><i class="fa fa-check"></i><b>13.7</b> Practical Guidance for Healthcare Applications</a></li>
+<li class="chapter" data-level="13.8" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#conclusion-dags-as-foundation-for-rigorous-causal-inference"><i class="fa fa-check"></i><b>13.8</b> Conclusion: DAGs as Foundation for Rigorous Causal Inference</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="double-machine-learning.html"><a href="double-machine-learning.html"><i class="fa fa-check"></i><b>14</b> Double Machine Learning</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="double-machine-learning.html"><a href="double-machine-learning.html#introduction-11"><i class="fa fa-check"></i><b>14.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="14.1.1" data-path="double-machine-learning.html"><a href="double-machine-learning.html#theoretical-framework-understanding-the-double-machine-learning-approach"><i class="fa fa-check"></i><b>14.1.1</b> Theoretical Framework: Understanding the Double Machine Learning Approach</a></li>
+</ul></li>
+<li class="chapter" data-level="14.2" data-path="double-machine-learning.html"><a href="double-machine-learning.html#cardiovascular-disease-prevention-a-dml-case-study"><i class="fa fa-check"></i><b>14.2</b> Cardiovascular Disease Prevention: A DML Case Study</a>
+<ul>
+<li class="chapter" data-level="14.2.1" data-path="double-machine-learning.html"><a href="double-machine-learning.html#clinical-interpretation-and-implementation"><i class="fa fa-check"></i><b>14.2.1</b> Clinical Interpretation and Implementation</a></li>
+<li class="chapter" data-level="14.2.2" data-path="double-machine-learning.html"><a href="double-machine-learning.html#assumptions-and-potential-violations"><i class="fa fa-check"></i><b>14.2.2</b> Assumptions and Potential Violations</a></li>
+</ul></li>
+<li class="chapter" data-level="14.3" data-path="double-machine-learning.html"><a href="double-machine-learning.html#extensions-and-advanced-applications"><i class="fa fa-check"></i><b>14.3</b> Extensions and Advanced Applications</a></li>
+<li class="chapter" data-level="14.4" data-path="double-machine-learning.html"><a href="double-machine-learning.html#conclusion-9"><i class="fa fa-check"></i><b>14.4</b> Conclusion</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Causal Inference in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="instrumental-variables" class="section level1 hasAnchor" number="5">
+<h1><span class="header-section-number">Chapter 5</span> Instrumental Variables<a href="instrumental-variables.html#instrumental-variables" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction-3" class="section level2 hasAnchor" number="5.1">
+<h2><span class="header-section-number">5.1</span> Introduction<a href="instrumental-variables.html#introduction-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Imagine you’re a healthcare researcher trying to determine whether expensive, high-quality hospitals actually improve patient outcomes. The challenge? Patients don’t randomly choose hospitals—wealthier, more health-conscious patients often select premium facilities, making it nearly impossible to separate the hospital’s effect from patient characteristics you can’t measure.</p>
+<p>This is the fundamental problem of <strong>unmeasured confounding</strong> in observational studies. While methods like propensity score matching or Difference-in-Differences address specific scenarios, they rely on strong assumptions that often don’t hold when key confounders remain hidden. Instrumental Variables (IV) estimation offers a clever solution: it leverages exogenous variation—changes that occur “by chance” rather than by choice—to estimate causal effects even when important confounders are unmeasured.</p>
+<p>This guide explores IV methodology through a practical healthcare example: estimating how hospital quality affects patient recovery time. We’ll implement the method in R, verify key assumptions, and compare results with simpler approaches. By the end, you’ll understand when and how to apply IV estimation in your own research.</p>
+<p>Think of instrumental variables as nature’s randomized experiment. While we can’t randomly assign patients to hospitals, we can exploit factors that create “as good as random” variation in hospital choice. The key insight: if we find something that influences treatment assignment but doesn’t directly affect outcomes, we can use it to isolate the causal effect we’re interested in.</p>
+<p>Consider geographic proximity to high-quality hospitals. Patients living closer are more likely to choose these facilities, but distance itself shouldn’t affect recovery (assuming we control for other factors). This creates the variation we need for causal identification.</p>
+<p>A valid instrument must satisfy three critical conditions:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Relevance (Instrument affects treatment)</strong>: The instrument must meaningfully influence treatment assignment
+<ul>
+<li><em>Mathematical condition</em>: <span class="math inline">\(\text{Cov}(Z, D) \neq 0\)</span></li>
+<li><em>Practical test</em>: First-stage F-statistic &gt; 10</li>
+<li><em>Example</em>: Distance to high-quality hospital affects hospital choice</li>
+</ul></li>
+<li><strong>Exclusion Restriction (Instrument affects outcome only through treatment)</strong>: The instrument cannot have direct pathways to the outcome
+<ul>
+<li><em>Mathematical condition</em>: <span class="math inline">\(Y = f(D, X, \varepsilon)\)</span> with <span class="math inline">\(Z \notin f\)</span></li>
+<li><em>Practical consideration</em>: Requires subject matter expertise and careful reasoning</li>
+<li><em>Example</em>: Distance affects recovery only by influencing hospital choice, not through other channels</li>
+</ul></li>
+<li><strong>Independence (Instrument is exogenous)</strong>: The instrument must be uncorrelated with unmeasured confounders
+<ul>
+<li><em>Mathematical condition</em>: <span class="math inline">\(Z \perp \{Y(1), Y(0)\} \mid X\)</span></li>
+<li><em>Practical consideration</em>: Often the most challenging assumption to defend</li>
+<li><em>Example</em>: After controlling for observables, distance is unrelated to patient health consciousness</li>
+</ul></li>
+</ol>
+<p>Unlike randomized trials that estimate population-wide effects, IV identifies the <strong>Local Average Treatment Effect</strong>—the causal effect for “compliers,” individuals whose treatment status is influenced by the instrument. This is both a strength (we get unbiased causal estimates) and a limitation (results may not generalize to the full population).</p>
+<p>For binary instruments and treatments, the IV estimand is elegantly simple:</p>
+<p><span class="math display">\[\widehat{\text{LATE}} = \frac{\mathbb{E}[Y \mid Z = 1] - \mathbb{E}[Y \mid Z = 0]}{\mathbb{E}[D \mid Z = 1] - \mathbb{E}[D \mid Z = 0]}\]</span></p>
+<p>This ratio scales the “reduced-form” effect (instrument → outcome) by the “first-stage” effect (instrument → treatment). The intuition: we divide the total effect of the instrument on outcomes by how much the instrument changes treatment uptake.</p>
+<p>When dealing with continuous variables or multiple covariates, we use Two-Stage Least Squares (2SLS):</p>
+<p><strong>First Stage</strong>: Predict treatment using the instrument and controls
+<span class="math display">\[D_i = \pi_0 + \pi_1 Z_i + \pi_2^\top X_i + \nu_i\]</span></p>
+<p><strong>Second Stage</strong>: Use predicted treatment values to estimate the causal effect
+<span class="math display">\[Y_i = \alpha_0 + \alpha_1 \hat{D}_i + \alpha_2^\top X_i + \varepsilon_i\]</span></p>
+<p>The coefficient <span class="math inline">\(\alpha_1\)</span> provides our LATE estimate, robust to unmeasured confounding under valid IV assumptions.</p>
+<table>
+<colgroup>
+<col width="12%" />
+<col width="19%" />
+<col width="29%" />
+<col width="17%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Assumption</th>
+<th>Effect Estimated</th>
+<th>Strengths</th>
+<th>Limitations</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>IV</strong></td>
+<td>Valid instrument</td>
+<td>LATE (compliers only)</td>
+<td>Handles unmeasured confounding</td>
+<td>Requires strong instrument; limited generalizability</td>
+</tr>
+<tr class="even">
+<td><strong>Propensity Scores</strong></td>
+<td>Conditional ignorability</td>
+<td>ATE/ATT</td>
+<td>Intuitive; broad applicability</td>
+<td>Assumes all confounders observed</td>
+</tr>
+<tr class="odd">
+<td><strong>Difference-in-Differences</strong></td>
+<td>Parallel trends</td>
+<td>ATT</td>
+<td>Natural experiments</td>
+<td>Time-varying confounding issues</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="healthcare-case-study-hospital-quality-and-recovery-time" class="section level2 hasAnchor" number="5.2">
+<h2><span class="header-section-number">5.2</span> Healthcare Case Study: Hospital Quality and Recovery Time<a href="instrumental-variables.html#healthcare-case-study-hospital-quality-and-recovery-time" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong>Objective</strong>: Estimate the causal effect of hospital quality on post-surgical recovery time</p>
+<p><strong>Treatment</strong>: <span class="math inline">\(D_i = 1\)</span> for high-quality hospitals, <span class="math inline">\(D_i = 0\)</span> for standard hospitals<br />
+<strong>Outcome</strong>: <span class="math inline">\(Y_i\)</span> = recovery time in days (lower is better)<br />
+<strong>Instrument</strong>: <span class="math inline">\(Z_i = 1\)</span> if patient lives within 10 miles of a high-quality hospital</p>
+<p><strong>The Confounding Problem</strong>: Patients choosing high-quality hospitals may differ systematically in unmeasured ways (health consciousness, social support, etc.) that also affect recovery.</p>
+<ul>
+<li><strong>Assumption Verification</strong></li>
+</ul>
+<p><strong>Relevance</strong>: We expect proximity to strongly predict hospital choice. Patients prefer nearby facilities due to convenience, familiarity, and reduced travel burden.</p>
+<p><strong>Exclusion Restriction</strong>: Distance affects recovery only through hospital choice, not via:
+- Local healthcare infrastructure quality
+- Air quality or environmental factors
+- Socioeconomic clustering (controlled for through observables)</p>
+<p><strong>Independence</strong>: After controlling for income, education, and urban/rural status, proximity should be uncorrelated with unmeasured health behaviors.</p>
+<div id="r-implementation-3" class="section level3 hasAnchor" number="5.2.1">
+<h3><span class="header-section-number">5.2.1</span> R Implementation<a href="instrumental-variables.html#r-implementation-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Let’s implement IV estimation with simulated data that mirrors real-world healthcare scenarios:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="instrumental-variables.html#cb41-1" tabindex="-1"></a><span class="co"># Load required packages</span></span>
+<span id="cb41-2"><a href="instrumental-variables.html#cb41-2" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;AER&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;AER&quot;</span>)</span>
+<span id="cb41-3"><a href="instrumental-variables.html#cb41-3" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;ggplot2&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;ggplot2&quot;</span>)</span>
+<span id="cb41-4"><a href="instrumental-variables.html#cb41-4" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;dplyr&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;dplyr&quot;</span>)</span>
+<span id="cb41-5"><a href="instrumental-variables.html#cb41-5" tabindex="-1"></a><span class="fu">library</span>(AER)</span></code></pre></div>
+<pre><code>## Loading required package: car</code></pre>
+<pre><code>## Loading required package: carData</code></pre>
+<pre><code>## 
+## Attaching package: &#39;car&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     recode</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     some</code></pre>
+<pre><code>## Loading required package: lmtest</code></pre>
+<pre><code>## Loading required package: zoo</code></pre>
+<pre><code>## 
+## Attaching package: &#39;zoo&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     as.Date, as.Date.numeric</code></pre>
+<pre><code>## Loading required package: sandwich</code></pre>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="instrumental-variables.html#cb52-1" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb52-2"><a href="instrumental-variables.html#cb52-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb52-3"><a href="instrumental-variables.html#cb52-3" tabindex="-1"></a></span>
+<span id="cb52-4"><a href="instrumental-variables.html#cb52-4" tabindex="-1"></a><span class="co"># Set parameters for reproducible simulation</span></span>
+<span id="cb52-5"><a href="instrumental-variables.html#cb52-5" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb52-6"><a href="instrumental-variables.html#cb52-6" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1000</span>  <span class="co"># Sample size</span></span>
+<span id="cb52-7"><a href="instrumental-variables.html#cb52-7" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="dv">5</span>     <span class="co"># Number of covariates</span></span>
+<span id="cb52-8"><a href="instrumental-variables.html#cb52-8" tabindex="-1"></a></span>
+<span id="cb52-9"><a href="instrumental-variables.html#cb52-9" tabindex="-1"></a><span class="co"># Generate realistic patient characteristics</span></span>
+<span id="cb52-10"><a href="instrumental-variables.html#cb52-10" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> p), <span class="at">nrow =</span> n)</span>
+<span id="cb52-11"><a href="instrumental-variables.html#cb52-11" tabindex="-1"></a><span class="fu">colnames</span>(X) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;income&quot;</span>, <span class="st">&quot;education&quot;</span>, <span class="st">&quot;comorbidities&quot;</span>, <span class="st">&quot;urban&quot;</span>)</span>
+<span id="cb52-12"><a href="instrumental-variables.html#cb52-12" tabindex="-1"></a></span>
+<span id="cb52-13"><a href="instrumental-variables.html#cb52-13" tabindex="-1"></a><span class="co"># Instrument: Geographic proximity (exogenous after controlling for observables)</span></span>
+<span id="cb52-14"><a href="instrumental-variables.html#cb52-14" tabindex="-1"></a>proximity_prob <span class="ot">&lt;-</span> <span class="fu">plogis</span>(<span class="sc">-</span><span class="fl">0.5</span> <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> X[, <span class="st">&quot;urban&quot;</span>] <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> X[, <span class="st">&quot;income&quot;</span>])</span>
+<span id="cb52-15"><a href="instrumental-variables.html#cb52-15" tabindex="-1"></a>Z <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, proximity_prob)</span>
+<span id="cb52-16"><a href="instrumental-variables.html#cb52-16" tabindex="-1"></a></span>
+<span id="cb52-17"><a href="instrumental-variables.html#cb52-17" tabindex="-1"></a><span class="co"># Treatment: Hospital choice (influenced by proximity and patient characteristics)</span></span>
+<span id="cb52-18"><a href="instrumental-variables.html#cb52-18" tabindex="-1"></a><span class="co"># Strong first stage ensures instrument relevance</span></span>
+<span id="cb52-19"><a href="instrumental-variables.html#cb52-19" tabindex="-1"></a>hospital_choice_prob <span class="ot">&lt;-</span> <span class="fu">plogis</span>(<span class="sc">-</span><span class="fl">0.5</span> <span class="sc">+</span> <span class="fl">1.2</span> <span class="sc">*</span> Z <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> X[, <span class="st">&quot;income&quot;</span>] <span class="sc">+</span> </span>
+<span id="cb52-20"><a href="instrumental-variables.html#cb52-20" tabindex="-1"></a>                               <span class="fl">0.2</span> <span class="sc">*</span> X[, <span class="st">&quot;education&quot;</span>] <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> X[, <span class="st">&quot;urban&quot;</span>])</span>
+<span id="cb52-21"><a href="instrumental-variables.html#cb52-21" tabindex="-1"></a>D <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, hospital_choice_prob)</span>
+<span id="cb52-22"><a href="instrumental-variables.html#cb52-22" tabindex="-1"></a></span>
+<span id="cb52-23"><a href="instrumental-variables.html#cb52-23" tabindex="-1"></a><span class="co"># Outcome: Recovery time with unmeasured confounding</span></span>
+<span id="cb52-24"><a href="instrumental-variables.html#cb52-24" tabindex="-1"></a><span class="co"># Unmeasured confounder: health consciousness (affects both hospital choice and recovery)</span></span>
+<span id="cb52-25"><a href="instrumental-variables.html#cb52-25" tabindex="-1"></a>health_consciousness <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="fl">0.2</span> <span class="sc">*</span> X[, <span class="st">&quot;education&quot;</span>] <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> X[, <span class="st">&quot;income&quot;</span>])</span>
+<span id="cb52-26"><a href="instrumental-variables.html#cb52-26" tabindex="-1"></a></span>
+<span id="cb52-27"><a href="instrumental-variables.html#cb52-27" tabindex="-1"></a><span class="co"># True causal effect: -4 days for high-quality hospitals</span></span>
+<span id="cb52-28"><a href="instrumental-variables.html#cb52-28" tabindex="-1"></a>true_late <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">4</span></span>
+<span id="cb52-29"><a href="instrumental-variables.html#cb52-29" tabindex="-1"></a>recovery_time <span class="ot">&lt;-</span> <span class="dv">25</span> <span class="sc">+</span> true_late <span class="sc">*</span> D <span class="sc">+</span> </span>
+<span id="cb52-30"><a href="instrumental-variables.html#cb52-30" tabindex="-1"></a>                 <span class="dv">2</span> <span class="sc">*</span> X[, <span class="st">&quot;age&quot;</span>] <span class="sc">+</span> </span>
+<span id="cb52-31"><a href="instrumental-variables.html#cb52-31" tabindex="-1"></a>                 <span class="fl">1.5</span> <span class="sc">*</span> X[, <span class="st">&quot;comorbidities&quot;</span>] <span class="sc">+</span> </span>
+<span id="cb52-32"><a href="instrumental-variables.html#cb52-32" tabindex="-1"></a>                 <span class="dv">2</span> <span class="sc">*</span> health_consciousness <span class="sc">+</span>  <span class="co"># Unmeasured confounder</span></span>
+<span id="cb52-33"><a href="instrumental-variables.html#cb52-33" tabindex="-1"></a>                 <span class="fu">rnorm</span>(n, <span class="at">sd =</span> <span class="dv">3</span>)</span>
+<span id="cb52-34"><a href="instrumental-variables.html#cb52-34" tabindex="-1"></a></span>
+<span id="cb52-35"><a href="instrumental-variables.html#cb52-35" tabindex="-1"></a><span class="co"># Create analysis dataset</span></span>
+<span id="cb52-36"><a href="instrumental-variables.html#cb52-36" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb52-37"><a href="instrumental-variables.html#cb52-37" tabindex="-1"></a>  <span class="at">recovery_time =</span> recovery_time,</span>
+<span id="cb52-38"><a href="instrumental-variables.html#cb52-38" tabindex="-1"></a>  <span class="at">hospital_quality =</span> D,</span>
+<span id="cb52-39"><a href="instrumental-variables.html#cb52-39" tabindex="-1"></a>  <span class="at">proximity =</span> Z,</span>
+<span id="cb52-40"><a href="instrumental-variables.html#cb52-40" tabindex="-1"></a>  <span class="at">age =</span> X[, <span class="st">&quot;age&quot;</span>],</span>
+<span id="cb52-41"><a href="instrumental-variables.html#cb52-41" tabindex="-1"></a>  <span class="at">income =</span> X[, <span class="st">&quot;income&quot;</span>],</span>
+<span id="cb52-42"><a href="instrumental-variables.html#cb52-42" tabindex="-1"></a>  <span class="at">education =</span> X[, <span class="st">&quot;education&quot;</span>],</span>
+<span id="cb52-43"><a href="instrumental-variables.html#cb52-43" tabindex="-1"></a>  <span class="at">comorbidities =</span> X[, <span class="st">&quot;comorbidities&quot;</span>],</span>
+<span id="cb52-44"><a href="instrumental-variables.html#cb52-44" tabindex="-1"></a>  <span class="at">urban =</span> X[, <span class="st">&quot;urban&quot;</span>]</span>
+<span id="cb52-45"><a href="instrumental-variables.html#cb52-45" tabindex="-1"></a>)</span>
+<span id="cb52-46"><a href="instrumental-variables.html#cb52-46" tabindex="-1"></a></span>
+<span id="cb52-47"><a href="instrumental-variables.html#cb52-47" tabindex="-1"></a><span class="co"># Step 1: Check instrument relevance (First Stage)</span></span>
+<span id="cb52-48"><a href="instrumental-variables.html#cb52-48" tabindex="-1"></a>first_stage <span class="ot">&lt;-</span> <span class="fu">lm</span>(hospital_quality <span class="sc">~</span> proximity <span class="sc">+</span> age <span class="sc">+</span> income <span class="sc">+</span> education <span class="sc">+</span> </span>
+<span id="cb52-49"><a href="instrumental-variables.html#cb52-49" tabindex="-1"></a>                  comorbidities <span class="sc">+</span> urban, <span class="at">data =</span> data)</span>
+<span id="cb52-50"><a href="instrumental-variables.html#cb52-50" tabindex="-1"></a>first_stage_summary <span class="ot">&lt;-</span> <span class="fu">summary</span>(first_stage)</span>
+<span id="cb52-51"><a href="instrumental-variables.html#cb52-51" tabindex="-1"></a>f_stat <span class="ot">&lt;-</span> first_stage_summary<span class="sc">$</span>fstatistic[<span class="dv">1</span>]</span>
+<span id="cb52-52"><a href="instrumental-variables.html#cb52-52" tabindex="-1"></a></span>
+<span id="cb52-53"><a href="instrumental-variables.html#cb52-53" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;=== FIRST STAGE DIAGNOSTICS ===</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## === FIRST STAGE DIAGNOSTICS ===</code></pre>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="instrumental-variables.html#cb54-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;First-stage F-statistic:&quot;</span>, <span class="fu">round</span>(f_stat, <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## First-stage F-statistic: 19.19</code></pre>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="instrumental-variables.html#cb56-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Rule of thumb: F &gt; 10 indicates strong instrument</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Rule of thumb: F &gt; 10 indicates strong instrument</code></pre>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="instrumental-variables.html#cb58-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Proximity coefficient:&quot;</span>, <span class="fu">round</span>(<span class="fu">coef</span>(first_stage)[<span class="st">&quot;proximity&quot;</span>], <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Proximity coefficient: 0.241</code></pre>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="instrumental-variables.html#cb60-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;P-value:&quot;</span>, <span class="fu">round</span>(<span class="fu">coef</span>(first_stage_summary)[<span class="st">&quot;proximity&quot;</span>, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>], <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## P-value: 0</code></pre>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="instrumental-variables.html#cb62-1" tabindex="-1"></a><span class="co"># Step 2: Two-Stage Least Squares estimation</span></span>
+<span id="cb62-2"><a href="instrumental-variables.html#cb62-2" tabindex="-1"></a>iv_model <span class="ot">&lt;-</span> <span class="fu">ivreg</span>(recovery_time <span class="sc">~</span> hospital_quality <span class="sc">+</span> age <span class="sc">+</span> income <span class="sc">+</span> education <span class="sc">+</span> </span>
+<span id="cb62-3"><a href="instrumental-variables.html#cb62-3" tabindex="-1"></a>                  comorbidities <span class="sc">+</span> urban <span class="sc">|</span> proximity <span class="sc">+</span> age <span class="sc">+</span> income <span class="sc">+</span> education <span class="sc">+</span> </span>
+<span id="cb62-4"><a href="instrumental-variables.html#cb62-4" tabindex="-1"></a>                  comorbidities <span class="sc">+</span> urban, <span class="at">data =</span> data)</span>
+<span id="cb62-5"><a href="instrumental-variables.html#cb62-5" tabindex="-1"></a>iv_summary <span class="ot">&lt;-</span> <span class="fu">summary</span>(iv_model)</span>
+<span id="cb62-6"><a href="instrumental-variables.html#cb62-6" tabindex="-1"></a></span>
+<span id="cb62-7"><a href="instrumental-variables.html#cb62-7" tabindex="-1"></a><span class="co"># Step 3: Wald estimator (simple version without covariates)</span></span>
+<span id="cb62-8"><a href="instrumental-variables.html#cb62-8" tabindex="-1"></a>reduced_form <span class="ot">&lt;-</span> <span class="fu">lm</span>(recovery_time <span class="sc">~</span> proximity, <span class="at">data =</span> data)</span>
+<span id="cb62-9"><a href="instrumental-variables.html#cb62-9" tabindex="-1"></a>first_stage_simple <span class="ot">&lt;-</span> <span class="fu">lm</span>(hospital_quality <span class="sc">~</span> proximity, <span class="at">data =</span> data)</span>
+<span id="cb62-10"><a href="instrumental-variables.html#cb62-10" tabindex="-1"></a>wald_estimate <span class="ot">&lt;-</span> <span class="fu">coef</span>(reduced_form)[<span class="st">&quot;proximity&quot;</span>] <span class="sc">/</span> <span class="fu">coef</span>(first_stage_simple)[<span class="st">&quot;proximity&quot;</span>]</span>
+<span id="cb62-11"><a href="instrumental-variables.html#cb62-11" tabindex="-1"></a></span>
+<span id="cb62-12"><a href="instrumental-variables.html#cb62-12" tabindex="-1"></a><span class="co"># Step 4: Naive OLS (biased due to unmeasured confounding)</span></span>
+<span id="cb62-13"><a href="instrumental-variables.html#cb62-13" tabindex="-1"></a>ols_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(recovery_time <span class="sc">~</span> hospital_quality <span class="sc">+</span> age <span class="sc">+</span> income <span class="sc">+</span> education <span class="sc">+</span> </span>
+<span id="cb62-14"><a href="instrumental-variables.html#cb62-14" tabindex="-1"></a>                comorbidities <span class="sc">+</span> urban, <span class="at">data =</span> data)</span>
+<span id="cb62-15"><a href="instrumental-variables.html#cb62-15" tabindex="-1"></a></span>
+<span id="cb62-16"><a href="instrumental-variables.html#cb62-16" tabindex="-1"></a><span class="co"># Display results</span></span>
+<span id="cb62-17"><a href="instrumental-variables.html#cb62-17" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;=== ESTIMATION RESULTS ===</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## === ESTIMATION RESULTS ===</code></pre>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="instrumental-variables.html#cb64-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;True LATE (simulation parameter):&quot;</span>, true_late, <span class="st">&quot;days</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## True LATE (simulation parameter): -4 days</code></pre>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="instrumental-variables.html#cb66-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;2SLS estimate:&quot;</span>, <span class="fu">round</span>(<span class="fu">coef</span>(iv_summary)[<span class="st">&quot;hospital_quality&quot;</span>, <span class="st">&quot;Estimate&quot;</span>], <span class="dv">2</span>), <span class="st">&quot;days</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 2SLS estimate: -4.78 days</code></pre>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="instrumental-variables.html#cb68-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;2SLS standard error:&quot;</span>, <span class="fu">round</span>(<span class="fu">coef</span>(iv_summary)[<span class="st">&quot;hospital_quality&quot;</span>, <span class="st">&quot;Std. Error&quot;</span>], <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 2SLS standard error: 1.01</code></pre>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="instrumental-variables.html#cb70-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Wald estimate:&quot;</span>, <span class="fu">round</span>(wald_estimate, <span class="dv">2</span>), <span class="st">&quot;days</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Wald estimate: -4.53 days</code></pre>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="instrumental-variables.html#cb72-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Naive OLS estimate:&quot;</span>, <span class="fu">round</span>(<span class="fu">coef</span>(ols_model)[<span class="st">&quot;hospital_quality&quot;</span>], <span class="dv">2</span>), <span class="st">&quot;days</span><span class="sc">\n\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Naive OLS estimate: -3.83 days</code></pre>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="instrumental-variables.html#cb74-1" tabindex="-1"></a><span class="co"># Create visualization</span></span>
+<span id="cb74-2"><a href="instrumental-variables.html#cb74-2" tabindex="-1"></a>estimates_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb74-3"><a href="instrumental-variables.html#cb74-3" tabindex="-1"></a>  <span class="at">Method =</span> <span class="fu">c</span>(<span class="st">&quot;2SLS&quot;</span>, <span class="st">&quot;Wald&quot;</span>, <span class="st">&quot;OLS&quot;</span>, <span class="st">&quot;True LATE&quot;</span>),</span>
+<span id="cb74-4"><a href="instrumental-variables.html#cb74-4" tabindex="-1"></a>  <span class="at">Estimate =</span> <span class="fu">c</span>(</span>
+<span id="cb74-5"><a href="instrumental-variables.html#cb74-5" tabindex="-1"></a>    <span class="fu">coef</span>(iv_summary)[<span class="st">&quot;hospital_quality&quot;</span>, <span class="st">&quot;Estimate&quot;</span>],</span>
+<span id="cb74-6"><a href="instrumental-variables.html#cb74-6" tabindex="-1"></a>    wald_estimate,</span>
+<span id="cb74-7"><a href="instrumental-variables.html#cb74-7" tabindex="-1"></a>    <span class="fu">coef</span>(ols_model)[<span class="st">&quot;hospital_quality&quot;</span>],</span>
+<span id="cb74-8"><a href="instrumental-variables.html#cb74-8" tabindex="-1"></a>    true_late</span>
+<span id="cb74-9"><a href="instrumental-variables.html#cb74-9" tabindex="-1"></a>  ),</span>
+<span id="cb74-10"><a href="instrumental-variables.html#cb74-10" tabindex="-1"></a>  <span class="at">SE =</span> <span class="fu">c</span>(</span>
+<span id="cb74-11"><a href="instrumental-variables.html#cb74-11" tabindex="-1"></a>    <span class="fu">coef</span>(iv_summary)[<span class="st">&quot;hospital_quality&quot;</span>, <span class="st">&quot;Std. Error&quot;</span>],</span>
+<span id="cb74-12"><a href="instrumental-variables.html#cb74-12" tabindex="-1"></a>    <span class="cn">NA</span>,</span>
+<span id="cb74-13"><a href="instrumental-variables.html#cb74-13" tabindex="-1"></a>    <span class="fu">summary</span>(ols_model)<span class="sc">$</span>coefficients[<span class="st">&quot;hospital_quality&quot;</span>, <span class="st">&quot;Std. Error&quot;</span>],</span>
+<span id="cb74-14"><a href="instrumental-variables.html#cb74-14" tabindex="-1"></a>    <span class="cn">NA</span></span>
+<span id="cb74-15"><a href="instrumental-variables.html#cb74-15" tabindex="-1"></a>  )</span>
+<span id="cb74-16"><a href="instrumental-variables.html#cb74-16" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb74-17"><a href="instrumental-variables.html#cb74-17" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb74-18"><a href="instrumental-variables.html#cb74-18" tabindex="-1"></a>    <span class="at">Lower =</span> Estimate <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> SE,</span>
+<span id="cb74-19"><a href="instrumental-variables.html#cb74-19" tabindex="-1"></a>    <span class="at">Upper =</span> Estimate <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> SE,</span>
+<span id="cb74-20"><a href="instrumental-variables.html#cb74-20" tabindex="-1"></a>    <span class="at">Color =</span> <span class="fu">case_when</span>(</span>
+<span id="cb74-21"><a href="instrumental-variables.html#cb74-21" tabindex="-1"></a>      Method <span class="sc">==</span> <span class="st">&quot;True LATE&quot;</span> <span class="sc">~</span> <span class="st">&quot;Truth&quot;</span>,</span>
+<span id="cb74-22"><a href="instrumental-variables.html#cb74-22" tabindex="-1"></a>      Method <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;2SLS&quot;</span>, <span class="st">&quot;Wald&quot;</span>) <span class="sc">~</span> <span class="st">&quot;IV Methods&quot;</span>,</span>
+<span id="cb74-23"><a href="instrumental-variables.html#cb74-23" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;Biased&quot;</span></span>
+<span id="cb74-24"><a href="instrumental-variables.html#cb74-24" tabindex="-1"></a>    )</span>
+<span id="cb74-25"><a href="instrumental-variables.html#cb74-25" tabindex="-1"></a>  )</span>
+<span id="cb74-26"><a href="instrumental-variables.html#cb74-26" tabindex="-1"></a></span>
+<span id="cb74-27"><a href="instrumental-variables.html#cb74-27" tabindex="-1"></a><span class="co"># Enhanced visualization</span></span>
+<span id="cb74-28"><a href="instrumental-variables.html#cb74-28" tabindex="-1"></a><span class="fu">ggplot</span>(estimates_df, <span class="fu">aes</span>(<span class="at">x =</span> Method, <span class="at">y =</span> Estimate, <span class="at">fill =</span> Color)) <span class="sc">+</span></span>
+<span id="cb74-29"><a href="instrumental-variables.html#cb74-29" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">width =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb74-30"><a href="instrumental-variables.html#cb74-30" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> Lower, <span class="at">ymax =</span> Upper), <span class="at">width =</span> <span class="fl">0.2</span>, </span>
+<span id="cb74-31"><a href="instrumental-variables.html#cb74-31" tabindex="-1"></a>                <span class="at">color =</span> <span class="st">&quot;black&quot;</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb74-32"><a href="instrumental-variables.html#cb74-32" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> true_late, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, </span>
+<span id="cb74-33"><a href="instrumental-variables.html#cb74-33" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">&quot;red&quot;</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb74-34"><a href="instrumental-variables.html#cb74-34" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;IV Methods&quot;</span> <span class="ot">=</span> <span class="st">&quot;#2E86AB&quot;</span>, </span>
+<span id="cb74-35"><a href="instrumental-variables.html#cb74-35" tabindex="-1"></a>                               <span class="st">&quot;Biased&quot;</span> <span class="ot">=</span> <span class="st">&quot;#A23B72&quot;</span>, </span>
+<span id="cb74-36"><a href="instrumental-variables.html#cb74-36" tabindex="-1"></a>                               <span class="st">&quot;Truth&quot;</span> <span class="ot">=</span> <span class="st">&quot;#F18F01&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb74-37"><a href="instrumental-variables.html#cb74-37" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb74-38"><a href="instrumental-variables.html#cb74-38" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Hospital Quality Effect on Recovery Time&quot;</span>,</span>
+<span id="cb74-39"><a href="instrumental-variables.html#cb74-39" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">&quot;Comparison of estimation methods with 95% confidence intervals&quot;</span>,</span>
+<span id="cb74-40"><a href="instrumental-variables.html#cb74-40" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Effect on Recovery Time (Days)&quot;</span>,</span>
+<span id="cb74-41"><a href="instrumental-variables.html#cb74-41" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Estimation Method&quot;</span>,</span>
+<span id="cb74-42"><a href="instrumental-variables.html#cb74-42" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">&quot;Method Type&quot;</span>,</span>
+<span id="cb74-43"><a href="instrumental-variables.html#cb74-43" tabindex="-1"></a>    <span class="at">caption =</span> <span class="st">&quot;Dashed line shows true causal effect&quot;</span></span>
+<span id="cb74-44"><a href="instrumental-variables.html#cb74-44" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb74-45"><a href="instrumental-variables.html#cb74-45" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb74-46"><a href="instrumental-variables.html#cb74-46" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb74-47"><a href="instrumental-variables.html#cb74-47" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb74-48"><a href="instrumental-variables.html#cb74-48" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb74-49"><a href="instrumental-variables.html#cb74-49" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span></span>
+<span id="cb74-50"><a href="instrumental-variables.html#cb74-50" tabindex="-1"></a>  )</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+</div>
+<div id="interpreting-the-results" class="section level3 hasAnchor" number="5.2.2">
+<h3><span class="header-section-number">5.2.2</span> Interpreting the Results<a href="instrumental-variables.html#interpreting-the-results" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>First-Stage Strength</strong>: The F-statistic tests instrument relevance. Values above 10 indicate a strong instrument; above 20 is considered very strong. Weak instruments (F &lt; 10) lead to biased and imprecise estimates.</p>
+<p><strong>Estimate Comparison</strong>: In our simulation:
+- <strong>2SLS</strong> should recover the true LATE (-4 days) with appropriate uncertainty
+- <strong>Wald estimator</strong> provides similar point estimates but may be less precise without covariate adjustment
+- <strong>Naive OLS</strong> typically shows bias toward zero due to unmeasured confounding</p>
+<p>The 2SLS coefficient represents the LATE: the expected reduction in recovery time for patients whose hospital choice is influenced by proximity. This effect applies specifically to “compliers”—patients who would choose high-quality hospitals when living nearby but standard hospitals when living far away.</p>
+<p>Confidence intervals reflect estimation uncertainty. Wide intervals may indicate weak instruments, small sample sizes, or high outcome variability.</p>
+<ul>
+<li><strong>Common Threats to Validity</strong></li>
+</ul>
+<ol style="list-style-type: decimal">
+<li><p><strong>Weak Instruments</strong>: Low first-stage F-statistics indicate insufficient variation in treatment driven by the instrument</p></li>
+<li><p><strong>Exclusion Restriction Violations</strong>: Distance might affect recovery through:</p>
+<ul>
+<li>Proximity to other medical facilities</li>
+<li>Socioeconomic sorting by geography</li>
+<li>Environmental factors correlated with location</li>
+</ul></li>
+<li><p><strong>Independence Violations</strong>: Systematic differences between near/far patients in unmeasured characteristics</p></li>
+</ol>
+</div>
+<div id="robustness-checks" class="section level3 hasAnchor" number="5.2.3">
+<h3><span class="header-section-number">5.2.3</span> Robustness Checks<a href="instrumental-variables.html#robustness-checks" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="instrumental-variables.html#cb75-1" tabindex="-1"></a><span class="co"># Additional diagnostic: Examine balance on observables</span></span>
+<span id="cb75-2"><a href="instrumental-variables.html#cb75-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;=== BALANCE CHECK ===</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## === BALANCE CHECK ===</code></pre>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="instrumental-variables.html#cb77-1" tabindex="-1"></a>balance_test <span class="ot">&lt;-</span> <span class="fu">t.test</span>(data<span class="sc">$</span>income[data<span class="sc">$</span>proximity <span class="sc">==</span> <span class="dv">1</span>], </span>
+<span id="cb77-2"><a href="instrumental-variables.html#cb77-2" tabindex="-1"></a>                      data<span class="sc">$</span>income[data<span class="sc">$</span>proximity <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb77-3"><a href="instrumental-variables.html#cb77-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Income difference by proximity (p-value):&quot;</span>, <span class="fu">round</span>(balance_test<span class="sc">$</span>p.value, <span class="dv">3</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Income difference by proximity (p-value): 0</code></pre>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="instrumental-variables.html#cb79-1" tabindex="-1"></a><span class="co"># Examine complier population size</span></span>
+<span id="cb79-2"><a href="instrumental-variables.html#cb79-2" tabindex="-1"></a>complier_share <span class="ot">&lt;-</span> (<span class="fu">mean</span>(data<span class="sc">$</span>hospital_quality[data<span class="sc">$</span>proximity <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> </span>
+<span id="cb79-3"><a href="instrumental-variables.html#cb79-3" tabindex="-1"></a>                   <span class="fu">mean</span>(data<span class="sc">$</span>hospital_quality[data<span class="sc">$</span>proximity <span class="sc">==</span> <span class="dv">0</span>]))</span>
+<span id="cb79-4"><a href="instrumental-variables.html#cb79-4" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Estimated complier share:&quot;</span>, <span class="fu">round</span>(complier_share <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>), <span class="st">&quot;%</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Estimated complier share: 26.7 %</code></pre>
+</div>
+</div>
+<div id="practical-considerations-and-extensions" class="section level2 hasAnchor" number="5.3">
+<h2><span class="header-section-number">5.3</span> Practical Considerations and Extensions<a href="instrumental-variables.html#practical-considerations-and-extensions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="when-to-use-iv" class="section level3 hasAnchor" number="5.3.1">
+<h3><span class="header-section-number">5.3.1</span> When to Use IV<a href="instrumental-variables.html#when-to-use-iv" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Ideal scenarios</strong>:
+- Strong theoretical justification for instrument validity
+- Unmeasured confounding is suspected
+- Natural experiments or policy discontinuities create exogenous variation</p>
+<p><strong>Proceed with caution when</strong>:
+- Instruments are weak (F &lt; 10)
+- Exclusion restriction is questionable
+- Treatment effects are highly heterogeneous</p>
+</div>
+<div id="advanced-topics" class="section level3 hasAnchor" number="5.3.2">
+<h3><span class="header-section-number">5.3.2</span> Advanced Topics<a href="instrumental-variables.html#advanced-topics" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><strong>Multiple instruments</strong>: Hansen J-test for overidentification</li>
+<li><strong>Continuous treatments</strong>: Linear IV models with interpretation caveats</li>
+<li><strong>Machine learning</strong>: Regularized IV with many instruments</li>
+<li><strong>Heterogeneous effects</strong>: Marginal Treatment Effects framework</li>
+</ul>
+</div>
+</div>
+<div id="conclusion-3" class="section level2 hasAnchor" number="5.4">
+<h2><span class="header-section-number">5.4</span> Conclusion<a href="instrumental-variables.html#conclusion-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Instrumental Variables estimation provides a powerful approach for causal inference when unmeasured confounding threatens validity. Through our healthcare example, we’ve seen how geographic proximity can serve as an instrument to estimate hospital quality effects on recovery time.</p>
+<p>The method’s strength lies in its ability to handle hidden bias, but this comes with important trade-offs: the need for valid instruments and interpretation limited to complier populations. Success depends critically on careful instrument selection, thorough assumption verification, and honest assessment of potential violations.</p>
+<p>When applied thoughtfully with domain expertise, IV estimation can reveal causal relationships that would otherwise remain hidden in observational data, making it an invaluable tool for researchers tackling complex real-world questions.</p>
+</div>
+<div id="further-reading" class="section level2 hasAnchor" number="5.5">
+<h2><span class="header-section-number">5.5</span> Further Reading<a href="instrumental-variables.html#further-reading" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li>Angrist, J. D., &amp; Pischke, J.-S. (2009). <em>Mostly Harmless Econometrics: An Empiricist’s Companion</em>. Princeton University Press.</li>
+<li>Hernán, M. A., &amp; Robins, J. M. (2020). <em>Causal Inference: What If</em>. Chapman &amp; Hall/CRC.</li>
+<li>Imbens, G. W., &amp; Rubin, D. B. (2015). <em>Causal Inference for Statistics, Social, and Biomedical Sciences</em>. Cambridge University Press.</li>
+</ul>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="difference-in-differences-with-a-healthcare-application.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="regression-discontinuity-design.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/edit/main/05-IV.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/blob/main/05-IV.Rmd",
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

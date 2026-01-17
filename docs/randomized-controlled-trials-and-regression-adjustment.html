@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Causal Inference in R</title>
-  <meta name="description" content="Causal Inference in R" />
+  <title>Chapter 2 Randomized Controlled Trials and Regression Adjustment | Causal Inference in R</title>
+  <meta name="description" content="Chapter 2 Randomized Controlled Trials and Regression Adjustment | Causal Inference in R" />
   <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Causal Inference in R" />
+  <meta property="og:title" content="Chapter 2 Randomized Controlled Trials and Regression Adjustment | Causal Inference in R" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Causal Inference in R" />
+  <meta name="twitter:title" content="Chapter 2 Randomized Controlled Trials and Regression Adjustment | Causal Inference in R" />
   
   
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="randomized-controlled-trials-and-regression-adjustment.html"/>
+<link rel="prev" href="index.html"/>
+<link rel="next" href="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -350,360 +350,206 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Causal Inference in R</h1>
-<p class="author"><em>Kamran Afzali</em></p>
-<p class="date"><em>2026-01-17</em></p>
+<div id="randomized-controlled-trials-and-regression-adjustment" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">Chapter 2</span> Randomized Controlled Trials and Regression Adjustment<a href="randomized-controlled-trials-and-regression-adjustment.html#randomized-controlled-trials-and-regression-adjustment" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction-1" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Introduction<a href="randomized-controlled-trials-and-regression-adjustment.html#introduction-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In the first post of this series, we presented a comprehensive overview of key causal inference methods, highlighting the assumptions, strengths, and limitations that distinguish each technique. In this follow-up post, we delve into the two most foundational approaches: Randomized Controlled Trials (RCTs) and Regression Adjustment. Although these methods differ in their reliance on data-generating processes and assumptions, both provide crucial entry points into the logic of causal reasoning. This essay offers a theoretically grounded and practically oriented treatment of each method, including code implementation in R, diagnostics, and interpretive guidance.</p>
+<p>RCTs represent the epistemic benchmark for causal inference, often described as the “gold standard” due to their unique ability to eliminate confounding through randomization. Regression Adjustment, by contrast, models the outcome conditional on treatment and covariates, requiring more assumptions but offering wide applicability in observational settings. Despite their differences, both approaches are underpinned by counterfactual reasoning—the idea that causal effects reflect the difference between what actually happened and what would have happened under a different treatment assignment.</p>
+<p>Understanding the logic and implementation of these two methods is essential not only for their direct use but also because they serve as the conceptual and statistical scaffolding for more complex techniques such as matching, weighting, and doubly robust estimators.</p>
 </div>
-<div id="foundations-of-causal-statistical-analysis" class="section level1 hasAnchor" number="1">
-<h1><span class="header-section-number">Chapter 1</span> Foundations of Causal Statistical Analysis<a href="index.html#foundations-of-causal-statistical-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="introduction" class="section level2 hasAnchor" number="1.1">
-<h2><span class="header-section-number">1.1</span> Introduction<a href="index.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Understanding causality is one of the most enduring and fundamental
-challenges in science. Across disciplines—from public health and
-economics to education, neuroscience, and artificial
-intelligence—researchers are increasingly tasked not only with
-identifying patterns in data but with uncovering the mechanisms that
-generate them. While traditional statistical analysis excels at
-quantifying associations, scientific inquiry often aims at a deeper
-ambition: to infer <strong>causal relationships</strong>—to determine what would
-happen under specific interventions, policies, or changes to a system.
-The distinction between correlation and causation is more than a
-methodological nuance; it defines the boundary between description and
-explanation, and between prediction and control.</p>
-<p>This essay serves as the first in a multi-part series on the foundations
-of causal statistical analysis. It provides a panoramic overview of the
-most widely used techniques for estimating causal effects, each grounded
-in distinct theoretical frameworks and operational assumptions. These
-methods span randomized controlled trials (RCTs), which serve as the
-epistemic gold standard, to a wide range of quasi-experimental and
-model-based approaches developed to address the limitations of
-real-world data. In practice, researchers must often navigate data
-landscapes in which randomization is infeasible, treatment selection is
-endogenous, and temporal or structural confounding is ubiquitous. This
-is where modern causal inference techniques offer essential tools—not
-only for estimating effects, but for interrogating the validity of those
-estimates.</p>
-<p>At the heart of this endeavor lies a tension between <strong>identifiability</strong>
-and <strong>assumptions</strong>. Every causal method rests on a set of
-assumptions—about how the data were generated, how variables relate, and
-what sources of bias are controlled or ignored. While some methods
-emphasize robustness through design (e.g., difference-in-differences,
-regression discontinuity, or instrumental variables), others attempt to
-model the data-generating process explicitly, drawing from structural
-modeling, counterfactual reasoning, or machine learning. Each method is
-powerful under the right conditions and misleading when applied
-uncritically. This underscores a central theme of the series: <strong>there is
-no universally “best” method for causal inference</strong>. Rather, the
-suitability of each technique depends on the scientific question, data
-structure, and the plausibility of underlying assumptions.</p>
-<p>To guide practitioners in this complex terrain, we begin with a
-comparative summary table outlining the assumptions, strengths,
-limitations, and implementation tools for each technique. This table is
-not merely a catalog—it is a scaffold for deeper engagement. Subsequent
-posts in the series will explore each method in detail, presenting both
-theoretical foundations and practical workflows using open-source
-statistical packages in R and Python. These installments will include
-visualizations, diagnostics, sensitivity analyses, and real-world case
-studies drawn from public health, education, and policy evaluation.</p>
-<p>Causal analysis is both an art and a science: it demands careful
-reasoning, domain knowledge, and transparent methodology. As the demand
-for evidence-based decision-making grows—particularly in the age of big
-data and algorithmic governance—causal inference provides a principled
-framework for moving from data to action. This series is designed to
-empower readers to approach causal questions rigorously, critically, and
-creatively.</p>
+<div id="randomized-controlled-trials-design-and-analysis" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> 1. Randomized Controlled Trials: Design and Analysis<a href="randomized-controlled-trials-and-regression-adjustment.html#randomized-controlled-trials-design-and-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="theoretical-foundations" class="section level3 hasAnchor" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> Theoretical Foundations<a href="randomized-controlled-trials-and-regression-adjustment.html#theoretical-foundations" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In an RCT, participants are randomly assigned to treatment or control groups. This process ensures that, on average, both groups are statistically equivalent on all covariates, observed and unobserved. The core assumption is <strong>exchangeability</strong>—that the potential outcomes are independent of treatment assignment conditional on randomization. This enables simple comparisons of mean outcomes across groups to yield unbiased estimates of causal effects.</p>
+<p>Formally, let <span class="math inline">\(Y(1)\)</span> and <span class="math inline">\(Y(0)\)</span> denote the potential outcomes under treatment and control, respectively. The average treatment effect (ATE) is defined as:</p>
+<p><span class="math display">\[
+\text{ATE} = \mathbb{E}[Y(1) - Y(0)]
+\]</span></p>
+<p>In a perfectly randomized trial, we estimate the ATE by comparing the sample means:</p>
+<p><span class="math display">\[
+\widehat{\text{ATE}} = \bar{Y}_1 - \bar{Y}_0
+\]</span></p>
+<p>This estimator is unbiased and consistent, provided randomization is successfully implemented and compliance is perfect.</p>
 </div>
-<div id="summary-table-techniques-for-causal-statistical-analysis" class="section level2 hasAnchor" number="1.2">
-<h2><span class="header-section-number">1.2</span> Summary Table: Techniques for Causal Statistical Analysis<a href="index.html#summary-table-techniques-for-causal-statistical-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<table style="width:100%;">
-<colgroup>
-<col width="16%" />
-<col width="16%" />
-<col width="16%" />
-<col width="16%" />
-<col width="16%" />
-<col width="16%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>Technique</th>
-<th>Key Assumptions</th>
-<th>Use Cases</th>
-<th>Strengths</th>
-<th>Limitations</th>
-<th>Tools/Packages</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Randomized Controlled Trials (RCTs)</td>
-<td>Random assignment ensures exchangeability</td>
-<td>Clinical trials, A/B testing</td>
-<td>Eliminates confounding</td>
-<td>Often infeasible or unethical</td>
-<td><code>randomizr</code> (R), <code>DoWhy</code> (Py)</td>
-</tr>
-<tr class="even">
-<td>Regression Adjustment</td>
-<td>No unmeasured confounders, correct model</td>
-<td>Policy, health outcomes</td>
-<td>Simple, widely used</td>
-<td>Sensitive to omitted variables, model misspecification</td>
-<td><code>lm()</code>, <code>glm()</code> (R), <code>statsmodels</code>, <code>sklearn</code> (Py)</td>
-</tr>
-<tr class="odd">
-<td>Propensity Score Matching (PSM)</td>
-<td>Conditional independence given observed covariates</td>
-<td>Observational studies</td>
-<td>Balances covariates, intuitive</td>
-<td>Sensitive to unmeasured confounding, poor overlap</td>
-<td><code>MatchIt</code>, <code>twang</code> (R), <code>DoWhy</code>, <code>causalml</code> (Py)</td>
-</tr>
-<tr class="even">
-<td>Inverse Probability Weighting (IPW)</td>
-<td>Correct treatment model, positivity</td>
-<td>Longitudinal data</td>
-<td>Handles time-varying confounding</td>
-<td>Can produce unstable weights</td>
-<td><code>ipw</code>, <code>survey</code> (R), <code>zEpid</code> (Py)</td>
-</tr>
-<tr class="odd">
-<td>Difference-in-Differences (DiD)</td>
-<td>Parallel trends</td>
-<td>Policy reforms, natural experiments</td>
-<td>Controls for unobserved time-invariant confounders</td>
-<td>Vulnerable if trends diverge</td>
-<td><code>fixest</code>, <code>did</code> (R), <code>linearmodels</code> (Py)</td>
-</tr>
-<tr class="even">
-<td>Instrumental Variables (IV)</td>
-<td>Relevance, exclusion restriction</td>
-<td>Endogeneity correction</td>
-<td>Addresses unmeasured confounding</td>
-<td>Finding valid instruments is hard</td>
-<td><code>ivreg</code>, <code>AER</code> (R), <code>linearmodels.iv</code> (Py)</td>
-</tr>
-<tr class="odd">
-<td>Regression Discontinuity (RDD)</td>
-<td>Sharp cutoff, local randomization</td>
-<td>Education, policy thresholds</td>
-<td>Transparent identification</td>
-<td>Limited to local effect near cutoff</td>
-<td><code>rdrobust</code>, <code>rddtools</code> (R), <code>rdd</code>, <code>statsmodels</code> (Py)</td>
-</tr>
-<tr class="even">
-<td>Causal Forests</td>
-<td>Unconfoundedness, heterogeneity</td>
-<td>Precision medicine, targeting</td>
-<td>Captures treatment heterogeneity</td>
-<td>Requires large data, unmeasured confounding risk</td>
-<td><code>grf</code>, <code>causalTree</code> (R), <code>econml</code>, <code>causalml</code> (Py)</td>
-</tr>
-<tr class="odd">
-<td>S-Learner, T-Learner, X-Learner</td>
-<td>Ignorability, overlap, consistent outcome models</td>
-<td>Estimating heterogeneous treatment effects (CATEs)</td>
-<td>Adapt supervised ML for causal inference, flexible</td>
-<td>S-learner may blur heterogeneity; T-learner inefficient under imbalance; X-learner more complex</td>
-<td><code>metalearners</code> (R), <code>econml</code>, <code>causalml</code> (Py)</td>
-</tr>
-<tr class="even">
-<td>Bayesian Structural Time Series (BSTS)</td>
-<td>No unmeasured confounders post-intervention</td>
-<td>Time series interventions</td>
-<td>Handles complex time trends</td>
-<td>Sensitive to model/priors</td>
-<td><code>CausalImpact</code>, <code>bsts</code> (R), <code>tfcausalimpact</code> (Py)</td>
-</tr>
-<tr class="odd">
-<td>Targeted Maximum Likelihood Estimation (TMLE)</td>
-<td>Double robustness</td>
-<td>Epidemiology, observational data</td>
-<td>Robust, ML integration</td>
-<td>Computationally intensive</td>
-<td><code>tmle</code>, <code>ltmle</code> (R), <code>zepid</code> (Py)</td>
-</tr>
-<tr class="even">
-<td>G-Computation</td>
-<td>No unmeasured confounding, correct model</td>
-<td>Mediation, marginal effects</td>
-<td>Flexible, counterfactuals</td>
-<td>Model dependence</td>
-<td><code>gfoRmula</code>, <code>ltmle</code> (R), <code>zepid</code> (Py)</td>
-</tr>
-<tr class="odd">
-<td>Structural Equation Modeling (SEM)</td>
-<td>Correct structure, no unmeasured confounding</td>
-<td>Latent variables, mediation</td>
-<td>Models complex relationships</td>
-<td>Requires strong assumptions</td>
-<td><code>lavaan</code> (R), <code>semopy</code>, <code>pysem</code> (Py)</td>
-</tr>
-<tr class="even">
-<td>Directed Acyclic Graphs (DAGs)</td>
-<td>Causal sufficiency, accurate knowledge</td>
-<td>Study design, confounder control</td>
-<td>Clarifies assumptions</td>
-<td>Not an estimation method</td>
-<td><code>dagitty</code>, <code>ggdag</code> (R), <code>causalgraphicalmodels</code> (Py)</td>
-</tr>
-<tr class="odd">
-<td>Double Machine Learning (DML) Frameworks</td>
-<td>Conditional ignorability, consistent nuisance estimation</td>
-<td>High-dimensional observational studies</td>
-<td>Robust to model misspecification, handles high-dimensional confounders</td>
-<td>Requires large data, assumes no unmeasured confounding</td>
-<td><code>DoubleML</code> (R), <code>econml</code>, <code>causalml</code> (Py)</td>
-</tr>
-</tbody>
-</table>
+<div id="r-implementation" class="section level3 hasAnchor" number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span> R Implementation<a href="randomized-controlled-trials-and-regression-adjustment.html#r-implementation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Let’s simulate a simple RCT to estimate the effect of a binary treatment on an outcome.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb1-1" tabindex="-1"></a><span class="co"># Load necessary libraries</span></span>
+<span id="cb1-2"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb1-2" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div>
+<pre><code>## ── Attaching core tidyverse packages ─────────────────────────────────────────────────────────────────────────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.4     ✔ readr     2.1.5
+## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+## ✔ ggplot2   3.5.2     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+## ✔ purrr     1.0.4     
+## ── Conflicts ───────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb3-1" tabindex="-1"></a><span class="co"># Set seed for reproducibility</span></span>
+<span id="cb3-2"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb3-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb3-3"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb3-4" tabindex="-1"></a><span class="co"># Simulate data</span></span>
+<span id="cb3-5"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb3-5" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb3-6"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb3-6" tabindex="-1"></a>data_rct <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb3-7"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb3-7" tabindex="-1"></a>  <span class="at">treatment =</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>),</span>
+<span id="cb3-8"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb3-8" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="dv">5</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> treatment <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb3-9"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb3-9" tabindex="-1"></a>)</span>
+<span id="cb3-10"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb3-10" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb3-11" tabindex="-1"></a><span class="co"># Estimate ATE using difference in means</span></span>
+<span id="cb3-12"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb3-12" tabindex="-1"></a>ate_estimate <span class="ot">&lt;-</span> data_rct <span class="sc">%&gt;%</span></span>
+<span id="cb3-13"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb3-13" tabindex="-1"></a>  <span class="fu">group_by</span>(treatment) <span class="sc">%&gt;%</span></span>
+<span id="cb3-14"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb3-14" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_outcome =</span> <span class="fu">mean</span>(outcome)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-15"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb3-15" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">ATE =</span> <span class="fu">diff</span>(mean_outcome))</span>
+<span id="cb3-16"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb3-16" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb3-17" tabindex="-1"></a><span class="fu">print</span>(ate_estimate)</span></code></pre></div>
+<pre><code>## # A tibble: 1 × 1
+##     ATE
+##   &lt;dbl&gt;
+## 1  2.00</code></pre>
 </div>
-<div id="methodological-deep-dive-with-practical-guidance" class="section level2 hasAnchor" number="1.3">
-<h2><span class="header-section-number">1.3</span> Methodological Deep Dive with Practical Guidance<a href="index.html#methodological-deep-dive-with-practical-guidance" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<ul>
-<li><p><strong>Randomized Controlled Trials (RCTs)</strong> RCTs are the gold standard
-for causal inference. Random assignment neutralizes confounding,
-ensuring internal validity. However, practical, ethical, or
-financial constraints often limit their feasibility. When viable,
-they deliver the most credible causal estimates.</p></li>
-<li><p><strong>Regression Adjustment</strong> This method models the outcome as a
-function of treatment and covariates. While easy to implement, it
-assumes no unmeasured confounding and correct model specification.
-It’s essential to examine covariate balance and conduct robustness
-checks.</p></li>
-<li><p><strong>Propensity Score Matching (PSM)</strong> PSM aims to mimic randomization
-by matching units with similar probabilities of treatment. It
-balances covariates well but fails under unmeasured confounding.
-Diagnostic tools like balance plots are crucial.</p></li>
-<li><p><strong>Inverse Probability Weighting (IPW)</strong> IPW reweights samples to
-simulate random assignment. It handles time-varying confounding but
-can produce unstable weights, requiring trimming or stabilization.
-It’s powerful for longitudinal and panel data.</p></li>
-<li><p><strong>Difference-in-Differences (DiD)</strong> DiD compares treated and control
-units over time, assuming parallel trends. It is popular for
-evaluating policy interventions but sensitive to trend violations.
-Visualizing pre-treatment trends and using placebo tests enhance
-credibility.</p></li>
-<li><p><strong>Instrumental Variables (IV)</strong> IV methods handle endogeneity by
-using external variables that affect treatment but not the outcome
-directly. The approach hinges on the strength and validity of
-instruments—criteria that are difficult to verify.</p></li>
-<li><p><strong>Regression Discontinuity Design (RDD)</strong> RDD exploits sharp cutoffs
-for treatment assignment. It provides quasi-experimental validity
-but estimates only local effects near the threshold. Validity
-depends on smoothness and non-manipulation at the cutoff.</p></li>
-<li><p><strong>Causal Forests</strong> Causal forests extend random forests to estimate
-heterogeneous treatment effects. They are ideal for personalized
-interventions but require large datasets and are vulnerable to
-omitted confounding.</p></li>
-<li><p><strong>S-Learner, T-Learner, and X-Learner</strong> These meta-learners are
-machine learning strategies for estimating <strong>conditional average
-treatment effects (CATEs)</strong>. The <strong>S-learner</strong> fits a single model
-that includes treatment as a feature, estimating potential outcomes
-by switching treatment values. The <strong>T-learner</strong> trains separate
-models for treated and control groups, then takes their difference.
-The <strong>X-learner</strong> combines both by imputing counterfactuals with
-T-learner models and then modeling pseudo-effects, often weighting
-by propensity scores. S-learners are simple but can blur
-heterogeneity, T-learners separate effects but suffer in imbalanced
-data, while X-learners improve efficiency by leveraging information
-across groups. These approaches illustrate how supervised learning
-can be adapted for causal estimation, particularly in
-high-dimensional or non-linear settings.</p></li>
-<li><p><strong>Bayesian Structural Time Series (BSTS)</strong> BSTS combines state-space
-models with Bayesian inference to estimate intervention effects in
-time series. It accommodates trend and seasonality but is sensitive
-to model misspecification and prior choices.</p></li>
-<li><p><strong>Targeted Maximum Likelihood Estimation (TMLE)</strong> TMLE integrates
-machine learning into causal effect estimation. It provides double
-robustness and efficient inference under complex data settings but
-can be computationally demanding.</p></li>
-<li><p><strong>G-Computation</strong> G-computation models potential outcomes under each
-treatment. It is flexible and counterfactual-based but requires
-accurate modeling and complete covariate adjustment.</p></li>
-<li><p><strong>Structural Equation Modeling (SEM)</strong> SEM enables the modeling of
-complex causal structures, including latent constructs and
-mediation. Its interpretability is appealing but hinges on correct
-model specification and the absence of unmeasured confounding.</p></li>
-<li><p><strong>Directed Acyclic Graphs (DAGs)</strong> DAGs are essential for clarifying
-causal assumptions. While not an estimation method, they guide
-design and analysis by identifying confounders, mediators, and
-colliders.</p></li>
-</ul>
+<div id="model-based-inference" class="section level3 hasAnchor" number="2.2.3">
+<h3><span class="header-section-number">2.2.3</span> Model-Based Inference<a href="randomized-controlled-trials-and-regression-adjustment.html#model-based-inference" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>While RCTs do not require model-based adjustments, regression models are often used to improve precision or adjust for residual imbalances. In the RCT context, such models are descriptive rather than corrective.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb5-1" tabindex="-1"></a><span class="co"># Linear regression with treatment as predictor</span></span>
+<span id="cb5-2"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb5-2" tabindex="-1"></a>lm_rct <span class="ot">&lt;-</span> <span class="fu">lm</span>(outcome <span class="sc">~</span> treatment, <span class="at">data =</span> data_rct)</span>
+<span id="cb5-3"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb5-3" tabindex="-1"></a><span class="fu">summary</span>(lm_rct)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = outcome ~ treatment, data = data_rct)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -2.8201 -0.6988  0.0169  0.6414  3.3767 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  5.01029    0.04450  112.59   &lt;2e-16 ***
+## treatment    2.00334    0.06338   31.61   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.002 on 998 degrees of freedom
+## Multiple R-squared:  0.5003, Adjusted R-squared:  0.4998 
+## F-statistic: 999.1 on 1 and 998 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>The coefficient on the treatment variable in this model provides an estimate of the ATE. Importantly, in randomized designs, the inclusion of additional covariates should not substantially alter the point estimate, though it may reduce variance.</p>
 </div>
-<div id="discussion" class="section level2 hasAnchor" number="1.4">
-<h2><span class="header-section-number">1.4</span> Discussion<a href="index.html#discussion" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>The comparative framework presented in this foundational overview
-highlights both the diversity and the interdependence of causal
-inference techniques. A central takeaway is that <strong>no single method
-guarantees valid causal inference in all contexts</strong>. Rather, the
-validity of any technique depends critically on whether its assumptions
-align with the structure of the data and the theoretical understanding
-of the system under study. This observation has two key implications for
-applied researchers.</p>
-<p>First, <strong>triangulation</strong>—the use of multiple methods to approach the
-same causal question—is not only desirable but often necessary. For
-instance, one might use propensity score matching to achieve covariate
-balance, regression adjustment to model outcome differences, and then
-compare results with those from a targeted maximum likelihood estimation
-(TMLE) approach. If conclusions converge, confidence in causal
-interpretation increases. If not, divergences can reveal sensitivity to
-assumptions such as model specification or unmeasured confounding. Thus,
-causal inference is inherently <strong>iterative</strong>, requiring both
-methodological flexibility and diagnostic rigor.</p>
-<p>Second, <strong>methodological literacy is not enough</strong>; researchers must also
-cultivate <strong>causal reasoning</strong>. Directed Acyclic Graphs (DAGs), while
-not themselves estimators, play a vital role in clarifying which
-variables to control for and which paths to block or preserve. DAG-based
-thinking helps researchers navigate common pitfalls such as controlling
-for colliders or mediators, both of which can induce bias. The
-thoughtful use of DAGs, therefore, bridges qualitative theoretical
-insight with quantitative estimation.</p>
-<p>Another tension arises between <strong>interpretability and complexity</strong>.
-Classical techniques like regression or instrumental variables are often
-preferred for their clarity and theoretical grounding, while modern
-approaches such as causal forests and TMLE offer increased flexibility
-and robustness in high-dimensional or non-linear settings. However,
-these gains often come at the cost of interpretability, especially for
-stakeholders or policy-makers who require transparent causal narratives.
-This raises an important trade-off: when should we prioritize
-explainability over precision, and how do we communicate these decisions
-to interdisciplinary audiences?</p>
-<p>In addition, the growing use of <strong>machine learning in causal
-inference</strong>—exemplified by methods like causal forests and TMLE—requires
-new standards for validation and transparency. Unlike predictive
-modeling, causal questions are inherently counterfactual and cannot be
-validated through conventional cross-validation. Techniques such as
-falsification tests, placebo analyses, and sensitivity analyses become
-indispensable, particularly when machine learning models are involved.</p>
-<p>Finally, <strong>equity and ethics</strong> must be central to causal analysis,
-especially in domains like public health, criminal justice, and
-education. Methods that adjust for observed variables can inadvertently
-perpetuate structural inequalities if those variables are themselves
-proxies for systemic bias. Researchers must therefore engage critically
-with both the data and the social contexts from which they arise,
-treating causal models not just as statistical tools but as ethical
-instruments.</p>
-<p>The subsequent posts in this series will explore each technique in
-depth, including code implementation, diagnostic strategies, and
-real-world case studies. By weaving together statistical rigor, domain
-expertise, and ethical reflexivity, we aim to equip researchers with a
-robust and responsible causal toolkit.</p>
+<div id="diagnostics-and-integrity" class="section level3 hasAnchor" number="2.2.4">
+<h3><span class="header-section-number">2.2.4</span> Diagnostics and Integrity<a href="randomized-controlled-trials-and-regression-adjustment.html#diagnostics-and-integrity" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Although randomization ensures internal validity, its practical implementation must be verified. Balance diagnostics, such as standardized mean differences or visualizations of covariate distributions by treatment group, help ensure that the groups are equivalent at baseline. If substantial imbalances exist, especially in small samples, model-based covariate adjustment can improve efficiency but not eliminate bias due to poor randomization.</p>
 </div>
-<div id="references" class="section level2 hasAnchor" number="1.5">
-<h2><span class="header-section-number">1.5</span> References<a href="index.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<ol style="list-style-type: decimal">
-<li>Hernán &amp; Robins (2020). <em>Causal Inference: What If</em>.</li>
-<li>Pearl, Glymour, &amp; Jewell (2016). <em>Causal Inference in Statistics: A
-Primer</em>.</li>
-<li>VanderWeele (2015). <em>Explanation in Causal Inference</em>.</li>
-<li>Causal AI Blog by Judea Pearl: <a href="https://causality.cs.ucla.edu/blog/" class="uri">https://causality.cs.ucla.edu/blog/</a></li>
-<li>Netflix Tech Blog on Causal Inference:
-<a href="https://netflixtechblog.com/computational-causal-inference-at-netflix-293591691c62" class="uri">https://netflixtechblog.com/computational-causal-inference-at-netflix-293591691c62</a></li>
-<li>Number Analytics Education Series:
-<a href="https://www.numberanalytics.com/blog/" class="uri">https://www.numberanalytics.com/blog/</a></li>
-</ol>
+</div>
+<div id="regression-adjustment-a-model-based-approach-to-causal-inference" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> 2. Regression Adjustment: A Model-Based Approach to Causal Inference<a href="randomized-controlled-trials-and-regression-adjustment.html#regression-adjustment-a-model-based-approach-to-causal-inference" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="conceptual-overview" class="section level3 hasAnchor" number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span> Conceptual Overview<a href="randomized-controlled-trials-and-regression-adjustment.html#conceptual-overview" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Regression Adjustment, sometimes called covariate adjustment, is one of the most widely used methods for causal estimation in observational studies. Unlike RCTs, this approach requires the assumption of <strong>no unmeasured confounding</strong>, often called conditional ignorability:</p>
+<p><span class="math display">\[
+Y(1), Y(0) \perp D \mid X
+\]</span></p>
+<p>Here, <span class="math inline">\(D\)</span> is the binary treatment variable and <span class="math inline">\(X\)</span> is a vector of observed covariates. The central idea is to control for confounders <span class="math inline">\(X\)</span> that affect both treatment assignment and potential outcomes.</p>
+<p>The linear model typically takes the form:</p>
+<p><span class="math display">\[
+Y = \beta_0 + \beta_1 D + \beta_2 X + \varepsilon
+\]</span></p>
+<p>The coefficient <span class="math inline">\(\beta_1\)</span> is interpreted as the average treatment effect, assuming the model is correctly specified and all relevant confounders are included.</p>
+</div>
+<div id="r-implementation-1" class="section level3 hasAnchor" number="2.3.2">
+<h3><span class="header-section-number">2.3.2</span> R Implementation<a href="randomized-controlled-trials-and-regression-adjustment.html#r-implementation-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We now simulate observational data with a confounder to demonstrate regression adjustment.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb7-1" tabindex="-1"></a><span class="co"># Simulate observational data</span></span>
+<span id="cb7-2"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb7-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb7-3"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb7-3" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb7-4"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb7-4" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb7-5"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb7-5" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fu">plogis</span>(<span class="fl">0.5</span> <span class="sc">*</span> x))</span>
+<span id="cb7-6"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb7-6" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> d <span class="sc">+</span> <span class="fl">1.5</span> <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb7-7"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb7-7" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb7-8" tabindex="-1"></a>data_obs <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb7-9"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb7-9" tabindex="-1"></a>  <span class="at">treatment =</span> d,</span>
+<span id="cb7-10"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb7-10" tabindex="-1"></a>  <span class="at">covariate =</span> x,</span>
+<span id="cb7-11"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb7-11" tabindex="-1"></a>  <span class="at">outcome =</span> y</span>
+<span id="cb7-12"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb7-12" tabindex="-1"></a>)</span>
+<span id="cb7-13"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb7-13" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb7-14" tabindex="-1"></a><span class="co"># Naive model (without adjustment)</span></span>
+<span id="cb7-15"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb7-15" tabindex="-1"></a>lm_naive <span class="ot">&lt;-</span> <span class="fu">lm</span>(outcome <span class="sc">~</span> treatment, <span class="at">data =</span> data_obs)</span>
+<span id="cb7-16"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb7-16" tabindex="-1"></a><span class="fu">summary</span>(lm_naive)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = outcome ~ treatment, data = data_obs)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -5.6984 -1.2133  0.0263  1.1233  5.5131 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  4.78011    0.07476   63.94   &lt;2e-16 ***
+## treatment    2.51150    0.10882   23.08   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.718 on 998 degrees of freedom
+## Multiple R-squared:  0.348,  Adjusted R-squared:  0.3473 
+## F-statistic: 532.7 on 1 and 998 DF,  p-value: &lt; 2.2e-16</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb9-1" tabindex="-1"></a><span class="co"># Adjusted model</span></span>
+<span id="cb9-2"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb9-2" tabindex="-1"></a>lm_adjusted <span class="ot">&lt;-</span> <span class="fu">lm</span>(outcome <span class="sc">~</span> treatment <span class="sc">+</span> covariate, <span class="at">data =</span> data_obs)</span>
+<span id="cb9-3"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb9-3" tabindex="-1"></a><span class="fu">summary</span>(lm_adjusted)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = outcome ~ treatment + covariate, data = data_obs)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.0404 -0.6277 -0.0251  0.6877  3.2613 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  5.01601    0.04314  116.28   &lt;2e-16 ***
+## treatment    1.96230    0.06350   30.90   &lt;2e-16 ***
+## covariate    1.44628    0.03198   45.22   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.984 on 997 degrees of freedom
+## Multiple R-squared:  0.7863, Adjusted R-squared:  0.7859 
+## F-statistic:  1834 on 2 and 997 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>The naive model, which omits the confounder, yields a biased estimate of the treatment effect. By contrast, the adjusted model corrects this bias, provided all relevant confounders are included and the functional form is correct.</p>
+</div>
+<div id="limitations-and-diagnostics" class="section level3 hasAnchor" number="2.3.3">
+<h3><span class="header-section-number">2.3.3</span> Limitations and Diagnostics<a href="randomized-controlled-trials-and-regression-adjustment.html#limitations-and-diagnostics" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Regression Adjustment hinges on correct model specification and the inclusion of all relevant confounders. Omitted variable bias remains a major threat, and multicollinearity or misspecified functional forms can distort estimates. Residual plots, variance inflation factors, and specification tests are essential for model diagnostics.</p>
+<p>Moreover, regression does not address <strong>overlap</strong>—the requirement that all units have a non-zero probability of receiving each treatment conditional on covariates. Violations of this assumption can lead to extrapolation and poor generalizability.</p>
+<p>One strategy to assess covariate overlap is to model the propensity score and visualize its distribution across treatment groups.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb11-1" tabindex="-1"></a><span class="co"># Estimate propensity scores</span></span>
+<span id="cb11-2"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb11-2" tabindex="-1"></a>ps_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(treatment <span class="sc">~</span> covariate, <span class="at">data =</span> data_obs, <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb11-3"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb11-3" tabindex="-1"></a>data_obs <span class="ot">&lt;-</span> data_obs <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">pscore =</span> <span class="fu">predict</span>(ps_model, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>))</span>
+<span id="cb11-4"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb11-4" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb11-5" tabindex="-1"></a><span class="co"># Plot propensity scores</span></span>
+<span id="cb11-6"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb11-6" tabindex="-1"></a><span class="fu">ggplot</span>(data_obs, <span class="fu">aes</span>(<span class="at">x =</span> pscore, <span class="at">fill =</span> <span class="fu">factor</span>(treatment))) <span class="sc">+</span></span>
+<span id="cb11-7"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb11-7" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb11-8"><a href="randomized-controlled-trials-and-regression-adjustment.html#cb11-8" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">&quot;Treatment Group&quot;</span>, <span class="at">title =</span> <span class="st">&quot;Propensity Score Overlap&quot;</span>)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>If there is poor overlap between groups, regression adjustment may yield estimates with high variance and questionable validity.</p>
+</div>
+<div id="causal-interpretation" class="section level3 hasAnchor" number="2.3.4">
+<h3><span class="header-section-number">2.3.4</span> Causal Interpretation<a href="randomized-controlled-trials-and-regression-adjustment.html#causal-interpretation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>While regression models provide estimates of conditional treatment effects, care must be taken in interpreting these coefficients causally. The treatment effect estimated by regression adjustment is unbiased only under strong assumptions: no unmeasured confounding, correct model specification, and sufficient overlap.</p>
+<p>This makes regression adjustment a double-edged sword. Its ease of use and interpretability make it appealing, but its susceptibility to hidden bias requires rigorous scrutiny.</p>
+</div>
+</div>
+<div id="toward-integrated-reasoning" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> Toward Integrated Reasoning<a href="randomized-controlled-trials-and-regression-adjustment.html#toward-integrated-reasoning" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The juxtaposition of RCTs and regression adjustment highlights the contrast between <strong>design-based</strong> and <strong>model-based</strong> inference. RCTs achieve causal identification through the randomization mechanism itself, rendering statistical adjustment unnecessary (but sometimes helpful for precision). Regression adjustment, on the other hand, relies entirely on the plausibility of its assumptions, making it vulnerable to hidden confounding and specification errors.</p>
+<p>Importantly, these methods should not be viewed in isolation. Hybrid designs and analytic strategies—such as <strong>regression adjustment in RCTs</strong> or <strong>design-based diagnostics in observational studies</strong>—blur the boundaries and point toward more integrated approaches to causal inference.</p>
+<p>Furthermore, emerging methods such as <strong>doubly robust estimation</strong>, <strong>propensity score weighting</strong>, and <strong>machine learning–based causal estimators</strong> build upon the foundations established by these two methods. Understanding the mechanics and logic of RCTs and regression adjustment is thus a prerequisite for mastering more advanced techniques.</p>
+</div>
+<div id="conclusion" class="section level2 hasAnchor" number="2.5">
+<h2><span class="header-section-number">2.5</span> Conclusion<a href="randomized-controlled-trials-and-regression-adjustment.html#conclusion" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In this installment, we explored the theoretical rationale, implementation, and practical considerations of two cornerstone methods in causal inference: Randomized Controlled Trials and Regression Adjustment. RCTs provide unmatched causal credibility when feasible, while regression models offer flexible tools for analyzing observational data under strong assumptions. Their complementary roles in the causal inference toolkit make them indispensable for any applied researcher.</p>
+<p>The next entry in this series will turn to <strong>Propensity Score Methods</strong>, where we will examine how matching and weighting strategies seek to approximate randomized experiments using observational data. As with all causal methods, the key lies not just in computation, but in the clarity of assumptions and the integrity of reasoning.</p>
+<p>By combining design principles, diagnostic rigor, and ethical sensitivity, causal inference offers a powerful framework for navigating the complexity of real-world data.</p>
 
 </div>
 </div>
@@ -712,8 +558,8 @@ Primer</em>.</li>
           </div>
         </div>
       </div>
-
-<a href="randomized-controlled-trials-and-regression-adjustment.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -744,7 +590,7 @@ gitbook.start({
     "size": 2
   },
   "edit": {
-    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/edit/main/index.Rmd",
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/edit/main/02-RCT.Rmd",
     "text": "Edit"
   },
   "history": {
@@ -752,7 +598,7 @@ gitbook.start({
     "text": null
   },
   "view": {
-    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/blob/main/index.Rmd",
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/blob/main/02-RCT.Rmd",
     "text": null
   },
   "download": null,

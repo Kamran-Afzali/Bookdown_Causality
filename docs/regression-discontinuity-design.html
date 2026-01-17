@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 6 Regression Discontinuity Design | Causal Inference in R</title>
+  <meta name="description" content="Chapter 6 Regression Discontinuity Design | Causal Inference in R" />
+  <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 6 Regression Discontinuity Design | Causal Inference in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 6 Regression Discontinuity Design | Causal Inference in R" />
+  
+  
+  
+
+<meta name="author" content="Kamran Afzali" />
+
+
+<meta name="date" content="2026-01-17" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="instrumental-variables.html"/>
+<link rel="next" href="causal-forests.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Causality analysis in R</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Foundations of Causal Statistical Analysis</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#introduction"><i class="fa fa-check"></i><b>1.1</b> Introduction</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#summary-table-techniques-for-causal-statistical-analysis"><i class="fa fa-check"></i><b>1.2</b> Summary Table: Techniques for Causal Statistical Analysis</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#methodological-deep-dive-with-practical-guidance"><i class="fa fa-check"></i><b>1.3</b> Methodological Deep Dive with Practical Guidance</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#discussion"><i class="fa fa-check"></i><b>1.4</b> Discussion</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#references"><i class="fa fa-check"></i><b>1.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html"><i class="fa fa-check"></i><b>2</b> Randomized Controlled Trials and Regression Adjustment</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#introduction-1"><i class="fa fa-check"></i><b>2.1</b> Introduction</a></li>
+<li class="chapter" data-level="2.2" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#randomized-controlled-trials-design-and-analysis"><i class="fa fa-check"></i><b>2.2</b> 1. Randomized Controlled Trials: Design and Analysis</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#theoretical-foundations"><i class="fa fa-check"></i><b>2.2.1</b> Theoretical Foundations</a></li>
+<li class="chapter" data-level="2.2.2" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#r-implementation"><i class="fa fa-check"></i><b>2.2.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.2.3" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#model-based-inference"><i class="fa fa-check"></i><b>2.2.3</b> Model-Based Inference</a></li>
+<li class="chapter" data-level="2.2.4" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#diagnostics-and-integrity"><i class="fa fa-check"></i><b>2.2.4</b> Diagnostics and Integrity</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#regression-adjustment-a-model-based-approach-to-causal-inference"><i class="fa fa-check"></i><b>2.3</b> 2. Regression Adjustment: A Model-Based Approach to Causal Inference</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#conceptual-overview"><i class="fa fa-check"></i><b>2.3.1</b> Conceptual Overview</a></li>
+<li class="chapter" data-level="2.3.2" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#r-implementation-1"><i class="fa fa-check"></i><b>2.3.2</b> R Implementation</a></li>
+<li class="chapter" data-level="2.3.3" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#limitations-and-diagnostics"><i class="fa fa-check"></i><b>2.3.3</b> Limitations and Diagnostics</a></li>
+<li class="chapter" data-level="2.3.4" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#causal-interpretation"><i class="fa fa-check"></i><b>2.3.4</b> Causal Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#toward-integrated-reasoning"><i class="fa fa-check"></i><b>2.4</b> Toward Integrated Reasoning</a></li>
+<li class="chapter" data-level="2.5" data-path="randomized-controlled-trials-and-regression-adjustment.html"><a href="randomized-controlled-trials-and-regression-adjustment.html#conclusion"><i class="fa fa-check"></i><b>2.5</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><i class="fa fa-check"></i><b>3</b> Propensity Scores, Doubly Robust Estimators, and Inverse Probability Weighting</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#propensity-score-methods"><i class="fa fa-check"></i><b>3.1</b> Propensity Score Methods</a></li>
+<li class="chapter" data-level="3.2" data-path="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#inverse-probability-weighting-ipw"><i class="fa fa-check"></i><b>3.2</b> Inverse Probability Weighting (IPW)</a></li>
+<li class="chapter" data-level="3.3" data-path="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#doubly-robust-estimators"><i class="fa fa-check"></i><b>3.3</b> Doubly Robust Estimators</a></li>
+<li class="chapter" data-level="3.4" data-path="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#integrative-interpretation"><i class="fa fa-check"></i><b>3.4</b> Integrative Interpretation</a></li>
+<li class="chapter" data-level="3.5" data-path="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#summary-table"><i class="fa fa-check"></i><b>3.5</b> Summary Table</a></li>
+<li class="chapter" data-level="3.6" data-path="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#conclusion-1"><i class="fa fa-check"></i><b>3.6</b> Conclusion</a></li>
+<li class="chapter" data-level="3.7" data-path="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"><a href="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html#references-1"><i class="fa fa-check"></i><b>3.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html"><i class="fa fa-check"></i><b>4</b> Difference-in-Differences with a Healthcare Application</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html#introduction-2"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
+<li class="chapter" data-level="4.2" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html#difference-in-differences-theoretical-framework"><i class="fa fa-check"></i><b>4.2</b> Difference-in-Differences: Theoretical Framework</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html#core-concept"><i class="fa fa-check"></i><b>4.2.1</b> Core Concept</a></li>
+<li class="chapter" data-level="4.2.2" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html#mathematical-formalism"><i class="fa fa-check"></i><b>4.2.2</b> Mathematical Formalism</a></li>
+<li class="chapter" data-level="4.2.3" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html#key-assumption-parallel-trends"><i class="fa fa-check"></i><b>4.2.3</b> Key Assumption: Parallel Trends</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html#application-evaluating-a-telemedicine-program-in-healthcare"><i class="fa fa-check"></i><b>4.3</b> Application: Evaluating a Telemedicine Program in Healthcare</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html#r-implementation-2"><i class="fa fa-check"></i><b>4.3.1</b> R Implementation</a></li>
+<li class="chapter" data-level="4.3.2" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html#limitations-and-takeaways"><i class="fa fa-check"></i><b>4.3.2</b> Limitations and takeaways</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html#conclusion-2"><i class="fa fa-check"></i><b>4.4</b> Conclusion</a></li>
+<li class="chapter" data-level="4.5" data-path="difference-in-differences-with-a-healthcare-application.html"><a href="difference-in-differences-with-a-healthcare-application.html#references-2"><i class="fa fa-check"></i><b>4.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="instrumental-variables.html"><a href="instrumental-variables.html"><i class="fa fa-check"></i><b>5</b> Instrumental Variables</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="instrumental-variables.html"><a href="instrumental-variables.html#introduction-3"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.2" data-path="instrumental-variables.html"><a href="instrumental-variables.html#healthcare-case-study-hospital-quality-and-recovery-time"><i class="fa fa-check"></i><b>5.2</b> Healthcare Case Study: Hospital Quality and Recovery Time</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="instrumental-variables.html"><a href="instrumental-variables.html#r-implementation-3"><i class="fa fa-check"></i><b>5.2.1</b> R Implementation</a></li>
+<li class="chapter" data-level="5.2.2" data-path="instrumental-variables.html"><a href="instrumental-variables.html#interpreting-the-results"><i class="fa fa-check"></i><b>5.2.2</b> Interpreting the Results</a></li>
+<li class="chapter" data-level="5.2.3" data-path="instrumental-variables.html"><a href="instrumental-variables.html#robustness-checks"><i class="fa fa-check"></i><b>5.2.3</b> Robustness Checks</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="instrumental-variables.html"><a href="instrumental-variables.html#practical-considerations-and-extensions"><i class="fa fa-check"></i><b>5.3</b> Practical Considerations and Extensions</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="instrumental-variables.html"><a href="instrumental-variables.html#when-to-use-iv"><i class="fa fa-check"></i><b>5.3.1</b> When to Use IV</a></li>
+<li class="chapter" data-level="5.3.2" data-path="instrumental-variables.html"><a href="instrumental-variables.html#advanced-topics"><i class="fa fa-check"></i><b>5.3.2</b> Advanced Topics</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="instrumental-variables.html"><a href="instrumental-variables.html#conclusion-3"><i class="fa fa-check"></i><b>5.4</b> Conclusion</a></li>
+<li class="chapter" data-level="5.5" data-path="instrumental-variables.html"><a href="instrumental-variables.html#further-reading"><i class="fa fa-check"></i><b>5.5</b> Further Reading</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html"><i class="fa fa-check"></i><b>6</b> Regression Discontinuity Design</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#introduction-4"><i class="fa fa-check"></i><b>6.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#comparison-with-other-methods"><i class="fa fa-check"></i><b>6.1.1</b> Comparison with Other Methods</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#healthcare-application-icu-admission-and-mortality"><i class="fa fa-check"></i><b>6.2</b> Healthcare Application: ICU Admission and Mortality</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#scenario"><i class="fa fa-check"></i><b>6.2.1</b> Scenario</a></li>
+<li class="chapter" data-level="6.2.2" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#assumptions-and-validity"><i class="fa fa-check"></i><b>6.2.2</b> Assumptions and Validity</a></li>
+<li class="chapter" data-level="6.2.3" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#r-implementation-4"><i class="fa fa-check"></i><b>6.2.3</b> R Implementation</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#interpretation-and-diagnostics"><i class="fa fa-check"></i><b>6.3</b> Interpretation and Diagnostics</a></li>
+<li class="chapter" data-level="6.4" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#extensions-and-robustness"><i class="fa fa-check"></i><b>6.4</b> Extensions and Robustness</a></li>
+<li class="chapter" data-level="6.5" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#limitations-and-considerations"><i class="fa fa-check"></i><b>6.5</b> Limitations and Considerations</a></li>
+<li class="chapter" data-level="6.6" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#conclusion-4"><i class="fa fa-check"></i><b>6.6</b> Conclusion</a></li>
+<li class="chapter" data-level="6.7" data-path="regression-discontinuity-design.html"><a href="regression-discontinuity-design.html#references-3"><i class="fa fa-check"></i><b>6.7</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="causal-forests.html"><a href="causal-forests.html"><i class="fa fa-check"></i><b>7</b> Causal Forests</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="causal-forests.html"><a href="causal-forests.html#introduction-5"><i class="fa fa-check"></i><b>7.1</b> Introduction</a></li>
+<li class="chapter" data-level="7.2" data-path="causal-forests.html"><a href="causal-forests.html#precision-medicine-case-study-personalized-diabetes-treatment"><i class="fa fa-check"></i><b>7.2</b> Precision Medicine Case Study: Personalized Diabetes Treatment</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="causal-forests.html"><a href="causal-forests.html#data-generation-and-setup"><i class="fa fa-check"></i><b>7.2.1</b> Data Generation and Setup</a></li>
+<li class="chapter" data-level="7.2.2" data-path="causal-forests.html"><a href="causal-forests.html#fitting-the-causal-forest"><i class="fa fa-check"></i><b>7.2.2</b> Fitting the Causal Forest</a></li>
+<li class="chapter" data-level="7.2.3" data-path="causal-forests.html"><a href="causal-forests.html#variable-importance-analysis"><i class="fa fa-check"></i><b>7.2.3</b> Variable Importance Analysis</a></li>
+<li class="chapter" data-level="7.2.4" data-path="causal-forests.html"><a href="causal-forests.html#statistical-testing-for-heterogeneity"><i class="fa fa-check"></i><b>7.2.4</b> Statistical Testing for Heterogeneity</a></li>
+<li class="chapter" data-level="7.2.5" data-path="causal-forests.html"><a href="causal-forests.html#visualization-and-pattern-discovery"><i class="fa fa-check"></i><b>7.2.5</b> Visualization and Pattern Discovery</a></li>
+<li class="chapter" data-level="7.2.6" data-path="causal-forests.html"><a href="causal-forests.html#personalized-treatment-strategy-development"><i class="fa fa-check"></i><b>7.2.6</b> Personalized Treatment Strategy Development</a></li>
+<li class="chapter" data-level="7.2.7" data-path="causal-forests.html"><a href="causal-forests.html#partial-dependence-analysis"><i class="fa fa-check"></i><b>7.2.7</b> Partial Dependence Analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="causal-forests.html"><a href="causal-forests.html#clinical-insights-and-limitations"><i class="fa fa-check"></i><b>7.3</b> Clinical Insights and Limitations</a></li>
+<li class="chapter" data-level="7.4" data-path="causal-forests.html"><a href="causal-forests.html#conclusion-5"><i class="fa fa-check"></i><b>7.4</b> Conclusion</a></li>
+<li class="chapter" data-level="7.5" data-path="causal-forests.html"><a href="causal-forests.html#references-4"><i class="fa fa-check"></i><b>7.5</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html"><i class="fa fa-check"></i><b>8</b> Bayesian Structural Time Series for Causal Inference</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#introduction-6"><i class="fa fa-check"></i><b>8.1</b> Introduction</a></li>
+<li class="chapter" data-level="8.2" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#r-implementation-examples-healthcare"><i class="fa fa-check"></i><b>8.2</b> R Implementation examples Healthcare</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#tobacco-tax-policy"><i class="fa fa-check"></i><b>8.2.1</b> Tobacco Tax Policy</a></li>
+<li class="chapter" data-level="8.2.2" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#teletherapy-program-assessment"><i class="fa fa-check"></i><b>8.2.2</b> Teletherapy Program Assessment</a></li>
+<li class="chapter" data-level="8.2.3" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#implementation-guidelines-for-healthcare-applications"><i class="fa fa-check"></i><b>8.2.3</b> Implementation Guidelines for Healthcare Applications</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="bayesian-structural-time-series-for-causal-inference.html"><a href="bayesian-structural-time-series-for-causal-inference.html#conclusion-6"><i class="fa fa-check"></i><b>8.3</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html"><i class="fa fa-check"></i><b>9</b> Meta-Learners for Heterogeneous Treatment Effects</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#introduction-the-promise-and-peril-of-machine-learning-for-causal-inference"><i class="fa fa-check"></i><b>9.1</b> Introduction: The Promise and Peril of Machine Learning for Causal Inference</a></li>
+<li class="chapter" data-level="9.2" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#theoretical-foundation-from-prediction-to-causal-inference"><i class="fa fa-check"></i><b>9.2</b> Theoretical Foundation: From Prediction to Causal Inference</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#the-s-learner-simplicity-with-hidden-complexity"><i class="fa fa-check"></i><b>9.2.1</b> The S-Learner: Simplicity with Hidden Complexity</a></li>
+<li class="chapter" data-level="9.2.2" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#the-t-learner-divide-and-conquer"><i class="fa fa-check"></i><b>9.2.2</b> The T-Learner: Divide and Conquer</a></li>
+<li class="chapter" data-level="9.2.3" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#the-x-learner-sophisticated-synthesis"><i class="fa fa-check"></i><b>9.2.3</b> The X-Learner: Sophisticated Synthesis</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#practical-implementation-hypertension-treatment-optimization"><i class="fa fa-check"></i><b>9.3</b> Practical Implementation: Hypertension Treatment Optimization</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementing-the-s-learner"><i class="fa fa-check"></i><b>9.3.1</b> Implementing the S-Learner</a></li>
+<li class="chapter" data-level="9.3.2" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementing-the-t-learner"><i class="fa fa-check"></i><b>9.3.2</b> Implementing the T-Learner</a></li>
+<li class="chapter" data-level="9.3.3" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementing-the-x-learner"><i class="fa fa-check"></i><b>9.3.3</b> Implementing the X-Learner</a></li>
+<li class="chapter" data-level="9.3.4" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#comparative-analysis-and-model-selection"><i class="fa fa-check"></i><b>9.3.4</b> Comparative Analysis and Model Selection</a></li>
+<li class="chapter" data-level="9.3.5" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#clinical-pattern-discovery-and-interpretation"><i class="fa fa-check"></i><b>9.3.5</b> Clinical Pattern Discovery and Interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#implementation-considerations-and-best-practices"><i class="fa fa-check"></i><b>9.4</b> Implementation Considerations and Best Practices</a></li>
+<li class="chapter" data-level="9.5" data-path="meta-learners-for-heterogeneous-treatment-effects.html"><a href="meta-learners-for-heterogeneous-treatment-effects.html#conclusion-democratizing-causal-machine-learning"><i class="fa fa-check"></i><b>9.5</b> Conclusion: Democratizing Causal Machine Learning</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><i class="fa fa-check"></i><b>10</b> Targeted Maximum Likelihood Estimation for Robust Causal Inference in Healthcare</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html#introduction-7"><i class="fa fa-check"></i><b>10.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="10.1.1" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html#double-robustness-and-tmle"><i class="fa fa-check"></i><b>10.1.1</b> Double Robustness and TMLE</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html#healthcare-application-comparative-effectiveness-of-hypertension-treatments"><i class="fa fa-check"></i><b>10.2</b> Healthcare Application: Comparative Effectiveness of Hypertension Treatments</a></li>
+<li class="chapter" data-level="10.3" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html#limitations-and-practical-implementation"><i class="fa fa-check"></i><b>10.3</b> Limitations and Practical Implementation</a></li>
+<li class="chapter" data-level="10.4" data-path="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html"><a href="targeted-maximum-likelihood-estimation-for-robust-causal-inference-in-healthcare.html#conclusion-7"><i class="fa fa-check"></i><b>10.4</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html"><i class="fa fa-check"></i><b>11</b> G-Computation for Causal Inference</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#introduction-8"><i class="fa fa-check"></i><b>11.1</b> Introduction</a></li>
+<li class="chapter" data-level="11.2" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#case-study-hypertension-management-over-time"><i class="fa fa-check"></i><b>11.2</b> Case Study: Hypertension Management Over Time</a>
+<ul>
+<li class="chapter" data-level="11.2.1" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#fitting-the-g-formula-model"><i class="fa fa-check"></i><b>11.2.1</b> Fitting the G-Formula Model</a></li>
+<li class="chapter" data-level="11.2.2" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#interpreting-results-and-model-diagnostics"><i class="fa fa-check"></i><b>11.2.2</b> Interpreting Results and Model Diagnostics</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#practical-considerations-and-limitations"><i class="fa fa-check"></i><b>11.3</b> Practical Considerations and Limitations</a></li>
+<li class="chapter" data-level="11.4" data-path="g-computation-for-causal-inference.html"><a href="g-computation-for-causal-inference.html#conclusion-integrating-g-computation-into-practice"><i class="fa fa-check"></i><b>11.4</b> Conclusion: Integrating G-Computation into Practice</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><i class="fa fa-check"></i><b>12</b> Structural Equation Modeling for Healthcare Research: Unraveling Complex Causal Pathways</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html#introduction-9"><i class="fa fa-check"></i><b>12.1</b> Introduction</a></li>
+<li class="chapter" data-level="12.2" data-path="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html#a-mediation-analysis-physical-activity-mental-health-and-diabetes-control"><i class="fa fa-check"></i><b>12.2</b> A Mediation Analysis: Physical Activity, Mental Health, and Diabetes Control</a></li>
+<li class="chapter" data-level="12.3" data-path="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html#clinical-interpretation-and-limitations"><i class="fa fa-check"></i><b>12.3</b> Clinical Interpretation and Limitations</a></li>
+<li class="chapter" data-level="12.4" data-path="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html"><a href="structural-equation-modeling-for-healthcare-research-unraveling-complex-causal-pathways.html#conclusion-8"><i class="fa fa-check"></i><b>12.4</b> Conclusion</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><i class="fa fa-check"></i><b>13</b> Directed Acyclic Graphs: Mapping the Causal Architecture of Healthcare Decisions</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#introduction-10"><i class="fa fa-check"></i><b>13.1</b> Introduction</a></li>
+<li class="chapter" data-level="13.2" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#implementing-dag-analysis-in-healthcare-research"><i class="fa fa-check"></i><b>13.2</b> Implementing DAG Analysis in Healthcare Research</a></li>
+<li class="chapter" data-level="13.3" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#comparing-analytical-strategies"><i class="fa fa-check"></i><b>13.3</b> Comparing Analytical Strategies</a></li>
+<li class="chapter" data-level="13.4" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#visualizing-causal-structures-for-communication"><i class="fa fa-check"></i><b>13.4</b> Visualizing Causal Structures for Communication</a></li>
+<li class="chapter" data-level="13.5" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#sensitivity-analysis-and-unmeasured-confounding"><i class="fa fa-check"></i><b>13.5</b> Sensitivity Analysis and Unmeasured Confounding</a></li>
+<li class="chapter" data-level="13.6" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#testable-implications-and-dag-validation"><i class="fa fa-check"></i><b>13.6</b> Testable Implications and DAG Validation</a></li>
+<li class="chapter" data-level="13.7" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#practical-guidance-for-healthcare-applications"><i class="fa fa-check"></i><b>13.7</b> Practical Guidance for Healthcare Applications</a></li>
+<li class="chapter" data-level="13.8" data-path="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html"><a href="directed-acyclic-graphs-mapping-the-causal-architecture-of-healthcare-decisions.html#conclusion-dags-as-foundation-for-rigorous-causal-inference"><i class="fa fa-check"></i><b>13.8</b> Conclusion: DAGs as Foundation for Rigorous Causal Inference</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="double-machine-learning.html"><a href="double-machine-learning.html"><i class="fa fa-check"></i><b>14</b> Double Machine Learning</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="double-machine-learning.html"><a href="double-machine-learning.html#introduction-11"><i class="fa fa-check"></i><b>14.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="14.1.1" data-path="double-machine-learning.html"><a href="double-machine-learning.html#theoretical-framework-understanding-the-double-machine-learning-approach"><i class="fa fa-check"></i><b>14.1.1</b> Theoretical Framework: Understanding the Double Machine Learning Approach</a></li>
+</ul></li>
+<li class="chapter" data-level="14.2" data-path="double-machine-learning.html"><a href="double-machine-learning.html#cardiovascular-disease-prevention-a-dml-case-study"><i class="fa fa-check"></i><b>14.2</b> Cardiovascular Disease Prevention: A DML Case Study</a>
+<ul>
+<li class="chapter" data-level="14.2.1" data-path="double-machine-learning.html"><a href="double-machine-learning.html#clinical-interpretation-and-implementation"><i class="fa fa-check"></i><b>14.2.1</b> Clinical Interpretation and Implementation</a></li>
+<li class="chapter" data-level="14.2.2" data-path="double-machine-learning.html"><a href="double-machine-learning.html#assumptions-and-potential-violations"><i class="fa fa-check"></i><b>14.2.2</b> Assumptions and Potential Violations</a></li>
+</ul></li>
+<li class="chapter" data-level="14.3" data-path="double-machine-learning.html"><a href="double-machine-learning.html#extensions-and-advanced-applications"><i class="fa fa-check"></i><b>14.3</b> Extensions and Advanced Applications</a></li>
+<li class="chapter" data-level="14.4" data-path="double-machine-learning.html"><a href="double-machine-learning.html#conclusion-9"><i class="fa fa-check"></i><b>14.4</b> Conclusion</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Causal Inference in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="regression-discontinuity-design" class="section level1 hasAnchor" number="6">
+<h1><span class="header-section-number">Chapter 6</span> Regression Discontinuity Design<a href="regression-discontinuity-design.html#regression-discontinuity-design" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction-4" class="section level2 hasAnchor" number="6.1">
+<h2><span class="header-section-number">6.1</span> Introduction<a href="regression-discontinuity-design.html#introduction-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Regression Discontinuity Design (RDD) exploits arbitrary thresholds in treatment assignment to identify causal effects in observational data. Unlike other causal inference methods that rely on assumptions about unobserved confounders or parallel trends, RDD leverages the fact that treatment assignment changes discontinuously at a known cutoff point while potential outcomes vary smoothly. This creates a quasi-experimental setting where units just above and below the threshold are comparable, except for their treatment status, enabling credible causal inference even when randomized experiments are infeasible.</p>
+<p>The method proves particularly valuable in policy evaluation contexts where treatments are assigned based on arbitrary cutoffs, such as scholarship eligibility based on test scores, medical interventions based on diagnostic thresholds, or regulatory compliance based on firm size. This essay examines RDD’s theoretical foundation, mathematical framework, and practical implementation through a healthcare application estimating the causal effect of intensive care unit admission on patient mortality using simulated data in R. We explore both sharp and fuzzy designs, discuss assumption validation, and compare RDD with alternative causal inference approaches.</p>
+<p>RDD identification relies on the assumption that potential outcomes are continuous functions of a running variable at the treatment cutoff, while treatment assignment exhibits a discontinuity. Consider a running variable X with cutoff c, where treatment D = 1 if X ≥ c and D = 0 if X &lt; c. The key insight is that units with X values arbitrarily close to c are similar in all respects except treatment status, making the cutoff a source of quasi-random variation. RDD applies when treatment assignment follows a deterministic rule based on an observed running variable <span class="math inline">\(X\)</span>:</p>
+<p><span class="math display">\[
+D_i = \begin{cases}
+1 &amp; \text{if } X_i \geq c \\
+0 &amp; \text{if } X_i &lt; c
+\end{cases}
+\]</span></p>
+<p>where <span class="math inline">\(c\)</span> represents the cutoff threshold. This sharp discontinuity contrasts with fuzzy RDD, where the assignment rule creates jumps in treatment probability rather than certainty. The key insight: individuals near the cutoff are exchangeable.</p>
+<p>The RDD estimand targets the treatment effect at the cutoff:</p>
+<p><span class="math display">\[
+\tau_{RDD} = \mathbb{E}[Y_i(1) - Y_i(0) | X_i = c]
+\]</span></p>
+<p>Since we observe only one potential outcome for each unit, identification requires continuity of the conditional expectation function at the cutoff. Formally:</p>
+<p><span class="math display">\[
+\mathbb{E}[Y_i(0) | X_i = x] \text{ and } \mathbb{E}[Y_i(1) | X_i = x] \text{ are continuous at } x = c
+\]</span></p>
+<p>When this holds, the treatment effect equals the discontinuous jump in the observed outcome:</p>
+<p><span class="math display">\[
+\tau_{RDD} = \lim_{x \to c^+} \mathbb{E}[Y_i | X_i = x] - \lim_{x \to c^-} \mathbb{E}[Y_i | X_i = x]
+\]</span></p>
+<p>The identifying assumption is continuity of potential outcomes at the cutoff. Formally, for potential outcomes Y(0) and Y(1) under control and treatment, the expected values of both potential outcomes must be continuous at the cutoff point. Under this assumption, the treatment effect at the cutoff is identified by the discontinuity in the observed outcome. This local average treatment effect (LATE) applies specifically to units at the cutoff, representing the causal effect for individuals with running variable values equal to the threshold.</p>
+<p>Sharp RDD occurs when treatment assignment is a deterministic function of the running variable, with probability of treatment jumping from 0 to 1 at the cutoff. The treatment effect is estimated directly from the outcome discontinuity. Fuzzy RDD arises when treatment probability changes discontinuously but not deterministically at the cutoff, creating a first-stage relationship between the running variable and treatment assignment. Fuzzy designs require two-stage estimation similar to instrumental variables, where the cutoff serves as an instrument for treatment receipt. For fuzzy designs, the treatment effect is calculated as the ratio of the outcome discontinuity to the treatment probability discontinuity, analogous to the Wald estimator in instrumental variables estimation.</p>
+<p>RDD estimation typically employs local polynomial regression focusing on observations near the cutoff. The parametric approach fits separate polynomials on each side of the threshold, where the treatment effect is captured by the coefficient on the treatment indicator. The nonparametric approach uses local linear regression with kernel weights, estimating separate regressions on each side of the cutoff using observations within a bandwidth h of the threshold.</p>
+<p>Bandwidth selection involves a bias-variance tradeoff. Smaller bandwidths reduce bias by focusing on units most similar to those at the cutoff but increase variance due to smaller sample sizes. Optimal bandwidth selection procedures balance these considerations using cross-validation or mean squared error criteria.</p>
+<div id="comparison-with-other-methods" class="section level3 hasAnchor" number="6.1.1">
+<h3><span class="header-section-number">6.1.1</span> Comparison with Other Methods<a href="regression-discontinuity-design.html#comparison-with-other-methods" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>RDD differs fundamentally from other causal inference approaches in its identification strategy and assumptions. Unlike instrumental variables, which require exogenous instruments affecting treatment but not outcomes directly, RDD uses the cutoff itself as a source of variation, requiring only continuity of potential outcomes. Compared to difference-in-differences, which relies on parallel trends assumptions and requires panel data, RDD can be applied to cross-sectional data and identifies effects through spatial rather than temporal variation.</p>
+<p>The method’s strength lies in its credibility when assignment rules are truly arbitrary and discontinuous. However, RDD provides only local identification at the cutoff, limiting external validity compared to methods estimating population-wide effects. The approach also requires sufficient observations near the threshold for precise estimation and may be sensitive to functional form misspecification in parametric implementations.</p>
+</div>
+</div>
+<div id="healthcare-application-icu-admission-and-mortality" class="section level2 hasAnchor" number="6.2">
+<h2><span class="header-section-number">6.2</span> Healthcare Application: ICU Admission and Mortality<a href="regression-discontinuity-design.html#healthcare-application-icu-admission-and-mortality" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="scenario" class="section level3 hasAnchor" number="6.2.1">
+<h3><span class="header-section-number">6.2.1</span> Scenario<a href="regression-discontinuity-design.html#scenario" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We examine the causal effect of intensive care unit admission on 30-day mortality risk for emergency department patients. Many hospitals use severity scores with specific cutoffs to guide ICU admission decisions. Patients with scores above the threshold receive intensive monitoring and treatment, while those below receive standard ward care. This creates a sharp discontinuity in treatment assignment that enables causal inference about ICU effectiveness.</p>
+<p>The running variable is the Acute Physiology and Chronic Health Evaluation (APACHE) score, with ICU admission mandated for scores of 15 or higher. The outcome is 30-day mortality, coded as 1 for death within 30 days and 0 for survival. The key assumption is that patient mortality risk varies smoothly with APACHE scores, while ICU admission probability jumps discontinuously at the cutoff.</p>
+</div>
+<div id="assumptions-and-validity" class="section level3 hasAnchor" number="6.2.2">
+<h3><span class="header-section-number">6.2.2</span> Assumptions and Validity<a href="regression-discontinuity-design.html#assumptions-and-validity" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The primary identifying assumption requires potential outcomes to be continuous at the cutoff. This seems plausible since APACHE scores reflect underlying health status, which should vary smoothly rather than discontinuously. However, gaming or manipulation around the cutoff could violate this assumption if physicians systematically adjust scores to influence admission decisions.</p>
+<p>Several empirical tests can assess assumption validity. Density tests examine whether the running variable distribution exhibits suspicious clustering around the cutoff. Continuity tests check whether predetermined covariates show discontinuities at the threshold. Placebo tests estimate effects at false cutoffs where no treatment discontinuity exists. These diagnostics help build confidence in the design’s credibility.</p>
+</div>
+<div id="r-implementation-4" class="section level3 hasAnchor" number="6.2.3">
+<h3><span class="header-section-number">6.2.3</span> R Implementation<a href="regression-discontinuity-design.html#r-implementation-4" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We simulate data for 2000 emergency department patients with APACHE scores ranging from 10 to 20. The true treatment effect is a 15 percentage point reduction in mortality risk for ICU patients at the cutoff. Our implementation includes both parametric and nonparametric estimation approaches.</p>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="regression-discontinuity-design.html#cb81-1" tabindex="-1"></a><span class="co"># Load required libraries</span></span>
+<span id="cb81-2"><a href="regression-discontinuity-design.html#cb81-2" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;rdrobust&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;rdrobust&quot;</span>)</span>
+<span id="cb81-3"><a href="regression-discontinuity-design.html#cb81-3" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;ggplot2&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;ggplot2&quot;</span>)</span>
+<span id="cb81-4"><a href="regression-discontinuity-design.html#cb81-4" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;dplyr&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">&quot;dplyr&quot;</span>)</span>
+<span id="cb81-5"><a href="regression-discontinuity-design.html#cb81-5" tabindex="-1"></a><span class="fu">library</span>(rdrobust)</span></code></pre></div>
+<pre><code>## Warning: package &#39;rdrobust&#39; was built under R version 4.5.1</code></pre>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="regression-discontinuity-design.html#cb83-1" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb83-2"><a href="regression-discontinuity-design.html#cb83-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb83-3"><a href="regression-discontinuity-design.html#cb83-3" tabindex="-1"></a></span>
+<span id="cb83-4"><a href="regression-discontinuity-design.html#cb83-4" tabindex="-1"></a><span class="co"># Set seed for reproducibility</span></span>
+<span id="cb83-5"><a href="regression-discontinuity-design.html#cb83-5" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">456</span>)</span>
+<span id="cb83-6"><a href="regression-discontinuity-design.html#cb83-6" tabindex="-1"></a></span>
+<span id="cb83-7"><a href="regression-discontinuity-design.html#cb83-7" tabindex="-1"></a><span class="co"># Simulate data</span></span>
+<span id="cb83-8"><a href="regression-discontinuity-design.html#cb83-8" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
+<span id="cb83-9"><a href="regression-discontinuity-design.html#cb83-9" tabindex="-1"></a>cutoff <span class="ot">&lt;-</span> <span class="dv">15</span></span>
+<span id="cb83-10"><a href="regression-discontinuity-design.html#cb83-10" tabindex="-1"></a></span>
+<span id="cb83-11"><a href="regression-discontinuity-design.html#cb83-11" tabindex="-1"></a><span class="co"># Running variable: APACHE score (10-20)</span></span>
+<span id="cb83-12"><a href="regression-discontinuity-design.html#cb83-12" tabindex="-1"></a>apache_score <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="dv">10</span>, <span class="dv">20</span>)</span>
+<span id="cb83-13"><a href="regression-discontinuity-design.html#cb83-13" tabindex="-1"></a></span>
+<span id="cb83-14"><a href="regression-discontinuity-design.html#cb83-14" tabindex="-1"></a><span class="co"># Treatment: ICU admission (sharp design)</span></span>
+<span id="cb83-15"><a href="regression-discontinuity-design.html#cb83-15" tabindex="-1"></a>icu_admission <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(apache_score <span class="sc">&gt;=</span> cutoff)</span>
+<span id="cb83-16"><a href="regression-discontinuity-design.html#cb83-16" tabindex="-1"></a></span>
+<span id="cb83-17"><a href="regression-discontinuity-design.html#cb83-17" tabindex="-1"></a><span class="co"># Baseline mortality risk (smooth function of APACHE score)</span></span>
+<span id="cb83-18"><a href="regression-discontinuity-design.html#cb83-18" tabindex="-1"></a>baseline_risk <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="sc">+</span> <span class="fl">0.03</span> <span class="sc">*</span> (apache_score <span class="sc">-</span> <span class="dv">15</span>) <span class="sc">+</span> <span class="fl">0.001</span> <span class="sc">*</span> (apache_score <span class="sc">-</span> <span class="dv">15</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb83-19"><a href="regression-discontinuity-design.html#cb83-19" tabindex="-1"></a></span>
+<span id="cb83-20"><a href="regression-discontinuity-design.html#cb83-20" tabindex="-1"></a><span class="co"># True treatment effect: -0.15 (15 percentage point reduction)</span></span>
+<span id="cb83-21"><a href="regression-discontinuity-design.html#cb83-21" tabindex="-1"></a>true_effect <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.15</span></span>
+<span id="cb83-22"><a href="regression-discontinuity-design.html#cb83-22" tabindex="-1"></a>mortality_prob <span class="ot">&lt;-</span> baseline_risk <span class="sc">+</span> true_effect <span class="sc">*</span> icu_admission</span>
+<span id="cb83-23"><a href="regression-discontinuity-design.html#cb83-23" tabindex="-1"></a></span>
+<span id="cb83-24"><a href="regression-discontinuity-design.html#cb83-24" tabindex="-1"></a><span class="co"># Add random noise and generate binary outcome</span></span>
+<span id="cb83-25"><a href="regression-discontinuity-design.html#cb83-25" tabindex="-1"></a>mortality_prob <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">0</span>, <span class="fu">pmin</span>(<span class="dv">1</span>, mortality_prob <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">0.05</span>)))</span>
+<span id="cb83-26"><a href="regression-discontinuity-design.html#cb83-26" tabindex="-1"></a>mortality <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, mortality_prob)</span>
+<span id="cb83-27"><a href="regression-discontinuity-design.html#cb83-27" tabindex="-1"></a></span>
+<span id="cb83-28"><a href="regression-discontinuity-design.html#cb83-28" tabindex="-1"></a><span class="co"># Create dataset</span></span>
+<span id="cb83-29"><a href="regression-discontinuity-design.html#cb83-29" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb83-30"><a href="regression-discontinuity-design.html#cb83-30" tabindex="-1"></a>  <span class="at">apache_score =</span> apache_score,</span>
+<span id="cb83-31"><a href="regression-discontinuity-design.html#cb83-31" tabindex="-1"></a>  <span class="at">icu_admission =</span> icu_admission,</span>
+<span id="cb83-32"><a href="regression-discontinuity-design.html#cb83-32" tabindex="-1"></a>  <span class="at">mortality =</span> mortality,</span>
+<span id="cb83-33"><a href="regression-discontinuity-design.html#cb83-33" tabindex="-1"></a>  <span class="at">centered_score =</span> apache_score <span class="sc">-</span> cutoff</span>
+<span id="cb83-34"><a href="regression-discontinuity-design.html#cb83-34" tabindex="-1"></a>)</span>
+<span id="cb83-35"><a href="regression-discontinuity-design.html#cb83-35" tabindex="-1"></a></span>
+<span id="cb83-36"><a href="regression-discontinuity-design.html#cb83-36" tabindex="-1"></a><span class="co"># Parametric estimation with local linear regression</span></span>
+<span id="cb83-37"><a href="regression-discontinuity-design.html#cb83-37" tabindex="-1"></a>param_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(mortality <span class="sc">~</span> icu_admission <span class="sc">+</span> centered_score <span class="sc">+</span> </span>
+<span id="cb83-38"><a href="regression-discontinuity-design.html#cb83-38" tabindex="-1"></a>                 <span class="fu">I</span>(centered_score <span class="sc">*</span> icu_admission), <span class="at">data =</span> data)</span>
+<span id="cb83-39"><a href="regression-discontinuity-design.html#cb83-39" tabindex="-1"></a>param_effect <span class="ot">&lt;-</span> <span class="fu">coef</span>(param_model)[<span class="st">&quot;icu_admission&quot;</span>]</span>
+<span id="cb83-40"><a href="regression-discontinuity-design.html#cb83-40" tabindex="-1"></a>param_se <span class="ot">&lt;-</span> <span class="fu">summary</span>(param_model)<span class="sc">$</span>coefficients[<span class="st">&quot;icu_admission&quot;</span>, <span class="st">&quot;Std. Error&quot;</span>]</span>
+<span id="cb83-41"><a href="regression-discontinuity-design.html#cb83-41" tabindex="-1"></a></span>
+<span id="cb83-42"><a href="regression-discontinuity-design.html#cb83-42" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Parametric RDD estimate:&quot;</span>, <span class="fu">round</span>(param_effect, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Parametric RDD estimate: -0.0593</code></pre>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="regression-discontinuity-design.html#cb85-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Standard error:&quot;</span>, <span class="fu">round</span>(param_se, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Standard error: 0.0174</code></pre>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="regression-discontinuity-design.html#cb87-1" tabindex="-1"></a><span class="co"># Nonparametric estimation using rdrobust</span></span>
+<span id="cb87-2"><a href="regression-discontinuity-design.html#cb87-2" tabindex="-1"></a>rd_result <span class="ot">&lt;-</span> <span class="fu">rdrobust</span>(<span class="at">y =</span> data<span class="sc">$</span>mortality, <span class="at">x =</span> data<span class="sc">$</span>apache_score, <span class="at">c =</span> cutoff)</span>
+<span id="cb87-3"><a href="regression-discontinuity-design.html#cb87-3" tabindex="-1"></a>nonparam_effect <span class="ot">&lt;-</span> rd_result<span class="sc">$</span>coef[<span class="st">&quot;Robust&quot;</span>, ]</span>
+<span id="cb87-4"><a href="regression-discontinuity-design.html#cb87-4" tabindex="-1"></a>nonparam_se <span class="ot">&lt;-</span> rd_result<span class="sc">$</span>se[<span class="st">&quot;Robust&quot;</span>, ]</span>
+<span id="cb87-5"><a href="regression-discontinuity-design.html#cb87-5" tabindex="-1"></a>optimal_bandwidth <span class="ot">&lt;-</span> rd_result<span class="sc">$</span>bws[<span class="st">&quot;h&quot;</span>, <span class="st">&quot;left&quot;</span>]</span>
+<span id="cb87-6"><a href="regression-discontinuity-design.html#cb87-6" tabindex="-1"></a></span>
+<span id="cb87-7"><a href="regression-discontinuity-design.html#cb87-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Nonparametric RDD estimate:&quot;</span>, <span class="fu">round</span>(nonparam_effect, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Nonparametric RDD estimate: -0.0116</code></pre>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="regression-discontinuity-design.html#cb89-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Robust standard error:&quot;</span>, <span class="fu">round</span>(nonparam_se, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Robust standard error: 0.032</code></pre>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="regression-discontinuity-design.html#cb91-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Optimal bandwidth:&quot;</span>, <span class="fu">round</span>(optimal_bandwidth, <span class="dv">2</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Optimal bandwidth: 1.14</code></pre>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="regression-discontinuity-design.html#cb93-1" tabindex="-1"></a><span class="co"># Placebo test at false cutoff</span></span>
+<span id="cb93-2"><a href="regression-discontinuity-design.html#cb93-2" tabindex="-1"></a>false_cutoff <span class="ot">&lt;-</span> <span class="dv">13</span></span>
+<span id="cb93-3"><a href="regression-discontinuity-design.html#cb93-3" tabindex="-1"></a>placebo_result <span class="ot">&lt;-</span> <span class="fu">rdrobust</span>(<span class="at">y =</span> data<span class="sc">$</span>mortality, <span class="at">x =</span> data<span class="sc">$</span>apache_score, <span class="at">c =</span> false_cutoff)</span>
+<span id="cb93-4"><a href="regression-discontinuity-design.html#cb93-4" tabindex="-1"></a>placebo_effect <span class="ot">&lt;-</span> placebo_result<span class="sc">$</span>coef[<span class="st">&quot;Robust&quot;</span>, ]</span>
+<span id="cb93-5"><a href="regression-discontinuity-design.html#cb93-5" tabindex="-1"></a>placebo_se <span class="ot">&lt;-</span> placebo_result<span class="sc">$</span>se[<span class="st">&quot;Robust&quot;</span>, ]</span>
+<span id="cb93-6"><a href="regression-discontinuity-design.html#cb93-6" tabindex="-1"></a></span>
+<span id="cb93-7"><a href="regression-discontinuity-design.html#cb93-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Placebo test estimate:&quot;</span>, <span class="fu">round</span>(placebo_effect, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Placebo test estimate: 0.0092</code></pre>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="regression-discontinuity-design.html#cb95-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Placebo test p-value:&quot;</span>, <span class="fu">round</span>(<span class="dv">2</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(placebo_effect <span class="sc">/</span> placebo_se))), <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Placebo test p-value: 0.908</code></pre>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="regression-discontinuity-design.html#cb97-1" tabindex="-1"></a><span class="co"># Visualization</span></span>
+<span id="cb97-2"><a href="regression-discontinuity-design.html#cb97-2" tabindex="-1"></a><span class="co"># Create prediction data for smooth curves</span></span>
+<span id="cb97-3"><a href="regression-discontinuity-design.html#cb97-3" tabindex="-1"></a>pred_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">apache_score =</span> <span class="fu">seq</span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="fl">0.1</span>))</span>
+<span id="cb97-4"><a href="regression-discontinuity-design.html#cb97-4" tabindex="-1"></a>pred_data<span class="sc">$</span>centered_score <span class="ot">&lt;-</span> pred_data<span class="sc">$</span>apache_score <span class="sc">-</span> cutoff</span>
+<span id="cb97-5"><a href="regression-discontinuity-design.html#cb97-5" tabindex="-1"></a>pred_data<span class="sc">$</span>icu_admission <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(pred_data<span class="sc">$</span>apache_score <span class="sc">&gt;=</span> cutoff)</span>
+<span id="cb97-6"><a href="regression-discontinuity-design.html#cb97-6" tabindex="-1"></a></span>
+<span id="cb97-7"><a href="regression-discontinuity-design.html#cb97-7" tabindex="-1"></a><span class="co"># Separate models for each side</span></span>
+<span id="cb97-8"><a href="regression-discontinuity-design.html#cb97-8" tabindex="-1"></a>left_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(mortality <span class="sc">~</span> centered_score, <span class="at">data =</span> data[data<span class="sc">$</span>apache_score <span class="sc">&lt;</span> cutoff, ])</span>
+<span id="cb97-9"><a href="regression-discontinuity-design.html#cb97-9" tabindex="-1"></a>right_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(mortality <span class="sc">~</span> centered_score, <span class="at">data =</span> data[data<span class="sc">$</span>apache_score <span class="sc">&gt;=</span> cutoff, ])</span>
+<span id="cb97-10"><a href="regression-discontinuity-design.html#cb97-10" tabindex="-1"></a></span>
+<span id="cb97-11"><a href="regression-discontinuity-design.html#cb97-11" tabindex="-1"></a>pred_left <span class="ot">&lt;-</span> <span class="fu">predict</span>(left_model, </span>
+<span id="cb97-12"><a href="regression-discontinuity-design.html#cb97-12" tabindex="-1"></a>                    <span class="at">newdata =</span> pred_data[pred_data<span class="sc">$</span>apache_score <span class="sc">&lt;</span> cutoff, ],</span>
+<span id="cb97-13"><a href="regression-discontinuity-design.html#cb97-13" tabindex="-1"></a>                    <span class="at">se.fit =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb97-14"><a href="regression-discontinuity-design.html#cb97-14" tabindex="-1"></a>pred_right <span class="ot">&lt;-</span> <span class="fu">predict</span>(right_model, </span>
+<span id="cb97-15"><a href="regression-discontinuity-design.html#cb97-15" tabindex="-1"></a>                     <span class="at">newdata =</span> pred_data[pred_data<span class="sc">$</span>apache_score <span class="sc">&gt;=</span> cutoff, ],</span>
+<span id="cb97-16"><a href="regression-discontinuity-design.html#cb97-16" tabindex="-1"></a>                     <span class="at">se.fit =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb97-17"><a href="regression-discontinuity-design.html#cb97-17" tabindex="-1"></a></span>
+<span id="cb97-18"><a href="regression-discontinuity-design.html#cb97-18" tabindex="-1"></a><span class="co"># Combine predictions</span></span>
+<span id="cb97-19"><a href="regression-discontinuity-design.html#cb97-19" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb97-20"><a href="regression-discontinuity-design.html#cb97-20" tabindex="-1"></a>  <span class="at">apache_score =</span> <span class="fu">c</span>(pred_data<span class="sc">$</span>apache_score[pred_data<span class="sc">$</span>apache_score <span class="sc">&lt;</span> cutoff],</span>
+<span id="cb97-21"><a href="regression-discontinuity-design.html#cb97-21" tabindex="-1"></a>                   pred_data<span class="sc">$</span>apache_score[pred_data<span class="sc">$</span>apache_score <span class="sc">&gt;=</span> cutoff]),</span>
+<span id="cb97-22"><a href="regression-discontinuity-design.html#cb97-22" tabindex="-1"></a>  <span class="at">predicted =</span> <span class="fu">c</span>(pred_left<span class="sc">$</span>fit, pred_right<span class="sc">$</span>fit),</span>
+<span id="cb97-23"><a href="regression-discontinuity-design.html#cb97-23" tabindex="-1"></a>  <span class="at">se =</span> <span class="fu">c</span>(pred_left<span class="sc">$</span>se.fit, pred_right<span class="sc">$</span>se.fit),</span>
+<span id="cb97-24"><a href="regression-discontinuity-design.html#cb97-24" tabindex="-1"></a>  <span class="at">side =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">&quot;Control&quot;</span>, <span class="fu">sum</span>(pred_data<span class="sc">$</span>apache_score <span class="sc">&lt;</span> cutoff)),</span>
+<span id="cb97-25"><a href="regression-discontinuity-design.html#cb97-25" tabindex="-1"></a>           <span class="fu">rep</span>(<span class="st">&quot;Treatment&quot;</span>, <span class="fu">sum</span>(pred_data<span class="sc">$</span>apache_score <span class="sc">&gt;=</span> cutoff)))</span>
+<span id="cb97-26"><a href="regression-discontinuity-design.html#cb97-26" tabindex="-1"></a>)</span>
+<span id="cb97-27"><a href="regression-discontinuity-design.html#cb97-27" tabindex="-1"></a></span>
+<span id="cb97-28"><a href="regression-discontinuity-design.html#cb97-28" tabindex="-1"></a>plot_data<span class="sc">$</span>lower <span class="ot">&lt;-</span> plot_data<span class="sc">$</span>predicted <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> plot_data<span class="sc">$</span>se</span>
+<span id="cb97-29"><a href="regression-discontinuity-design.html#cb97-29" tabindex="-1"></a>plot_data<span class="sc">$</span>upper <span class="ot">&lt;-</span> plot_data<span class="sc">$</span>predicted <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> plot_data<span class="sc">$</span>se</span>
+<span id="cb97-30"><a href="regression-discontinuity-design.html#cb97-30" tabindex="-1"></a></span>
+<span id="cb97-31"><a href="regression-discontinuity-design.html#cb97-31" tabindex="-1"></a><span class="co"># Create binned scatter plot</span></span>
+<span id="cb97-32"><a href="regression-discontinuity-design.html#cb97-32" tabindex="-1"></a>bin_data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb97-33"><a href="regression-discontinuity-design.html#cb97-33" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">bin =</span> <span class="fu">round</span>(apache_score <span class="sc">*</span> <span class="dv">2</span>) <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb97-34"><a href="regression-discontinuity-design.html#cb97-34" tabindex="-1"></a>  <span class="fu">group_by</span>(bin) <span class="sc">%&gt;%</span></span>
+<span id="cb97-35"><a href="regression-discontinuity-design.html#cb97-35" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_mortality =</span> <span class="fu">mean</span>(mortality),</span>
+<span id="cb97-36"><a href="regression-discontinuity-design.html#cb97-36" tabindex="-1"></a>            <span class="at">se_mortality =</span> <span class="fu">sd</span>(mortality) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">n</span>()),</span>
+<span id="cb97-37"><a href="regression-discontinuity-design.html#cb97-37" tabindex="-1"></a>            <span class="at">.groups =</span> <span class="st">&#39;drop&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb97-38"><a href="regression-discontinuity-design.html#cb97-38" tabindex="-1"></a>  <span class="fu">filter</span>(bin <span class="sc">&gt;=</span> <span class="dv">12</span> <span class="sc">&amp;</span> bin <span class="sc">&lt;=</span> <span class="dv">18</span>)</span>
+<span id="cb97-39"><a href="regression-discontinuity-design.html#cb97-39" tabindex="-1"></a></span>
+<span id="cb97-40"><a href="regression-discontinuity-design.html#cb97-40" tabindex="-1"></a><span class="co"># Main plot</span></span>
+<span id="cb97-41"><a href="regression-discontinuity-design.html#cb97-41" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb97-42"><a href="regression-discontinuity-design.html#cb97-42" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> bin_data, <span class="fu">aes</span>(<span class="at">x =</span> bin, <span class="at">y =</span> mean_mortality), </span>
+<span id="cb97-43"><a href="regression-discontinuity-design.html#cb97-43" tabindex="-1"></a>             <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb97-44"><a href="regression-discontinuity-design.html#cb97-44" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="at">data =</span> bin_data, </span>
+<span id="cb97-45"><a href="regression-discontinuity-design.html#cb97-45" tabindex="-1"></a>                <span class="fu">aes</span>(<span class="at">x =</span> bin, <span class="at">ymin =</span> mean_mortality <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> se_mortality,</span>
+<span id="cb97-46"><a href="regression-discontinuity-design.html#cb97-46" tabindex="-1"></a>                    <span class="at">ymax =</span> mean_mortality <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> se_mortality),</span>
+<span id="cb97-47"><a href="regression-discontinuity-design.html#cb97-47" tabindex="-1"></a>                <span class="at">width =</span> <span class="fl">0.1</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb97-48"><a href="regression-discontinuity-design.html#cb97-48" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> plot_data, <span class="fu">aes</span>(<span class="at">x =</span> apache_score, <span class="at">y =</span> predicted, <span class="at">color =</span> side), </span>
+<span id="cb97-49"><a href="regression-discontinuity-design.html#cb97-49" tabindex="-1"></a>            <span class="at">size =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb97-50"><a href="regression-discontinuity-design.html#cb97-50" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">data =</span> plot_data, </span>
+<span id="cb97-51"><a href="regression-discontinuity-design.html#cb97-51" tabindex="-1"></a>              <span class="fu">aes</span>(<span class="at">x =</span> apache_score, <span class="at">ymin =</span> lower, <span class="at">ymax =</span> upper, <span class="at">fill =</span> side),</span>
+<span id="cb97-52"><a href="regression-discontinuity-design.html#cb97-52" tabindex="-1"></a>              <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb97-53"><a href="regression-discontinuity-design.html#cb97-53" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> cutoff, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">color =</span> <span class="st">&quot;red&quot;</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb97-54"><a href="regression-discontinuity-design.html#cb97-54" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;Control&quot;</span> <span class="ot">=</span> <span class="st">&quot;#1f77b4&quot;</span>, <span class="st">&quot;Treatment&quot;</span> <span class="ot">=</span> <span class="st">&quot;#ff7f0e&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb97-55"><a href="regression-discontinuity-design.html#cb97-55" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;Control&quot;</span> <span class="ot">=</span> <span class="st">&quot;#1f77b4&quot;</span>, <span class="st">&quot;Treatment&quot;</span> <span class="ot">=</span> <span class="st">&quot;#ff7f0e&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb97-56"><a href="regression-discontinuity-design.html#cb97-56" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;RDD: Effect of ICU Admission on 30-Day Mortality&quot;</span>,</span>
+<span id="cb97-57"><a href="regression-discontinuity-design.html#cb97-57" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;APACHE Score&quot;</span>, </span>
+<span id="cb97-58"><a href="regression-discontinuity-design.html#cb97-58" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;30-Day Mortality Rate&quot;</span>,</span>
+<span id="cb97-59"><a href="regression-discontinuity-design.html#cb97-59" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">&quot;Treatment Status&quot;</span>,</span>
+<span id="cb97-60"><a href="regression-discontinuity-design.html#cb97-60" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">&quot;Treatment Status&quot;</span>) <span class="sc">+</span></span>
+<span id="cb97-61"><a href="regression-discontinuity-design.html#cb97-61" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb97-62"><a href="regression-discontinuity-design.html#cb97-62" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="sc">+</span></span>
+<span id="cb97-63"><a href="regression-discontinuity-design.html#cb97-63" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="at">x =</span> cutoff <span class="sc">+</span> <span class="fl">0.5</span>, <span class="at">y =</span> <span class="fl">0.25</span>, </span>
+<span id="cb97-64"><a href="regression-discontinuity-design.html#cb97-64" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">paste</span>(<span class="st">&quot;ICU Cutoff</span><span class="sc">\n</span><span class="st">(Score ≥&quot;</span>, cutoff, <span class="st">&quot;)&quot;</span>), </span>
+<span id="cb97-65"><a href="regression-discontinuity-design.html#cb97-65" tabindex="-1"></a>           <span class="at">color =</span> <span class="st">&quot;red&quot;</span>, <span class="at">size =</span> <span class="dv">3</span>)</span>
+<span id="cb97-66"><a href="regression-discontinuity-design.html#cb97-66" tabindex="-1"></a></span>
+<span id="cb97-67"><a href="regression-discontinuity-design.html#cb97-67" tabindex="-1"></a><span class="fu">print</span>(p1)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="regression-discontinuity-design.html#cb98-1" tabindex="-1"></a><span class="co"># Results summary</span></span>
+<span id="cb98-2"><a href="regression-discontinuity-design.html#cb98-2" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb98-3"><a href="regression-discontinuity-design.html#cb98-3" tabindex="-1"></a>  <span class="at">Method =</span> <span class="fu">c</span>(<span class="st">&quot;Parametric&quot;</span>, <span class="st">&quot;Nonparametric&quot;</span>, <span class="st">&quot;Placebo Test&quot;</span>),</span>
+<span id="cb98-4"><a href="regression-discontinuity-design.html#cb98-4" tabindex="-1"></a>  <span class="at">Estimate =</span> <span class="fu">c</span>(param_effect, nonparam_effect, placebo_effect),</span>
+<span id="cb98-5"><a href="regression-discontinuity-design.html#cb98-5" tabindex="-1"></a>  <span class="at">SE =</span> <span class="fu">c</span>(param_se, nonparam_se, placebo_se),</span>
+<span id="cb98-6"><a href="regression-discontinuity-design.html#cb98-6" tabindex="-1"></a>  <span class="at">Lower_CI =</span> <span class="fu">c</span>(param_effect <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> param_se,</span>
+<span id="cb98-7"><a href="regression-discontinuity-design.html#cb98-7" tabindex="-1"></a>               nonparam_effect <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> nonparam_se,</span>
+<span id="cb98-8"><a href="regression-discontinuity-design.html#cb98-8" tabindex="-1"></a>               placebo_effect <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> placebo_se),</span>
+<span id="cb98-9"><a href="regression-discontinuity-design.html#cb98-9" tabindex="-1"></a>  <span class="at">Upper_CI =</span> <span class="fu">c</span>(param_effect <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> param_se,</span>
+<span id="cb98-10"><a href="regression-discontinuity-design.html#cb98-10" tabindex="-1"></a>               nonparam_effect <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> nonparam_se,</span>
+<span id="cb98-11"><a href="regression-discontinuity-design.html#cb98-11" tabindex="-1"></a>               placebo_effect <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> placebo_se)</span>
+<span id="cb98-12"><a href="regression-discontinuity-design.html#cb98-12" tabindex="-1"></a>)</span>
+<span id="cb98-13"><a href="regression-discontinuity-design.html#cb98-13" tabindex="-1"></a></span>
+<span id="cb98-14"><a href="regression-discontinuity-design.html#cb98-14" tabindex="-1"></a><span class="fu">print</span>(results)</span></code></pre></div>
+<pre><code>##          Method     Estimate         SE    Lower_CI    Upper_CI
+## 1    Parametric -0.059252445 0.01744663 -0.09344783 -0.02505706
+## 2 Nonparametric -0.011599070 0.03202451 -0.07436711  0.05116897
+## 3  Placebo Test  0.009224179 0.07984869 -0.14727926  0.16572762</code></pre>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="regression-discontinuity-design.html#cb100-1" tabindex="-1"></a><span class="co"># Effect size interpretation</span></span>
+<span id="cb100-2"><a href="regression-discontinuity-design.html#cb100-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Interpretation:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## 
+## Interpretation:</code></pre>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="regression-discontinuity-design.html#cb102-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;True effect:&quot;</span>, true_effect, <span class="st">&quot;(15 percentage point reduction)</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## True effect: -0.15 (15 percentage point reduction)</code></pre>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="regression-discontinuity-design.html#cb104-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Parametric estimate suggests&quot;</span>, <span class="fu">round</span>(<span class="fu">abs</span>(param_effect) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>), </span>
+<span id="cb104-2"><a href="regression-discontinuity-design.html#cb104-2" tabindex="-1"></a>    <span class="st">&quot;percentage point reduction in mortality</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Parametric estimate suggests 5.9 percentage point reduction in mortality</code></pre>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="regression-discontinuity-design.html#cb106-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Nonparametric estimate suggests&quot;</span>, <span class="fu">round</span>(<span class="fu">abs</span>(nonparam_effect) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>), </span>
+<span id="cb106-2"><a href="regression-discontinuity-design.html#cb106-2" tabindex="-1"></a>    <span class="st">&quot;percentage point reduction in mortality</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## Nonparametric estimate suggests 1.2 percentage point reduction in mortality</code></pre>
+</div>
+</div>
+<div id="interpretation-and-diagnostics" class="section level2 hasAnchor" number="6.3">
+<h2><span class="header-section-number">6.3</span> Interpretation and Diagnostics<a href="regression-discontinuity-design.html#interpretation-and-diagnostics" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The parametric and nonparametric estimates should approximate the true treatment effect of -0.15 if the design assumptions hold. The optimal bandwidth determined by the rdrobust package balances bias and variance considerations, typically including observations within 1-3 units of the cutoff. Confidence intervals reflect estimation uncertainty, with nonparametric approaches often producing wider intervals due to their flexibility. The density test examines whether the running variable distribution shows evidence of manipulation around the cutoff. A significant test statistic suggests systematic sorting that could invalidate the design. In our simulation, the p-value should exceed conventional significance levels since we generated random APACHE scores without manipulation. The placebo test estimates effects at a false cutoff where no treatment discontinuity exists. Significant placebo effects suggest that observed discontinuities may reflect underlying trends rather than treatment effects, casting doubt on the main results. Successful placebo tests show estimates close to zero with insignificant p-values. Visual inspection provides additional validation. The plot should show smooth outcome trends on both sides of the cutoff with a clear discontinuity at the threshold. Binned scatter plots help reveal the underlying relationship while reducing noise from individual observations. Suspicious patterns, such as unusual curvature near the cutoff or multiple discontinuities, warrant further investigation.</p>
+</div>
+<div id="extensions-and-robustness" class="section level2 hasAnchor" number="6.4">
+<h2><span class="header-section-number">6.4</span> Extensions and Robustness<a href="regression-discontinuity-design.html#extensions-and-robustness" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>RDD can be extended in several directions to enhance robustness and applicability. Multiple cutoffs designs exploit variation from several thresholds to improve precision and test assumption validity across different cutoff values. Geographic regression discontinuity uses spatial boundaries as cutoffs, identifying effects of policies that vary across jurisdictions. Dynamic RDD examines how treatment effects evolve over time when cutoffs change.</p>
+<p>Robustness checks assess sensitivity to key modeling choices. Bandwidth sensitivity tests examine how estimates change across different window sizes around the cutoff. Functional form tests compare linear, quadratic, and higher-order specifications to check parametric assumptions. Donut RDD excludes observations immediately around the cutoff to test for manipulation or measurement error effects.</p>
+<p>When compliance with treatment assignment is imperfect, fuzzy RDD designs require additional assumptions similar to instrumental variables. The exclusion restriction requires that crossing the cutoff affects outcomes only through changing treatment probability, not through other channels. Monotonicity assumes that crossing the cutoff never decreases treatment probability for any individual.</p>
+</div>
+<div id="limitations-and-considerations" class="section level2 hasAnchor" number="6.5">
+<h2><span class="header-section-number">6.5</span> Limitations and Considerations<a href="regression-discontinuity-design.html#limitations-and-considerations" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>RDD faces several important limitations that researchers must consider. The method provides only local identification at the cutoff, limiting external validity to the broader population. Treatment effects may vary systematically across the running variable distribution, making cutoff-specific estimates unrepresentative of population-wide effects. This is particularly problematic when policy interest focuses on average treatment effects rather than local effects.</p>
+<p>Sample size requirements can be substantial, especially for nonparametric approaches that rely on observations near the cutoff. Power calculations suggest that RDD typically requires 2-3 times larger samples than randomized experiments to achieve comparable precision. This constraint may limit feasibility in settings with small samples or rare outcomes.</p>
+<p>Functional form misspecification poses risks in parametric implementations. Higher-order polynomials can create spurious discontinuities through overfitting, while overly restrictive specifications may mask true effects through bias. Nonparametric approaches mitigate these concerns but require careful bandwidth selection and may suffer from boundary bias near the cutoff.</p>
+<p>The method assumes precise measurement of the running variable and knowledge of the exact cutoff value. Measurement error in the running variable can attenuate estimates, while uncertainty about cutoff locations complicates interpretation. These issues are particularly relevant in settings with multiple decision-makers or evolving assignment rules.</p>
+</div>
+<div id="conclusion-4" class="section level2 hasAnchor" number="6.6">
+<h2><span class="header-section-number">6.6</span> Conclusion<a href="regression-discontinuity-design.html#conclusion-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Regression Discontinuity Design offers a credible approach to causal inference when treatment assignment follows arbitrary cutoff rules. The method’s strength lies in its minimal assumptions and high internal validity near the threshold, making it particularly valuable for policy evaluation in healthcare, education, and other domains with rule-based allocation mechanisms. Our healthcare application demonstrates practical implementation using both parametric and nonparametric approaches, highlighting the importance of assumption testing and robustness checks.</p>
+<p>While RDD provides only local identification and may require large samples for precise estimation, its quasi-experimental nature often makes it preferable to approaches requiring stronger assumptions about selection or confounding. The method continues to evolve through methodological advances in bandwidth selection, inference procedures, and extension to more complex designs. Future research directions include integration with machine learning methods for improved flexibility and the development of approaches for settings with fuzzy or time-varying cutoffs.</p>
+<p>Successful RDD implementation requires careful attention to institutional details, thorough assumption validation, and transparent reporting of robustness checks. When these conditions are met, the design provides compelling evidence for causal effects that can inform policy decisions and advance scientific understanding in contexts where randomized experiments remain infeasible.</p>
+</div>
+<div id="references-3" class="section level2 hasAnchor" number="6.7">
+<h2><span class="header-section-number">6.7</span> References<a href="regression-discontinuity-design.html#references-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li>Lee, D. S., &amp; Lemieux, T. (2010). Regression discontinuity designs in economics. <em>Journal of Economic Literature</em>, 48(2), 281-355.</li>
+<li>Imbens, G., &amp; Kalyanaraman, K. (2012). Optimal bandwidth choice for the regression discontinuity estimator. <em>Review of Economic Studies</em>, 79(3), 933-959.</li>
+<li>Calonico, S., Cattaneo, M. D., &amp; Titiunik, R. (2014). Robust nonparametric confidence intervals for regression-discontinuity designs. <em>Econometrica</em>, 82(6), 2295-2326.</li>
+<li>Cattaneo, M. D., Idrobo, N., &amp; Titiunik, R. (2019). <em>A Practical Introduction to Regression Discontinuity Designs: Foundations</em>. Cambridge University Press.</li>
+</ul>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="instrumental-variables.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="causal-forests.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/edit/main/06-RDD.Rmd",
+    "text": "Edit"
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/blob/main/06-RDD.Rmd",
+    "text": null
+  },
+  "download": null,
+  "search": {
+    "engine": "fuse",
+    "options": null
+  },
+  "toc": {
+    "collapse": "subsection"
+  }
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

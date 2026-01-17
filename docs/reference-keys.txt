@@ -4,7 +4,7 @@ summary-table-techniques-for-causal-statistical-analysis
 methodological-deep-dive-with-practical-guidance
 discussion
 references
-causal-inference-in-practice-i-randomized-controlled-trials-and-regression-adjustment
+randomized-controlled-trials-and-regression-adjustment
 introduction-1
 randomized-controlled-trials-design-and-analysis
 theoretical-foundations
@@ -18,7 +18,7 @@ limitations-and-diagnostics
 causal-interpretation
 toward-integrated-reasoning
 conclusion
-causal-inference-in-practice-ii-propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting
+propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting
 propensity-score-methods
 inverse-probability-weighting-ipw
 doubly-robust-estimators
@@ -26,7 +26,7 @@ integrative-interpretation
 summary-table
 conclusion-1
 references-1
-causal-inference-in-practice-iii-difference-in-differences-with-a-healthcare-application
+difference-in-differences-with-a-healthcare-application
 introduction-2
 difference-in-differences-theoretical-framework
 core-concept
@@ -37,7 +37,7 @@ r-implementation-2
 limitations-and-takeaways
 conclusion-2
 references-2
-causal-inference-in-practice-iv-instrumental-variables
+instrumental-variables
 introduction-3
 healthcare-case-study-hospital-quality-and-recovery-time
 r-implementation-3
@@ -48,7 +48,7 @@ when-to-use-iv
 advanced-topics
 conclusion-3
 further-reading
-causal-inference-in-practice-v-regression-discontinuity-design
+regression-discontinuity-design
 introduction-4
 comparison-with-other-methods
 healthcare-application-icu-admission-and-mortality
@@ -127,6 +127,6 @@ introduction-11
 theoretical-framework-understanding-the-double-machine-learning-approach
 cardiovascular-disease-prevention-a-dml-case-study
 clinical-interpretation-and-implementation
-understanding-assumptions-and-potential-violations
+assumptions-and-potential-violations
 extensions-and-advanced-applications
 conclusion-9

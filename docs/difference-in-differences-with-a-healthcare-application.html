@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Causal Inference in R</title>
-  <meta name="description" content="Causal Inference in R" />
+  <title>Chapter 4 Difference-in-Differences with a Healthcare Application | Causal Inference in R</title>
+  <meta name="description" content="Chapter 4 Difference-in-Differences with a Healthcare Application | Causal Inference in R" />
   <meta name="generator" content="bookdown 0.43 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Causal Inference in R" />
+  <meta property="og:title" content="Chapter 4 Difference-in-Differences with a Healthcare Application | Causal Inference in R" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Causal Inference in R" />
+  <meta name="twitter:title" content="Chapter 4 Difference-in-Differences with a Healthcare Application | Causal Inference in R" />
   
   
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="randomized-controlled-trials-and-regression-adjustment.html"/>
+<link rel="prev" href="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html"/>
+<link rel="next" href="instrumental-variables.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -350,360 +350,247 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Causal Inference in R</h1>
-<p class="author"><em>Kamran Afzali</em></p>
-<p class="date"><em>2026-01-17</em></p>
+<div id="difference-in-differences-with-a-healthcare-application" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">Chapter 4</span> Difference-in-Differences with a Healthcare Application<a href="difference-in-differences-with-a-healthcare-application.html#difference-in-differences-with-a-healthcare-application" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="introduction-2" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> Introduction<a href="difference-in-differences-with-a-healthcare-application.html#introduction-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In observational studies, where randomized controlled trials are infeasible, causal inference methods like Difference-in-Differences (DiD) provide a robust framework for estimating treatment effects under specific assumptions. DiD is particularly valuable in settings with panel data, where units are observed over time, and some receive a treatment while others do not. By leveraging the temporal structure of data, DiD isolates the causal effect of a treatment by comparing changes in outcomes between treated and control groups over time. This approach is widely used in fields such as economics, public policy, and healthcare to evaluate interventions like policy changes or medical programs.</p>
+<p>In this post, we focus on DiD, exploring its theoretical foundations, mathematical formalism, and practical implementation. We apply DiD to a realistic healthcare example—evaluating the impact of a telemedicine program on patient outcomes—using R code to demonstrate the methodology. We also discuss diagnostics, limitations, and extensions to ensure robust causal inference.</p>
 </div>
-<div id="foundations-of-causal-statistical-analysis" class="section level1 hasAnchor" number="1">
-<h1><span class="header-section-number">Chapter 1</span> Foundations of Causal Statistical Analysis<a href="index.html#foundations-of-causal-statistical-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="introduction" class="section level2 hasAnchor" number="1.1">
-<h2><span class="header-section-number">1.1</span> Introduction<a href="index.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Understanding causality is one of the most enduring and fundamental
-challenges in science. Across disciplines—from public health and
-economics to education, neuroscience, and artificial
-intelligence—researchers are increasingly tasked not only with
-identifying patterns in data but with uncovering the mechanisms that
-generate them. While traditional statistical analysis excels at
-quantifying associations, scientific inquiry often aims at a deeper
-ambition: to infer <strong>causal relationships</strong>—to determine what would
-happen under specific interventions, policies, or changes to a system.
-The distinction between correlation and causation is more than a
-methodological nuance; it defines the boundary between description and
-explanation, and between prediction and control.</p>
-<p>This essay serves as the first in a multi-part series on the foundations
-of causal statistical analysis. It provides a panoramic overview of the
-most widely used techniques for estimating causal effects, each grounded
-in distinct theoretical frameworks and operational assumptions. These
-methods span randomized controlled trials (RCTs), which serve as the
-epistemic gold standard, to a wide range of quasi-experimental and
-model-based approaches developed to address the limitations of
-real-world data. In practice, researchers must often navigate data
-landscapes in which randomization is infeasible, treatment selection is
-endogenous, and temporal or structural confounding is ubiquitous. This
-is where modern causal inference techniques offer essential tools—not
-only for estimating effects, but for interrogating the validity of those
-estimates.</p>
-<p>At the heart of this endeavor lies a tension between <strong>identifiability</strong>
-and <strong>assumptions</strong>. Every causal method rests on a set of
-assumptions—about how the data were generated, how variables relate, and
-what sources of bias are controlled or ignored. While some methods
-emphasize robustness through design (e.g., difference-in-differences,
-regression discontinuity, or instrumental variables), others attempt to
-model the data-generating process explicitly, drawing from structural
-modeling, counterfactual reasoning, or machine learning. Each method is
-powerful under the right conditions and misleading when applied
-uncritically. This underscores a central theme of the series: <strong>there is
-no universally “best” method for causal inference</strong>. Rather, the
-suitability of each technique depends on the scientific question, data
-structure, and the plausibility of underlying assumptions.</p>
-<p>To guide practitioners in this complex terrain, we begin with a
-comparative summary table outlining the assumptions, strengths,
-limitations, and implementation tools for each technique. This table is
-not merely a catalog—it is a scaffold for deeper engagement. Subsequent
-posts in the series will explore each method in detail, presenting both
-theoretical foundations and practical workflows using open-source
-statistical packages in R and Python. These installments will include
-visualizations, diagnostics, sensitivity analyses, and real-world case
-studies drawn from public health, education, and policy evaluation.</p>
-<p>Causal analysis is both an art and a science: it demands careful
-reasoning, domain knowledge, and transparent methodology. As the demand
-for evidence-based decision-making grows—particularly in the age of big
-data and algorithmic governance—causal inference provides a principled
-framework for moving from data to action. This series is designed to
-empower readers to approach causal questions rigorously, critically, and
-creatively.</p>
+<div id="difference-in-differences-theoretical-framework" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> Difference-in-Differences: Theoretical Framework<a href="difference-in-differences-with-a-healthcare-application.html#difference-in-differences-theoretical-framework" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="core-concept" class="section level3 hasAnchor" number="4.2.1">
+<h3><span class="header-section-number">4.2.1</span> Core Concept<a href="difference-in-differences-with-a-healthcare-application.html#core-concept" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>DiD estimates the causal effect of a treatment by comparing the change in outcomes over time between a treated group and a control group. The method assumes that, in the absence of treatment, the treated and control groups would follow <strong>parallel trends</strong> in their outcomes. This assumption allows DiD to account for time-invariant differences between groups and common time trends affecting both groups.</p>
 </div>
-<div id="summary-table-techniques-for-causal-statistical-analysis" class="section level2 hasAnchor" number="1.2">
-<h2><span class="header-section-number">1.2</span> Summary Table: Techniques for Causal Statistical Analysis<a href="index.html#summary-table-techniques-for-causal-statistical-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<table style="width:100%;">
-<colgroup>
-<col width="16%" />
-<col width="16%" />
-<col width="16%" />
-<col width="16%" />
-<col width="16%" />
-<col width="16%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>Technique</th>
-<th>Key Assumptions</th>
-<th>Use Cases</th>
-<th>Strengths</th>
-<th>Limitations</th>
-<th>Tools/Packages</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Randomized Controlled Trials (RCTs)</td>
-<td>Random assignment ensures exchangeability</td>
-<td>Clinical trials, A/B testing</td>
-<td>Eliminates confounding</td>
-<td>Often infeasible or unethical</td>
-<td><code>randomizr</code> (R), <code>DoWhy</code> (Py)</td>
-</tr>
-<tr class="even">
-<td>Regression Adjustment</td>
-<td>No unmeasured confounders, correct model</td>
-<td>Policy, health outcomes</td>
-<td>Simple, widely used</td>
-<td>Sensitive to omitted variables, model misspecification</td>
-<td><code>lm()</code>, <code>glm()</code> (R), <code>statsmodels</code>, <code>sklearn</code> (Py)</td>
-</tr>
-<tr class="odd">
-<td>Propensity Score Matching (PSM)</td>
-<td>Conditional independence given observed covariates</td>
-<td>Observational studies</td>
-<td>Balances covariates, intuitive</td>
-<td>Sensitive to unmeasured confounding, poor overlap</td>
-<td><code>MatchIt</code>, <code>twang</code> (R), <code>DoWhy</code>, <code>causalml</code> (Py)</td>
-</tr>
-<tr class="even">
-<td>Inverse Probability Weighting (IPW)</td>
-<td>Correct treatment model, positivity</td>
-<td>Longitudinal data</td>
-<td>Handles time-varying confounding</td>
-<td>Can produce unstable weights</td>
-<td><code>ipw</code>, <code>survey</code> (R), <code>zEpid</code> (Py)</td>
-</tr>
-<tr class="odd">
-<td>Difference-in-Differences (DiD)</td>
-<td>Parallel trends</td>
-<td>Policy reforms, natural experiments</td>
-<td>Controls for unobserved time-invariant confounders</td>
-<td>Vulnerable if trends diverge</td>
-<td><code>fixest</code>, <code>did</code> (R), <code>linearmodels</code> (Py)</td>
-</tr>
-<tr class="even">
-<td>Instrumental Variables (IV)</td>
-<td>Relevance, exclusion restriction</td>
-<td>Endogeneity correction</td>
-<td>Addresses unmeasured confounding</td>
-<td>Finding valid instruments is hard</td>
-<td><code>ivreg</code>, <code>AER</code> (R), <code>linearmodels.iv</code> (Py)</td>
-</tr>
-<tr class="odd">
-<td>Regression Discontinuity (RDD)</td>
-<td>Sharp cutoff, local randomization</td>
-<td>Education, policy thresholds</td>
-<td>Transparent identification</td>
-<td>Limited to local effect near cutoff</td>
-<td><code>rdrobust</code>, <code>rddtools</code> (R), <code>rdd</code>, <code>statsmodels</code> (Py)</td>
-</tr>
-<tr class="even">
-<td>Causal Forests</td>
-<td>Unconfoundedness, heterogeneity</td>
-<td>Precision medicine, targeting</td>
-<td>Captures treatment heterogeneity</td>
-<td>Requires large data, unmeasured confounding risk</td>
-<td><code>grf</code>, <code>causalTree</code> (R), <code>econml</code>, <code>causalml</code> (Py)</td>
-</tr>
-<tr class="odd">
-<td>S-Learner, T-Learner, X-Learner</td>
-<td>Ignorability, overlap, consistent outcome models</td>
-<td>Estimating heterogeneous treatment effects (CATEs)</td>
-<td>Adapt supervised ML for causal inference, flexible</td>
-<td>S-learner may blur heterogeneity; T-learner inefficient under imbalance; X-learner more complex</td>
-<td><code>metalearners</code> (R), <code>econml</code>, <code>causalml</code> (Py)</td>
-</tr>
-<tr class="even">
-<td>Bayesian Structural Time Series (BSTS)</td>
-<td>No unmeasured confounders post-intervention</td>
-<td>Time series interventions</td>
-<td>Handles complex time trends</td>
-<td>Sensitive to model/priors</td>
-<td><code>CausalImpact</code>, <code>bsts</code> (R), <code>tfcausalimpact</code> (Py)</td>
-</tr>
-<tr class="odd">
-<td>Targeted Maximum Likelihood Estimation (TMLE)</td>
-<td>Double robustness</td>
-<td>Epidemiology, observational data</td>
-<td>Robust, ML integration</td>
-<td>Computationally intensive</td>
-<td><code>tmle</code>, <code>ltmle</code> (R), <code>zepid</code> (Py)</td>
-</tr>
-<tr class="even">
-<td>G-Computation</td>
-<td>No unmeasured confounding, correct model</td>
-<td>Mediation, marginal effects</td>
-<td>Flexible, counterfactuals</td>
-<td>Model dependence</td>
-<td><code>gfoRmula</code>, <code>ltmle</code> (R), <code>zepid</code> (Py)</td>
-</tr>
-<tr class="odd">
-<td>Structural Equation Modeling (SEM)</td>
-<td>Correct structure, no unmeasured confounding</td>
-<td>Latent variables, mediation</td>
-<td>Models complex relationships</td>
-<td>Requires strong assumptions</td>
-<td><code>lavaan</code> (R), <code>semopy</code>, <code>pysem</code> (Py)</td>
-</tr>
-<tr class="even">
-<td>Directed Acyclic Graphs (DAGs)</td>
-<td>Causal sufficiency, accurate knowledge</td>
-<td>Study design, confounder control</td>
-<td>Clarifies assumptions</td>
-<td>Not an estimation method</td>
-<td><code>dagitty</code>, <code>ggdag</code> (R), <code>causalgraphicalmodels</code> (Py)</td>
-</tr>
-<tr class="odd">
-<td>Double Machine Learning (DML) Frameworks</td>
-<td>Conditional ignorability, consistent nuisance estimation</td>
-<td>High-dimensional observational studies</td>
-<td>Robust to model misspecification, handles high-dimensional confounders</td>
-<td>Requires large data, assumes no unmeasured confounding</td>
-<td><code>DoubleML</code> (R), <code>econml</code>, <code>causalml</code> (Py)</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="methodological-deep-dive-with-practical-guidance" class="section level2 hasAnchor" number="1.3">
-<h2><span class="header-section-number">1.3</span> Methodological Deep Dive with Practical Guidance<a href="index.html#methodological-deep-dive-with-practical-guidance" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="mathematical-formalism" class="section level3 hasAnchor" number="4.2.2">
+<h3><span class="header-section-number">4.2.2</span> Mathematical Formalism<a href="difference-in-differences-with-a-healthcare-application.html#mathematical-formalism" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Let’s formalize the DiD framework. For unit <span class="math inline">\(i\)</span> at time <span class="math inline">\(t \in \{0, 1\}\)</span> (pre- and post-treatment), define:</p>
 <ul>
-<li><p><strong>Randomized Controlled Trials (RCTs)</strong> RCTs are the gold standard
-for causal inference. Random assignment neutralizes confounding,
-ensuring internal validity. However, practical, ethical, or
-financial constraints often limit their feasibility. When viable,
-they deliver the most credible causal estimates.</p></li>
-<li><p><strong>Regression Adjustment</strong> This method models the outcome as a
-function of treatment and covariates. While easy to implement, it
-assumes no unmeasured confounding and correct model specification.
-It’s essential to examine covariate balance and conduct robustness
-checks.</p></li>
-<li><p><strong>Propensity Score Matching (PSM)</strong> PSM aims to mimic randomization
-by matching units with similar probabilities of treatment. It
-balances covariates well but fails under unmeasured confounding.
-Diagnostic tools like balance plots are crucial.</p></li>
-<li><p><strong>Inverse Probability Weighting (IPW)</strong> IPW reweights samples to
-simulate random assignment. It handles time-varying confounding but
-can produce unstable weights, requiring trimming or stabilization.
-It’s powerful for longitudinal and panel data.</p></li>
-<li><p><strong>Difference-in-Differences (DiD)</strong> DiD compares treated and control
-units over time, assuming parallel trends. It is popular for
-evaluating policy interventions but sensitive to trend violations.
-Visualizing pre-treatment trends and using placebo tests enhance
-credibility.</p></li>
-<li><p><strong>Instrumental Variables (IV)</strong> IV methods handle endogeneity by
-using external variables that affect treatment but not the outcome
-directly. The approach hinges on the strength and validity of
-instruments—criteria that are difficult to verify.</p></li>
-<li><p><strong>Regression Discontinuity Design (RDD)</strong> RDD exploits sharp cutoffs
-for treatment assignment. It provides quasi-experimental validity
-but estimates only local effects near the threshold. Validity
-depends on smoothness and non-manipulation at the cutoff.</p></li>
-<li><p><strong>Causal Forests</strong> Causal forests extend random forests to estimate
-heterogeneous treatment effects. They are ideal for personalized
-interventions but require large datasets and are vulnerable to
-omitted confounding.</p></li>
-<li><p><strong>S-Learner, T-Learner, and X-Learner</strong> These meta-learners are
-machine learning strategies for estimating <strong>conditional average
-treatment effects (CATEs)</strong>. The <strong>S-learner</strong> fits a single model
-that includes treatment as a feature, estimating potential outcomes
-by switching treatment values. The <strong>T-learner</strong> trains separate
-models for treated and control groups, then takes their difference.
-The <strong>X-learner</strong> combines both by imputing counterfactuals with
-T-learner models and then modeling pseudo-effects, often weighting
-by propensity scores. S-learners are simple but can blur
-heterogeneity, T-learners separate effects but suffer in imbalanced
-data, while X-learners improve efficiency by leveraging information
-across groups. These approaches illustrate how supervised learning
-can be adapted for causal estimation, particularly in
-high-dimensional or non-linear settings.</p></li>
-<li><p><strong>Bayesian Structural Time Series (BSTS)</strong> BSTS combines state-space
-models with Bayesian inference to estimate intervention effects in
-time series. It accommodates trend and seasonality but is sensitive
-to model misspecification and prior choices.</p></li>
-<li><p><strong>Targeted Maximum Likelihood Estimation (TMLE)</strong> TMLE integrates
-machine learning into causal effect estimation. It provides double
-robustness and efficient inference under complex data settings but
-can be computationally demanding.</p></li>
-<li><p><strong>G-Computation</strong> G-computation models potential outcomes under each
-treatment. It is flexible and counterfactual-based but requires
-accurate modeling and complete covariate adjustment.</p></li>
-<li><p><strong>Structural Equation Modeling (SEM)</strong> SEM enables the modeling of
-complex causal structures, including latent constructs and
-mediation. Its interpretability is appealing but hinges on correct
-model specification and the absence of unmeasured confounding.</p></li>
-<li><p><strong>Directed Acyclic Graphs (DAGs)</strong> DAGs are essential for clarifying
-causal assumptions. While not an estimation method, they guide
-design and analysis by identifying confounders, mediators, and
-colliders.</p></li>
+<li><span class="math inline">\(Y_{it}\)</span>: Observed outcome for unit <span class="math inline">\(i\)</span> at time <span class="math inline">\(t\)</span>.</li>
+<li><span class="math inline">\(D_i \in \{0, 1\}\)</span>: Treatment indicator (<span class="math inline">\(D_i = 1\)</span> for treated units, <span class="math inline">\(D_i = 0\)</span> for control units).</li>
+<li><span class="math inline">\(T_t \in \{0, 1\}\)</span>: Time indicator (<span class="math inline">\(T_t = 0\)</span> for pre-treatment, <span class="math inline">\(T_t = 1\)</span> for post-treatment).</li>
+<li><span class="math inline">\(Y_{it}(1), Y_{it}(0)\)</span>: Potential outcomes under treatment and control, respectively.</li>
+</ul>
+<p>The causal effect of interest is the <strong>average treatment effect on the treated (ATT)</strong>:</p>
+<p><span class="math display">\[
+\text{ATT} = \mathbb{E}[Y_{i1}(1) - Y_{i1}(0) \mid D_i = 1]
+\]</span></p>
+<p>The DiD estimator assumes that the observed outcome can be modeled as:</p>
+<p><span class="math display">\[
+Y_{it} = \beta_0 + \beta_1 D_i + \beta_2 T_t + \delta (D_i \cdot T_t) + \epsilon_{it}
+\]</span></p>
+<p>Where:
+- <span class="math inline">\(\beta_0\)</span>: Baseline outcome for the control group at <span class="math inline">\(t = 0\)</span>.
+- <span class="math inline">\(\beta_1\)</span>: Time-invariant difference between treated and control groups.
+- <span class="math inline">\(\beta_2\)</span>: Common time trend affecting both groups.
+- <span class="math inline">\(\delta\)</span>: The DiD estimator, representing the ATT.
+- <span class="math inline">\(\epsilon_{it}\)</span>: Error term, assumed to have mean zero.</p>
+<p>The DiD estimator is computed as:</p>
+<p><span class="math display">\[
+\widehat{\text{DiD}} = \left( \bar{Y}_{1, \text{treated}} - \bar{Y}_{0, \text{treated}} \right) - \left( \bar{Y}_{1, \text{control}} - \bar{Y}_{0, \text{control}} \right)
+\]</span></p>
+<p>Where <span class="math inline">\(\bar{Y}_{t, g}\)</span> is the mean outcome for group <span class="math inline">\(g\)</span> (treated or control) at time <span class="math inline">\(t\)</span>.</p>
+</div>
+<div id="key-assumption-parallel-trends" class="section level3 hasAnchor" number="4.2.3">
+<h3><span class="header-section-number">4.2.3</span> Key Assumption: Parallel Trends<a href="difference-in-differences-with-a-healthcare-application.html#key-assumption-parallel-trends" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The validity of DiD hinges on the <strong>parallel trends assumption</strong>:</p>
+<p><span class="math display">\[
+\mathbb{E}[Y_{i1}(0) - Y_{i0}(0) \mid D_i = 1] = \mathbb{E}[Y_{i1}(0) - Y_{i0}(0) \mid D_i = 0]
+\]</span></p>
+<p>This assumes that, absent treatment, the average change in outcomes for the treated group would equal that of the control group. While this assumption is untestable directly (since <span class="math inline">\(Y_{i1}(0)\)</span> is unobserved for the treated group post-treatment), we can assess its plausibility by examining pre-treatment trends or including covariates to adjust for potential confounders.</p>
+<ul>
+<li><strong>Data Requirements</strong>: DiD requires panel data (same units observed over time) or repeated cross-sectional data with clear treatment and control groups.</li>
+<li><strong>Covariates</strong>: Including control variables unaffected by the treatment can improve precision and adjust for time-varying confounders.</li>
+<li><strong>Diagnostics</strong>: Pre-treatment trends should be visualized to assess the parallel trends assumption. Robustness checks, such as placebo tests, can further validate the model.</li>
+<li><strong>Extensions</strong>: DiD can be extended to multiple time periods, staggered treatment adoption, or heterogeneous effects using advanced methods like generalized DiD.</li>
 </ul>
 </div>
-<div id="discussion" class="section level2 hasAnchor" number="1.4">
-<h2><span class="header-section-number">1.4</span> Discussion<a href="index.html#discussion" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>The comparative framework presented in this foundational overview
-highlights both the diversity and the interdependence of causal
-inference techniques. A central takeaway is that <strong>no single method
-guarantees valid causal inference in all contexts</strong>. Rather, the
-validity of any technique depends critically on whether its assumptions
-align with the structure of the data and the theoretical understanding
-of the system under study. This observation has two key implications for
-applied researchers.</p>
-<p>First, <strong>triangulation</strong>—the use of multiple methods to approach the
-same causal question—is not only desirable but often necessary. For
-instance, one might use propensity score matching to achieve covariate
-balance, regression adjustment to model outcome differences, and then
-compare results with those from a targeted maximum likelihood estimation
-(TMLE) approach. If conclusions converge, confidence in causal
-interpretation increases. If not, divergences can reveal sensitivity to
-assumptions such as model specification or unmeasured confounding. Thus,
-causal inference is inherently <strong>iterative</strong>, requiring both
-methodological flexibility and diagnostic rigor.</p>
-<p>Second, <strong>methodological literacy is not enough</strong>; researchers must also
-cultivate <strong>causal reasoning</strong>. Directed Acyclic Graphs (DAGs), while
-not themselves estimators, play a vital role in clarifying which
-variables to control for and which paths to block or preserve. DAG-based
-thinking helps researchers navigate common pitfalls such as controlling
-for colliders or mediators, both of which can induce bias. The
-thoughtful use of DAGs, therefore, bridges qualitative theoretical
-insight with quantitative estimation.</p>
-<p>Another tension arises between <strong>interpretability and complexity</strong>.
-Classical techniques like regression or instrumental variables are often
-preferred for their clarity and theoretical grounding, while modern
-approaches such as causal forests and TMLE offer increased flexibility
-and robustness in high-dimensional or non-linear settings. However,
-these gains often come at the cost of interpretability, especially for
-stakeholders or policy-makers who require transparent causal narratives.
-This raises an important trade-off: when should we prioritize
-explainability over precision, and how do we communicate these decisions
-to interdisciplinary audiences?</p>
-<p>In addition, the growing use of <strong>machine learning in causal
-inference</strong>—exemplified by methods like causal forests and TMLE—requires
-new standards for validation and transparency. Unlike predictive
-modeling, causal questions are inherently counterfactual and cannot be
-validated through conventional cross-validation. Techniques such as
-falsification tests, placebo analyses, and sensitivity analyses become
-indispensable, particularly when machine learning models are involved.</p>
-<p>Finally, <strong>equity and ethics</strong> must be central to causal analysis,
-especially in domains like public health, criminal justice, and
-education. Methods that adjust for observed variables can inadvertently
-perpetuate structural inequalities if those variables are themselves
-proxies for systemic bias. Researchers must therefore engage critically
-with both the data and the social contexts from which they arise,
-treating causal models not just as statistical tools but as ethical
-instruments.</p>
-<p>The subsequent posts in this series will explore each technique in
-depth, including code implementation, diagnostic strategies, and
-real-world case studies. By weaving together statistical rigor, domain
-expertise, and ethical reflexivity, we aim to equip researchers with a
-robust and responsible causal toolkit.</p>
 </div>
-<div id="references" class="section level2 hasAnchor" number="1.5">
-<h2><span class="header-section-number">1.5</span> References<a href="index.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<ol style="list-style-type: decimal">
-<li>Hernán &amp; Robins (2020). <em>Causal Inference: What If</em>.</li>
-<li>Pearl, Glymour, &amp; Jewell (2016). <em>Causal Inference in Statistics: A
-Primer</em>.</li>
-<li>VanderWeele (2015). <em>Explanation in Causal Inference</em>.</li>
-<li>Causal AI Blog by Judea Pearl: <a href="https://causality.cs.ucla.edu/blog/" class="uri">https://causality.cs.ucla.edu/blog/</a></li>
-<li>Netflix Tech Blog on Causal Inference:
-<a href="https://netflixtechblog.com/computational-causal-inference-at-netflix-293591691c62" class="uri">https://netflixtechblog.com/computational-causal-inference-at-netflix-293591691c62</a></li>
-<li>Number Analytics Education Series:
-<a href="https://www.numberanalytics.com/blog/" class="uri">https://www.numberanalytics.com/blog/</a></li>
-</ol>
+<div id="application-evaluating-a-telemedicine-program-in-healthcare" class="section level2 hasAnchor" number="4.3">
+<h2><span class="header-section-number">4.3</span> Application: Evaluating a Telemedicine Program in Healthcare<a href="difference-in-differences-with-a-healthcare-application.html#application-evaluating-a-telemedicine-program-in-healthcare" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Consider a hospital system implementing a telemedicine program in 2024 to improve patient outcomes, such as reducing hospital readmissions for chronic disease patients. The program is rolled out in select clinics (treated group), while others continue standard in-person care (control group). We observe patient outcomes (e.g., 30-day readmission rates) in 2023 (pre-treatment) and 2025 (post-treatment). Using DiD, we estimate the program’s causal effect on readmissions.</p>
+<p>We simulate data for 200 clinics (100 treated, 100 control) with readmission rates over two years. The true treatment effect is a 3% reduction in readmissions. We include a covariate (average patient age) to account for potential confounding.</p>
+<div id="r-implementation-2" class="section level3 hasAnchor" number="4.3.1">
+<h3><span class="header-section-number">4.3.1</span> R Implementation<a href="difference-in-differences-with-a-healthcare-application.html#r-implementation-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Below is the R code to simulate the data, estimate the DiD effect, and perform diagnostics.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-1" tabindex="-1"></a><span class="co"># Load required packages</span></span>
+<span id="cb30-2"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-2" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb30-3"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-3" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb30-4"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-4" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-5" tabindex="-1"></a><span class="co"># Set seed for reproducibility</span></span>
+<span id="cb30-6"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-6" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb30-7"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-7" tabindex="-1"></a></span>
+<span id="cb30-8"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-8" tabindex="-1"></a><span class="co"># Parameters</span></span>
+<span id="cb30-9"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-9" tabindex="-1"></a>n_clinics <span class="ot">&lt;-</span> <span class="dv">200</span>  <span class="co"># 100 treated, 100 control</span></span>
+<span id="cb30-10"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-10" tabindex="-1"></a>time_periods <span class="ot">&lt;-</span> <span class="dv">2</span>  <span class="co"># 2023 (pre), 2025 (post)</span></span>
+<span id="cb30-11"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-11" tabindex="-1"></a>true_effect <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">5</span>  <span class="co"># Increased effect size to -5% for stronger impact</span></span>
+<span id="cb30-12"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-12" tabindex="-1"></a>noise_sd <span class="ot">&lt;-</span> <span class="fl">0.5</span>    <span class="co"># Reduced noise to make effect more detectable</span></span>
+<span id="cb30-13"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-13" tabindex="-1"></a></span>
+<span id="cb30-14"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-14" tabindex="-1"></a><span class="co"># Create data</span></span>
+<span id="cb30-15"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-15" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb30-16"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-16" tabindex="-1"></a>  <span class="at">clinic =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>n_clinics, <span class="at">each =</span> time_periods),</span>
+<span id="cb30-17"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-17" tabindex="-1"></a>  <span class="at">time =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">times =</span> n_clinics),  <span class="co"># 0 = 2023, 1 = 2025</span></span>
+<span id="cb30-18"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-18" tabindex="-1"></a>  <span class="at">year =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">2023</span>, <span class="dv">2025</span>), <span class="at">times =</span> n_clinics),</span>
+<span id="cb30-19"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-19" tabindex="-1"></a>  <span class="at">treated =</span> <span class="fu">rep</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">each =</span> time_periods), <span class="at">times =</span> n_clinics<span class="sc">/</span><span class="dv">2</span>),</span>
+<span id="cb30-20"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-20" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(n_clinics, <span class="at">mean =</span> <span class="dv">65</span>, <span class="at">sd =</span> <span class="dv">5</span>), <span class="at">each =</span> time_periods)</span>
+<span id="cb30-21"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-21" tabindex="-1"></a>)</span>
+<span id="cb30-22"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-22" tabindex="-1"></a></span>
+<span id="cb30-23"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-23" tabindex="-1"></a><span class="co"># Generate readmission rates (%)</span></span>
+<span id="cb30-24"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-24" tabindex="-1"></a>data<span class="sc">$</span>readmission <span class="ot">&lt;-</span> <span class="dv">20</span> <span class="sc">+</span>                   <span class="co"># Baseline readmission rate</span></span>
+<span id="cb30-25"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-25" tabindex="-1"></a>  <span class="dv">1</span> <span class="sc">*</span> data<span class="sc">$</span>treated <span class="sc">+</span>                      <span class="co"># Treated clinics have higher baseline</span></span>
+<span id="cb30-26"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-26" tabindex="-1"></a>  <span class="dv">2</span> <span class="sc">*</span> data<span class="sc">$</span>time <span class="sc">+</span>                         <span class="co"># Secular trend</span></span>
+<span id="cb30-27"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-27" tabindex="-1"></a>  true_effect <span class="sc">*</span> data<span class="sc">$</span>treated <span class="sc">*</span> data<span class="sc">$</span>time <span class="sc">+</span> <span class="co"># Stronger treatment effect</span></span>
+<span id="cb30-28"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-28" tabindex="-1"></a>  <span class="fl">0.1</span> <span class="sc">*</span> data<span class="sc">$</span>age <span class="sc">+</span>                        <span class="co"># Age effect</span></span>
+<span id="cb30-29"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-29" tabindex="-1"></a>  <span class="fu">rnorm</span>(<span class="fu">nrow</span>(data), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> noise_sd)  <span class="co"># Reduced noise</span></span>
+<span id="cb30-30"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-30" tabindex="-1"></a></span>
+<span id="cb30-31"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-31" tabindex="-1"></a><span class="co"># Preview data</span></span>
+<span id="cb30-32"><a href="difference-in-differences-with-a-healthcare-application.html#cb30-32" tabindex="-1"></a><span class="fu">head</span>(data)</span></code></pre></div>
+<pre><code>##   clinic time year treated      age readmission
+## 1      1    0 2023       0 62.19762    27.31917
+## 2      1    1 2025       0 62.19762    28.87597
+## 3      2    0 2023       1 63.84911    27.25234
+## 4      2    1 2025       1 63.84911    24.65651
+## 5      3    0 2023       0 72.79354    27.07218
+## 6      3    1 2025       0 72.79354    29.04123</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-1" tabindex="-1"></a><span class="co"># Check parallel trends: Pre-treatment data (2021-2023)</span></span>
+<span id="cb32-2"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-2" tabindex="-1"></a>data_pre <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb32-3"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-3" tabindex="-1"></a>  <span class="at">clinic =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>n_clinics, <span class="at">each =</span> <span class="dv">3</span>),</span>
+<span id="cb32-4"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-4" tabindex="-1"></a>  <span class="at">year =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">2021</span>, <span class="dv">2022</span>, <span class="dv">2023</span>), <span class="at">times =</span> n_clinics),</span>
+<span id="cb32-5"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-5" tabindex="-1"></a>  <span class="at">treated =</span> <span class="fu">rep</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">each =</span> <span class="dv">3</span>), <span class="at">times =</span> n_clinics<span class="sc">/</span><span class="dv">2</span>),</span>
+<span id="cb32-6"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-6" tabindex="-1"></a>  <span class="at">readmission =</span> <span class="dv">20</span> <span class="sc">+</span> </span>
+<span id="cb32-7"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-7" tabindex="-1"></a>    <span class="dv">1</span> <span class="sc">*</span> <span class="fu">rep</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">each =</span> <span class="dv">3</span>), <span class="at">times =</span> n_clinics<span class="sc">/</span><span class="dv">2</span>) <span class="sc">+</span>  <span class="co"># Group effect</span></span>
+<span id="cb32-8"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-8" tabindex="-1"></a>    <span class="dv">2</span> <span class="sc">*</span> <span class="fu">rep</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">times =</span> n_clinics) <span class="sc">+</span>                      <span class="co"># Linear trend</span></span>
+<span id="cb32-9"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-9" tabindex="-1"></a>    <span class="fu">rnorm</span>(<span class="dv">3</span> <span class="sc">*</span> n_clinics, <span class="dv">0</span>, noise_sd)                      <span class="co"># Reduced noise</span></span>
+<span id="cb32-10"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-10" tabindex="-1"></a>)</span>
+<span id="cb32-11"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-11" tabindex="-1"></a></span>
+<span id="cb32-12"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-12" tabindex="-1"></a><span class="co"># Aggregate means for pre-treatment plot</span></span>
+<span id="cb32-13"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-13" tabindex="-1"></a>means_pre <span class="ot">&lt;-</span> data_pre <span class="sc">%&gt;%</span></span>
+<span id="cb32-14"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-14" tabindex="-1"></a>  <span class="fu">group_by</span>(year, treated) <span class="sc">%&gt;%</span></span>
+<span id="cb32-15"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-15" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">readmission =</span> <span class="fu">mean</span>(readmission), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>)</span>
+<span id="cb32-16"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-16" tabindex="-1"></a></span>
+<span id="cb32-17"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-17" tabindex="-1"></a><span class="co"># Plot pre-treatment trends</span></span>
+<span id="cb32-18"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-18" tabindex="-1"></a><span class="fu">ggplot</span>(means_pre, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> readmission, <span class="at">color =</span> <span class="fu">factor</span>(treated), <span class="at">group =</span> treated)) <span class="sc">+</span></span>
+<span id="cb32-19"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-19" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb32-20"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-20" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb32-21"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-21" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Pre-Treatment Trends in Readmission Rates&quot;</span>,</span>
+<span id="cb32-22"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-22" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Year&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Readmission Rate (%)&quot;</span>,</span>
+<span id="cb32-23"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-23" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">&quot;Group&quot;</span>) <span class="sc">+</span></span>
+<span id="cb32-24"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-24" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;blue&quot;</span>, <span class="st">&quot;red&quot;</span>), <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;Treated&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb32-25"><a href="difference-in-differences-with-a-healthcare-application.html#cb32-25" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
+<pre><code>## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+## ℹ Please use `linewidth` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="difference-in-differences-with-a-healthcare-application.html#cb34-1" tabindex="-1"></a><span class="co"># Post-treatment trends for visualization</span></span>
+<span id="cb34-2"><a href="difference-in-differences-with-a-healthcare-application.html#cb34-2" tabindex="-1"></a>means_post <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb34-3"><a href="difference-in-differences-with-a-healthcare-application.html#cb34-3" tabindex="-1"></a>  <span class="fu">group_by</span>(year, treated) <span class="sc">%&gt;%</span></span>
+<span id="cb34-4"><a href="difference-in-differences-with-a-healthcare-application.html#cb34-4" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">readmission =</span> <span class="fu">mean</span>(readmission), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>)</span>
+<span id="cb34-5"><a href="difference-in-differences-with-a-healthcare-application.html#cb34-5" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="difference-in-differences-with-a-healthcare-application.html#cb34-6" tabindex="-1"></a><span class="co"># Plot post-treatment trends to show diverging slopes</span></span>
+<span id="cb34-7"><a href="difference-in-differences-with-a-healthcare-application.html#cb34-7" tabindex="-1"></a><span class="fu">ggplot</span>(means_post, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> readmission, <span class="at">color =</span> <span class="fu">factor</span>(treated), <span class="at">group =</span> treated)) <span class="sc">+</span></span>
+<span id="cb34-8"><a href="difference-in-differences-with-a-healthcare-application.html#cb34-8" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb34-9"><a href="difference-in-differences-with-a-healthcare-application.html#cb34-9" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb34-10"><a href="difference-in-differences-with-a-healthcare-application.html#cb34-10" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Post-Treatment Trends in Readmission Rates&quot;</span>,</span>
+<span id="cb34-11"><a href="difference-in-differences-with-a-healthcare-application.html#cb34-11" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Year&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Readmission Rate (%)&quot;</span>,</span>
+<span id="cb34-12"><a href="difference-in-differences-with-a-healthcare-application.html#cb34-12" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">&quot;Group&quot;</span>) <span class="sc">+</span></span>
+<span id="cb34-13"><a href="difference-in-differences-with-a-healthcare-application.html#cb34-13" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;blue&quot;</span>, <span class="st">&quot;red&quot;</span>), <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Control&quot;</span>, <span class="st">&quot;Treated&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb34-14"><a href="difference-in-differences-with-a-healthcare-application.html#cb34-14" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="difference-in-differences-with-a-healthcare-application.html#cb35-1" tabindex="-1"></a><span class="co"># DiD regression with covariate</span></span>
+<span id="cb35-2"><a href="difference-in-differences-with-a-healthcare-application.html#cb35-2" tabindex="-1"></a>did_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(readmission <span class="sc">~</span> treated <span class="sc">+</span> time <span class="sc">+</span> treated<span class="sc">:</span>time <span class="sc">+</span> age, <span class="at">data =</span> data)</span>
+<span id="cb35-3"><a href="difference-in-differences-with-a-healthcare-application.html#cb35-3" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="difference-in-differences-with-a-healthcare-application.html#cb35-4" tabindex="-1"></a><span class="co"># Summary of results</span></span>
+<span id="cb35-5"><a href="difference-in-differences-with-a-healthcare-application.html#cb35-5" tabindex="-1"></a><span class="fu">summary</span>(did_model)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = readmission ~ treated + time + treated:time + age, 
+##     data = data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.49718 -0.30275  0.00724  0.34468  1.35039 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  20.002830   0.341274   58.61   &lt;2e-16 ***
+## treated       1.021168   0.069101   14.78   &lt;2e-16 ***
+## time          1.930823   0.069097   27.94   &lt;2e-16 ***
+## age           0.100911   0.005194   19.43   &lt;2e-16 ***
+## treated:time -5.078044   0.097718  -51.97   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.4886 on 395 degrees of freedom
+## Multiple R-squared:  0.9143, Adjusted R-squared:  0.9135 
+## F-statistic:  1054 on 4 and 395 DF,  p-value: &lt; 2.2e-16</code></pre>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="difference-in-differences-with-a-healthcare-application.html#cb37-1" tabindex="-1"></a><span class="co"># Manual DiD calculation</span></span>
+<span id="cb37-2"><a href="difference-in-differences-with-a-healthcare-application.html#cb37-2" tabindex="-1"></a>means <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb37-3"><a href="difference-in-differences-with-a-healthcare-application.html#cb37-3" tabindex="-1"></a>  <span class="fu">group_by</span>(treated, time) <span class="sc">%&gt;%</span></span>
+<span id="cb37-4"><a href="difference-in-differences-with-a-healthcare-application.html#cb37-4" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">readmission =</span> <span class="fu">mean</span>(readmission), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>)</span>
+<span id="cb37-5"><a href="difference-in-differences-with-a-healthcare-application.html#cb37-5" tabindex="-1"></a></span>
+<span id="cb37-6"><a href="difference-in-differences-with-a-healthcare-application.html#cb37-6" tabindex="-1"></a>y0_control <span class="ot">&lt;-</span> means<span class="sc">$</span>readmission[means<span class="sc">$</span>treated <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> means<span class="sc">$</span>time <span class="sc">==</span> <span class="dv">0</span>]</span>
+<span id="cb37-7"><a href="difference-in-differences-with-a-healthcare-application.html#cb37-7" tabindex="-1"></a>y1_control <span class="ot">&lt;-</span> means<span class="sc">$</span>readmission[means<span class="sc">$</span>treated <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> means<span class="sc">$</span>time <span class="sc">==</span> <span class="dv">1</span>]</span>
+<span id="cb37-8"><a href="difference-in-differences-with-a-healthcare-application.html#cb37-8" tabindex="-1"></a>y0_treated <span class="ot">&lt;-</span> means<span class="sc">$</span>readmission[means<span class="sc">$</span>treated <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> means<span class="sc">$</span>time <span class="sc">==</span> <span class="dv">0</span>]</span>
+<span id="cb37-9"><a href="difference-in-differences-with-a-healthcare-application.html#cb37-9" tabindex="-1"></a>y1_treated <span class="ot">&lt;-</span> means<span class="sc">$</span>readmission[means<span class="sc">$</span>treated <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> means<span class="sc">$</span>time <span class="sc">==</span> <span class="dv">1</span>]</span>
+<span id="cb37-10"><a href="difference-in-differences-with-a-healthcare-application.html#cb37-10" tabindex="-1"></a></span>
+<span id="cb37-11"><a href="difference-in-differences-with-a-healthcare-application.html#cb37-11" tabindex="-1"></a>did_estimate <span class="ot">&lt;-</span> (y1_treated <span class="sc">-</span> y0_treated) <span class="sc">-</span> (y1_control <span class="sc">-</span> y0_control)</span>
+<span id="cb37-12"><a href="difference-in-differences-with-a-healthcare-application.html#cb37-12" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;DiD Estimate:&quot;</span>, did_estimate, <span class="st">&quot;%</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>## DiD Estimate: -5.078044 %</code></pre>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="difference-in-differences-with-a-healthcare-application.html#cb39-1" tabindex="-1"></a><span class="co"># Placebo test: Pre-treatment periods (2022 vs. 2023)</span></span>
+<span id="cb39-2"><a href="difference-in-differences-with-a-healthcare-application.html#cb39-2" tabindex="-1"></a>data_placebo <span class="ot">&lt;-</span> data_pre[data_pre<span class="sc">$</span>year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2022</span>, <span class="dv">2023</span>), ]</span>
+<span id="cb39-3"><a href="difference-in-differences-with-a-healthcare-application.html#cb39-3" tabindex="-1"></a>did_placebo <span class="ot">&lt;-</span> <span class="fu">lm</span>(readmission <span class="sc">~</span> treated <span class="sc">*</span> <span class="fu">factor</span>(year), <span class="at">data =</span> data_placebo)</span>
+<span id="cb39-4"><a href="difference-in-differences-with-a-healthcare-application.html#cb39-4" tabindex="-1"></a><span class="fu">summary</span>(did_placebo)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = readmission ~ treated * factor(year), data = data_placebo)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.32794 -0.36928 -0.01144  0.30504  1.34543 
+## 
+## Coefficients:
+##                          Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)              22.02035    0.05341 412.304   &lt;2e-16 ***
+## treated                   0.99908    0.07553  13.228   &lt;2e-16 ***
+## factor(year)2023          2.03292    0.07553  26.915   &lt;2e-16 ***
+## treated:factor(year)2023 -0.08943    0.10682  -0.837    0.403    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.5341 on 396 degrees of freedom
+## Multiple R-squared:  0.8116, Adjusted R-squared:  0.8102 
+## F-statistic: 568.6 on 3 and 396 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div id="limitations-and-takeaways" class="section level3 hasAnchor" number="4.3.2">
+<h3><span class="header-section-number">4.3.2</span> Limitations and takeaways<a href="difference-in-differences-with-a-healthcare-application.html#limitations-and-takeaways" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><strong>Pre-Treatment Trends</strong>: The plot checks if readmission rates for treated and control clinics followed parallel trends before 2023, supporting the parallel trends assumption.</li>
+<li><strong>DiD Estimate</strong>: The regression coefficient on the interaction term (<span class="math inline">\(\text{treated} \cdot \text{time}\)</span>) estimates the treatment effect, adjusted for patient age. The manual calculation confirms this estimate.</li>
+<li><strong>Placebo Test</strong>: Applying DiD to pre-treatment years (2022 vs. 2023) should yield an insignificant effect, reinforcing the validity of the parallel trends assumption.</li>
+</ul>
+<p>In our simulation, the estimated effect is close to the true effect (-3%), indicating that the telemedicine program reduced readmissions by approximately 3 percentage points.</p>
+<ul>
+<li><strong>Parallel Trends Violation</strong>: If pre-treatment trends diverge, DiD estimates may be biased. Techniques like synthetic controls or triple differences can address this.</li>
+<li><strong>Time-Varying Confounders</strong>: Unobserved factors changing differentially between groups (e.g., new healthcare policies) can bias results. Including relevant covariates mitigates this.</li>
+<li><strong>Generalizability</strong>: The ATT applies to the treated group. Generalizing to other populations requires caution.</li>
+<li><strong>Extensions</strong>: For staggered treatment timing or multiple periods, generalized DiD models or fixed-effects regressions can be used.</li>
+</ul>
+</div>
+</div>
+<div id="conclusion-2" class="section level2 hasAnchor" number="4.4">
+<h2><span class="header-section-number">4.4</span> Conclusion<a href="difference-in-differences-with-a-healthcare-application.html#conclusion-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Difference-in-Differences is a powerful quasi-experimental method for causal inference, particularly in healthcare settings where randomized trials are impractical. By leveraging panel data and the parallel trends assumption, DiD isolates treatment effects with intuitive appeal. Our healthcare example demonstrated how DiD can evaluate a telemedicine program’s impact on readmissions, with R code providing a practical implementation. Diagnostics like pre-treatment trend checks and placebo tests enhance robustness. In future posts, we’ll explore advanced methods like Regression Discontinuity and Synthetic Controls to further expand the causal inference toolkit.</p>
+</div>
+<div id="references-2" class="section level2 hasAnchor" number="4.5">
+<h2><span class="header-section-number">4.5</span> References<a href="difference-in-differences-with-a-healthcare-application.html#references-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li>Angrist, J. D., &amp; Pischke, J.-S. (2009). <em>Mostly Harmless Econometrics</em>. Princeton University Press.</li>
+<li>Abadie, A. (2005). Semiparametric difference-in-differences estimators. <em>Review of Economic Studies</em>, 72(1), 1–19.</li>
+<li>Hernán, M. A., &amp; Robins, J. M. (2020). <em>Causal Inference: What If</em>. Chapman &amp; Hall/CRC.</li>
+<li>Wooldridge, J. M. (2010). <em>Econometric Analysis of Cross Section and Panel Data</em>. MIT Press.</li>
+</ul>
 
 </div>
 </div>
@@ -712,8 +599,8 @@ Primer</em>.</li>
           </div>
         </div>
       </div>
-
-<a href="randomized-controlled-trials-and-regression-adjustment.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="propensity-scores-doubly-robust-estimators-and-inverse-probability-weighting.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="instrumental-variables.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -744,7 +631,7 @@ gitbook.start({
     "size": 2
   },
   "edit": {
-    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/edit/main/index.Rmd",
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/edit/main/04-DID.Rmd",
     "text": "Edit"
   },
   "history": {
@@ -752,7 +639,7 @@ gitbook.start({
     "text": null
   },
   "view": {
-    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/blob/main/index.Rmd",
+    "link": "https://github.com/Kamran-Afzali/Bookdown_Causality/blob/main/04-DID.Rmd",
     "text": null
   },
   "download": null,
